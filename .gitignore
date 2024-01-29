@@ -22,3 +22,5 @@ Screenshot*.jpg
 publish/D2Boot/D2Boot.dll.release
 Scripts/data/secure/*.txt
 D2Boot/lib/*.zip
+!publish/D2Boot/D2M.dll
+!publish/D2Bot.exe
