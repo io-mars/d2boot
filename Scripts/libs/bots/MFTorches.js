@@ -980,8 +980,8 @@ export const MFTorches = function () {
   }
 
   //run now
-  // [TorchesMode.MiniUbers, TorchesMode.UberTristram].forEach((mode) => {
-  [TorchesMode.MiniUbers].forEach((mode) => {
+  [TorchesMode.MiniUbers, TorchesMode.UberTristram].forEach((mode) => {
+  // [TorchesMode.MiniUbers].forEach((mode) => {
     PandemoniumEvent.setMode(mode);
 
     if (PandemoniumEvent.canOpenPortal()) {
