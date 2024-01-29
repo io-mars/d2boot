@@ -1,0 +1,14 @@
+[name] == gold # [gold] >= 1000
+[type] == healingpotion
+[type] == manapotion
+[type] == rejuvpotion
+
+[name] == ring && [quality] == unique 
+[name] == amulet && [quality] == unique
+[type] == armor && [quality] == unique
+[type] == helm && [quality] == unique
+[type] == circlet && [quality] == unique
+[type] == gloves && [quality] == unique
+[type] == belt && [quality] == unique
+[type] == polearm && [quality] == unique
+[type] == orb && [quality] == unique

@@ -1,0 +1,35 @@
+#include <windows.h>
+
+// DLL version information.
+VS_VERSION_INFO    VERSIONINFO
+FILEVERSION        #FVERSION
+PRODUCTVERSION     #FVERSION
+FILEFLAGSMASK      VS_FFI_FILEFLAGSMASK
+#ifdef _DEBUG
+  FILEFLAGS        VS_FF_DEBUG | VS_FF_PRERELEASE
+#else
+  FILEFLAGS        0
+#endif
+FILEOS             VOS_NT_WINDOWS32
+FILETYPE           VFT_DLL
+FILESUBTYPE        VFT2_UNKNOWN
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "080904b0"
+    BEGIN
+      VALUE "CompanyName", "iomars.net"
+      VALUE "FileDescription", "A boot for diablo II."
+      VALUE "FileVersion", "#VERSION"
+      VALUE "InternalName", "D2Boot"
+      VALUE "LegalCopyright", "Copyright (c) 2022 iomars.net"
+      VALUE "OriginalFilename", "D2Boot.dll"
+      VALUE "ProductName", "D2Boot Library"
+      VALUE "ProductVersion", "#VERSION"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x809, 1200
+  END
+END

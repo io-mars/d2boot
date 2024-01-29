@@ -1,0 +1,43 @@
+{
+  "folders": [
+    {
+      "path": ".."
+    }
+  ],
+  "settings": {
+    "editor.defaultFormatter": null,
+    "terminal.integrated.profiles.windows": {
+      "MSYS2-MINGW32": {
+        "path": "d:\\msys64\\usr\\bin\\bash.exe",
+        "args": ["--login", "-i"],
+        "env": {
+          "MSYSTEM": "MINGW32",
+          "CHERE_INVOKING": "enabled_from_arguments",
+          "MSYS2_PATH_TYPE": "inherit",
+          "MSYS2_NOSTART": "yes",
+          "MSYSCON": "defterm"
+        }
+      }
+    },
+    "terminal.integrated.defaultProfile.windows": "MSYS2-MINGW32",
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[cpp]": {
+      "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
+    "[h]": {
+      "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
+    "prettier.printWidth": 80,
+    "prettier.trailingComma": "es5",
+    "terminal.integrated.tabs.enabled": false,
+    "editor.formatOnSave": true
+  }
+}

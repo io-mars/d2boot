@@ -1,0 +1,7 @@
+//
+//[type] == charm && [quality] == unique
+
+[name] == smallcharm && [quality] == unique # ([strength] + [fireresist]) >= 30
+[name] == largecharm && [quality] == unique # ([strength] + [fireresist]) >= 20 && ([sorceressskills] == 3 || [paladinskills] == 3)
+[name] == largecharm && [quality] == unique # ([strength] + [fireresist]) >= 36
+[name] == grandcharm && [quality] == unique # [itemmagicbonus] >= 38
