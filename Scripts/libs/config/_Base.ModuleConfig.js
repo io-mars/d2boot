@@ -1076,7 +1076,7 @@ export const MFHelper = function () {
   Config.KillDclone = true; // Go to Palace Cellar 3 and try to kill Diablo Clone. Pointless if you already have Annihilus.
   Config.DCloneQuit = false; // 1 = quit when Diablo walks, 2 = quit on soj sales, 0 = disabled
 
-  Scripts.MFHelper = true; // 该功能未测试 // Run the same MF run as the MFLeader. Leader must have Config.MFLeader = true
+  Scripts.MFHelper = true; // Run the same MF run as the MFLeader. Leader must have Config.MFLeader = true
   Scripts.DiabloHelper = true; // Chaos helper, kills monsters and doesn't open seals on its own.
   Config.DiabloHelper.Wait = 2; // minutes to wait for a runner to be in Chaos. If Config.Leader is set, it will wait only for the leader.
   Config.DiabloHelper.ClearRadius = 30; // Range cleared while following path to seals
@@ -1088,7 +1088,7 @@ export const MFHelper = function () {
   Config.DiabloHelper.SealOrder = ["vizier", "seis", "infector"]; // the order in which to clear the seals. If seals are excluded, they won't be checked unless diablo fails to appear
   Config.DiabloHelper.RecheckSeals = false; // Teleport to each seal and double-check that it was opened and boss was killed if Diablo doesn't appear
 
-  Scripts.BaalHelper = true; // 巴尔帮手脚本
+  Scripts.BaalHelper = true; // 
   Config.BaalHelper.Wait = 2; // minutes to wait for a runner to be in Throne
   Config.BaalHelper.KillNihlathak = false; // Kill Nihlathak before going to Throne
   Config.BaalHelper.FastChaos = false; // Kill Diablo before going to Throne
@@ -1097,12 +1097,12 @@ export const MFHelper = function () {
   Config.BaalHelper.SkipTP = false; // Don't wait for a TP, go to WSK3 and wait for someone to go to throne. Anti PK measure.
   Config.BaalHelper.Town = true; // back town if run others script after baal
 
-  Config.MinGameTime = 60; // 最小游戏时间。如果脚本运行完时间未到BOT会在城里呆着等待设定时间到后退出游戏。单位：秒。 // Min game time in seconds. Bot will TP to town and stay in game if the run is completed before.
-  Config.MaxGameTime = 1200; // 最大游戏时间。设定之后不论脚本是否全部运行完毕，达到该时间后游戏自动结束。单位：秒。 // Maximum game time in seconds. Quit game when limit is reached.
+  Config.MinGameTime = 60; // Min game time in seconds. Bot will TP to town and stay in game if the run is completed before.
+  Config.MaxGameTime = 1200; // Maximum game time in seconds. Quit game when limit is reached.
   Config.OpenChests.Enabled = true; // Open chests. Controls key buying.
   Config.OpenChests.Range = 15; // radius to scan for chests while pathing
   Config.OpenChests.Types = ["chest", "chest3", "armorstand", "weaponrack"]; // which chests to open, use "all" to open all chests. See sdk/chests.txt for full list of chest names
-  Config.PublicMode = 2; // 组队模式，1为发送或接受组队邀请，2为仅接受组队邀请，3为仅发送组队要求，0为关闭组队功能。1 = invite and accept, 2 = accept only, 3 = invite only, 0 = disable
+  Config.PublicMode = 2; // 1 = invite and accept, 2 = accept only, 3 = invite only, 0 = disable
 };
 
 export const MFHelperLeader = function () {
