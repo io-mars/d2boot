@@ -1,4 +1,12 @@
-import { copyUnit, delay, getTickCount, me, print, sendPacket } from "boot";
+import {
+  copyUnit,
+  delay,
+  getTickCount,
+  me,
+  print,
+  sendPacket,
+  debugLog,
+} from "boot";
 
 import { sdk } from "../modules/sdk.js";
 import { Town } from "./Town.js";

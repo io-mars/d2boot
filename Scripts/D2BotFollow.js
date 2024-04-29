@@ -111,7 +111,7 @@ function main() {
       delay(1000);
     }
 
-    ControlAction.locationAction(getLocation());
+    ControlAction.locationAction();
     delay(1000);
   }
 }

@@ -27,7 +27,7 @@ export const AutoBuildTemplate = {
       Config.Cubing = false; // Don't cube yet!
       Config.Follower.PickGold = false;
       Config.Follower.teleportOff = true; //mars set teleport off
-      Config.Follower.SwitchAct = false; //跟随Leader自动切换act
+      Config.Follower.SwitchAct = false; //
       // Speedup config. Full packet casting is not recommended for melee skills.
       Config.ExplodeCorpses = 0;
       Config.Golem = "None";
@@ -82,11 +82,19 @@ export const AutoBuildTemplate = {
   12: {
     SkillPoints: [sdk.skills.GolemMastery], //
     Update: function () {
-      Config.AttackSkill = [-1, -1, -1, -1, -1, -1, -1]; // Use Might
-      Config.LowManaSkill = [-1, -1]; // Use Blessed Aim while hitting stuff.
+      Config.AttackSkill = [
+        -1,
+        sdk.skills.Teeth,
+        sdk.skills.Teeth,
+        sdk.skills.Teeth,
+        sdk.skills.Teeth,
+        -1,
+        -1,
+      ]; //
+      Config.LowManaSkill = [-1, -1]; //
       Config.SkeletonMages = "max";
       Config.LowGold = 2000; //Turning off picking up trash items for gold
-      Config.UseMerc = true; // 是否使用佣兵。这个设定在非资料片中总是为false。 // Use merc. This is ignored and always false in d2classic.
+      Config.UseMerc = true; // Use merc. This is ignored and always false in d2classic.
     },
   },
 
@@ -108,7 +116,7 @@ export const AutoBuildTemplate = {
     Update: function () {
       Config.Curse[0] = sdk.skills.Decrepify;
       Config.Curse[1] = sdk.skills.AmplifyDamage;
-      Config.Golem = "1";
+      // Config.Golem = "1";
       Config.Skeletons = "max";
       Config.SkeletonMages = "max";
       Config.PoisonNovaDelay = 2;
@@ -116,7 +124,7 @@ export const AutoBuildTemplate = {
       Config.ReviveUnstackable = false;
       Config.IronGolemChicken = 30;
       // Config.Cubing = true; // Will have a cube by now.
-      Config.Dodge = true; // Move away from monsters that get too close. Don't use with short-ranged attacks like Poison Dagger.
+      Config.Dodge = false; // Move away from monsters that get too close. Don't use with short-ranged attacks like Poison Dagger.
       Config.DodgeRange = 15; // Distance to keep from monsters.
     },
   },

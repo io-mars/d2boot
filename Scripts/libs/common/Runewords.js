@@ -12,6 +12,7 @@ import {
 import { sdk } from "../modules/sdk.js";
 import { Config } from "./Config.js";
 import { Town } from "./Town.js";
+import { Misc } from "./Misc.js";
 import { NTIP } from "../NTItemParser.js";
 import { NTIPAliasClassID } from "../NTItemAlias.js";
 import { Roll, Cubing } from "./Cubing.js";

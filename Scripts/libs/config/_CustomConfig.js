@@ -6,20 +6,24 @@ export const CustomConfig = {
   */
 };
 
+const TREAMCHARNAMES = ["follow-a", "follow-b", "follow-pal", "..."];
+
 export const TeamBaseConfig = {
   /* Format:
    */
   //the base config file , u should set all in here.
   BaseConfig: [
     {
-      Members: ["leader-sor", "follow-a", "follow-b", "follow-pal"],
+      Prefix: "",
+      Members: ["leader-sor", ...TREAMCHARNAMES],
     },
   ],
 
   //only set Follower
   Follower: [
     {
-      Members: ["follow-a", "follow-b", "follow-pal"],
+      Prefix: "",
+      Members: [...TREAMCHARNAMES],
       Leader: "leader-sor",
       QuitList: ["leader-sor"],
       SetQuitTimeout: true,
@@ -31,6 +35,7 @@ export const TeamBaseConfig = {
   //set MFHelper
   MFHelper: [
     {
+      Prefix: "",
       Members: [],
       Leader: "",
       QuitList: [],
@@ -40,6 +45,7 @@ export const TeamBaseConfig = {
 
   MFHelperLeader: [
     {
+      Prefix: "",
       Members: [],
     },
   ],
@@ -47,6 +53,7 @@ export const TeamBaseConfig = {
   //support make runewords
   RunewordMaker: [
     {
+      Prefix: "",
       Members: ["follow-pal"],
     },
   ],
@@ -55,32 +62,34 @@ export const TeamBaseConfig = {
   // GemPicker: [{ Members: [""] }],
 
   //cube ilvl>=95 charm here, NOTE: cube charm only
-  CharmCuber: [{ Members: [] }],
+  CharmCuber: [{ Prefix: "", Members: [] }],
 
   //arrow for bow amz
-  ArrowPicker: [{ Members: [] }],
+  ArrowPicker: [{ Prefix: "", Members: [] }],
 
-  FollowerPicker: [{ Members: [] }],
+  FollowerPicker: [{ Prefix: "", Members: [] }],
 
   //upgrade Item
-  ItemUpgrader: [{ Members: [] }],
+  ItemUpgrader: [{ Prefix: "", Members: [] }],
 
   // only get ilvl>=95 charm here, no cube this charm
   CharmPicker: [
     {
+      Prefix: "",
       Members: [],
     },
   ],
 
   //enchant
-  Enchanter: [{ Members: [], QuitList: [] }],
+  Enchanter: [{ Prefix: "", Members: [], QuitList: [] }],
 
   AutoBuilder: [
     {
+      Prefix: "",
       Members: [],
     },
   ],
 
   //get 3boss key
-  KeyPicker: [{ Members: [] }],
+  KeyPicker: [{ Prefix: "", Members: [] }],
 };

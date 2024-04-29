@@ -2584,6 +2584,7 @@ export const Misc = {
     read: 0,
     write: 1,
     append: 2,
+    exists: 3,
   },
 
   fileAction(path, mode, msg) {
@@ -2603,6 +2604,10 @@ export const Misc = {
             FileTools.appendText(path, msg);
 
             break MainLoop;
+          case this.FileActionMode.exists: // exists
+            contents = FileTools.exists(path);
+
+            break MainLoop;
         }
       } catch (e) {
         continue;
@@ -2611,7 +2616,9 @@ export const Misc = {
       delay(100);
     }
 
-    return this.FileActionMode.read === 0 ? contents : true;
+    return [this.FileActionMode.read, this.FileActionMode.exists].includes(mode)
+      ? contents
+      : true;
   },
 
   errorConsolePrint: true,

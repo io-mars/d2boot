@@ -97,7 +97,7 @@ function main() {
 
     Starter.isUp = "no";
 
-    ControlAction.locationAction(getLocation());
+    ControlAction.locationAction();
     delay(1000);
   }
 }

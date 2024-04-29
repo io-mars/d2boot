@@ -39,13 +39,13 @@ export const Diablo = function () {
   }
 
   if (Config.Diablo.Entrance && !Config.Diablo.Fast) {
-    Attack.clear(30, 0, false, Common.Diablo.sort);
-    Pather.moveTo(7790, 5544);
-
     if (Config.PublicMode && Pather.makePortal()) {
       say(Config.Diablo.EntranceTP);
       Pather.teleport = !Config.Diablo.WalkClear && Pather._teleport;
     }
+
+    Attack.clear(30, 0, false, Common.Diablo.sort);
+    // Pather.moveTo(7790, 5544);
 
     Pather.moveTo(7790, 5544);
     Precast.doPrecast(true);

@@ -73,15 +73,15 @@ export const AutoBuildTemplate = {
       sdk.skills.Charge,
       sdk.skills.BlessedAim,
       sdk.skills.Cleansing,
-      sdk.skills.Sacrifice,
-      sdk.skills.Zeal,
+      // sdk.skills.Sacrifice,
+      // sdk.skills.Zeal,
     ], //
     Update: function () {
       Config.AttackSkill = [
         -1,
         sdk.skills.Smite,
         sdk.skills.BlessedAim,
-        sdk.skills.Zeal,
+        sdk.skills.Smite,
         sdk.skills.BlessedAim,
         sdk.skills.HolyBolt,
         sdk.skills.BlessedAim,
@@ -124,7 +124,7 @@ export const AutoBuildTemplate = {
         -1,
         sdk.skills.Smite,
         sdk.skills.Fanaticism,
-        sdk.skills.Zeal,
+        sdk.skills.Smite,
         sdk.skills.Fanaticism,
         sdk.skills.HolyBolt,
         sdk.skills.Fanaticism,

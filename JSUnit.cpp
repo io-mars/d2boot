@@ -1311,10 +1311,11 @@ JSAPI_FUNC(my_overhead)
       // Convert back to multibyte in locale code page
       char *szText = UnicodeToAnsi(lpszText, CP_ACP);
 
-      // Unicode 0xFF -- > CP_ACP-- > ascii 0x3F 0x63
+      // Unicode 0xFF 0x63 -- > CP_ACP-- > ascii 0x3F 0x63
+      // the msg have 3*2(ÿc{x}) color byte length
       ToColorString(szText);
-
       OverheadMsg *pMsg = D2COMMON_GenerateOverheadMsg(0, szText, *p_D2CLIENT_OverheadTrigger);
+
       if (pMsg)
       {
         // D2COMMON_FixOverheadMsg(pMsg, 0);

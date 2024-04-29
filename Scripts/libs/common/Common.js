@@ -916,11 +916,13 @@ export const Common = {
           )
         )
           throw new Error("Failed to kill Infector");
+
         if (
           openSeal &&
           !Common.Diablo.openSeal(sdk.objects.DiabloSealInfector2)
         )
           throw new Error("Failed to open Infector seals.");
+
         // wait until seal has been popped to avoid missing diablo due to wait time ending before he spawns, happens if leader does town chores after seal boss
         !openSeal &&
           [3, "infector"].includes(Common.Diablo.sealOrder.last()) &&
@@ -1068,7 +1070,7 @@ export const Common = {
           Common.Diablo.hammerdinPreAttack(name, 8);
           return Config.Diablo.Fast
             ? Attack.kill(name)
-            : Attack.clear(40, 0, name, this.sort);
+            : Attack.clear(60, 0, name, this.sort);
         }
 
         delay(250);

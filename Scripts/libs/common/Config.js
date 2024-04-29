@@ -11,8 +11,10 @@ export const Config = {
     for (let configer in TeamBaseConfig) {
       TeamBaseConfig[configer].forEach((item) => {
         if (
+          item.hasOwnProperty("Prefix") &&
           item.hasOwnProperty("Members") &&
-          item.Members.indexOf(me.charname) > -1
+          me.charname.startsWith(item.Prefix) &&
+          item.Members.includes(me.charname.slice(item.Prefix.length))
         ) {
           //add the baseConfig file
           baseConfigNames.push(configer);
@@ -21,15 +23,15 @@ export const Config = {
           if (item.hasOwnProperty("Leader")) {
             //the this is Config in arrow function
             //just like Config.Leader = team.Leader;
-            leaderVar.Leader = item.Leader;
+            leaderVar.Leader = item.Prefix + item.Leader;
           }
           //set quitList
           if (item.hasOwnProperty("QuitList")) {
-            leaderVar.QuitList = item.QuitList;
+            leaderVar.QuitList = item.Prefix + item.QuitList;
           }
           //set AuraHelper
           if (item.hasOwnProperty("AuraHelper")) {
-            leaderVar.AuraHelper = item.AuraHelper;
+            leaderVar.AuraHelper = item.Prefix + item.AuraHelper;
           }
           //set quit timeout
           if (
@@ -38,13 +40,17 @@ export const Config = {
           ) {
             leaderVar.SetQuitTimeout = true;
             //the last index
-            leaderVar.memberIndex = item.Members.indexOf(me.charname);
+            leaderVar.memberIndex = item.Members.indexOf(
+              me.charname.slice(item.Prefix.length)
+            );
           }
         }
       });
     }
     if (notify && baseConfigNames.length > 0) {
-      print("\xFFc2Loading base config: \xFFc9" + baseConfigNames);
+      print(
+        "\xFFc4Config: \xFFc0loading base config: \xFFc9" + baseConfigNames
+      );
     }
 
     if (FileTools.exists("libs/config/_Base.ModuleConfig.js")) {
@@ -85,7 +91,7 @@ export const Config = {
       "Assassin",
     ];
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       switch (i) {
         case 0: // Custom config
           for (let n in CustomConfig) {
@@ -114,7 +120,15 @@ export const Config = {
           configFilename = classes[me.classid] + "." + me.charname + ".js";
 
           break;
-        case 4: // Profile.js
+        case 4: // Class.[prefix-]Charname.js
+          configFilename =
+            classes[me.classid] +
+            "." +
+            me.charname.slice(me.charname.indexOf("-") + 1) +
+            ".js";
+
+          break;
+        case 5: // Profile.js
           configFilename = me.profile + ".js";
 
           break;
@@ -130,11 +144,11 @@ export const Config = {
     if (FileTools.exists("libs/config/" + configFilename)) {
       const { LoadConfig } = await import("../config/" + configFilename);
       LoadConfig();
+
+      notify && print(`\xFFc4Config: \xFFc0loaded \xFFc9${configFilename}`);
     } else {
       if (notify) {
-        print(
-          "\xFFc1" + classes[me.classid] + "." + me.charname + ".js not found!"
-        ); // Use the primary format
+        print(`\xFFc1 ${classes[me.classid]}.${me.charname}.js not found!`); // Use the primary format
         print("\xFFc1Loading default config.");
       }
 
@@ -169,8 +183,7 @@ export const Config = {
         case "function":
           try {
             let result = Config.AfterConfigure();
-            notify &&
-              console.log(`\xFFc4Config: \xFFc0after configure: ${result}`);
+            notify && print(`\xFFc4Config: \xFFc0after configure: ${result}`);
           } catch (error) {
             throw new Error(
               `Config.init: AfterConfigure error! ${error.stack.match(

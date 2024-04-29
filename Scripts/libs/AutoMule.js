@@ -22,6 +22,7 @@ import { Misc, Game, Messaging } from "./common/Misc.js";
 import { Cubing } from "./common/Cubing.js";
 import { Storage } from "./common/Storage.js";
 import { Pickit } from "./common/Pickit.js";
+import { Time } from "./common/Misc.js";
 import { Runewords } from "./common/Runewords.js";
 import { NTIP } from "./NTItemParser.js";
 import { D2Bot, Starter } from "./OOG.js";
@@ -968,8 +969,9 @@ export const AutoMule = {
       tries++;
     }
 
-    while (true) {
-      delay(200);
+    let tick = getTickCount();
+    while (getTickCount() - tick < Time.minutes(5)) {
+      delay(100);
     }
 
     return true;

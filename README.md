@@ -9,13 +9,13 @@ scripts based on [kolbot](https://github.com/kolton/d2bot-with-kolbot);
 
 ## Requirements
 
-vscode + mysys2(MINGW32) + gcc
+`vscode` + `mysys2`(`MINGW32`) + `gcc`
 
 > the last version release.
 
 ## Build
 
-### Step 1 - build quickjs
+### Step 1 - build `quickjs`
 
 ```sh
 git clone https://github.com/io-mars/quickjs.git
@@ -29,7 +29,7 @@ after builded, copy requirement files from the zip file:
 1. `liblibquickjs.a`/`libquickjs.d.a`/`libquickjs.lto.a` to `lib` directory;
 2. `quickjs.h`/`quickjs-libc.h` to `include/quickjs/` directory;
 
-### Step 2 - build d2boot
+### Step 2 - build `d2boot` and config
 
 ```sh
 make PREFIX=release clean
@@ -51,6 +51,19 @@ make PREFIX=release pdb
 ### Step 3 - run `d2bot#`
 
 1. add new profile at `d2bot#`;
-2. edit `Scripts\libs\config\_BaseConfigFile.js`/`_CustomConfig.js`/`_StarterConfig.js` for team play.
+2. edit `Scripts\libs\config\_BaseConfigFile.js`/`_CustomConfig.js`/`_StarterConfig.js` for team play;
+3. set the stash size at `Scripts\libs\common\Storage.js`;
+
+   ```js
+    init() {
+      this.StashX = me.gametype === 0 ? 6 : 10;  //<------10x10
+      this.StashY = me.gametype === 0 ? 4 : 10;  //<------10x10
+      //....
+      this.Stash = new Container("Stash", this.StashX, this.StashY, 7);
+      //....
+    },
+   ```
+
+4. exclude the `d2boot` directory at Microsoft Defender.
 
 Good fun everyone!

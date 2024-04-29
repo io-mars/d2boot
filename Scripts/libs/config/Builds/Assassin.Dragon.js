@@ -192,7 +192,7 @@ export const AutoBuildTemplate = {
       Config.LowManaSkill = [-1, -1]; // Use Might while hitting stuff.
       Config.UseTraps = true;
       Config.SummonShadow = "Warrior";
-      Config.Dodge = true; // Move away from monsters that get too close. Don't use with short-ranged attacks like Poison Dagger.
+      Config.Dodge = false; // Move away from monsters that get too close. Don't use with short-ranged attacks like Poison Dagger.
       Config.DodgeRange = 12; // Distance to keep from monsters.
       Config.TownCheck = true; // Do go to town for more potions
       Config.MinColumn = [3, 3, 3, 3]; // Should have a decent belt by now
@@ -220,7 +220,7 @@ export const AutoBuildTemplate = {
         sdk.skills.LightningSentry,
       ];
       Config.Cubing = true; // Will have a cube by now.
-      Config.Dodge = true; // Move away from monsters that get too close. Don't use with short-ranged attacks like Poison Dagger.
+      Config.Dodge = false; // Move away from monsters that get too close. Don't use with short-ranged attacks like Poison Dagger.
       Config.DodgeRange = 12; // Distance to keep from monsters.
     },
   },

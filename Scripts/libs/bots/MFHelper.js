@@ -29,6 +29,7 @@ export const MFHelper = function () {
   let command = "";
   let allowSay = true;
   let setting = {};
+  let cleaning = false;
 
   this.offerTorchesSets = function (event, val) {
     let classid;
@@ -188,8 +189,7 @@ export const MFHelper = function () {
     Precast.doPrecast(true);
     delay(500);
 
-    let leaderUnit,
-      cleaning = false;
+    let leaderUnit;
 
     Misc.poll(
       () => {
@@ -239,76 +239,8 @@ export const MFHelper = function () {
       if (leaderUnit && leaderUnit.area === me.area) {
         leaderUnit.distance > 5 && Pather.moveToUnit(leaderUnit);
       } else {
-        //have to lost leader
+        //lost leader
         break;
-      }
-
-      // this.uberTristramToTown();
-
-      // no new command, continue
-      if (command === oldCommand) {
-        delay(100);
-        continue;
-      }
-
-      // have new command
-      if (command.startsWith("finale:")) {
-        //do something now
-        oldCommand = command;
-
-        //reset aura skill
-        if (
-          Config.MFTorches.UseSalvation &&
-          cleaning &&
-          me.paladin
-          // !me.getState(sdk.states.Poison)
-        ) {
-          cleaning = false;
-          Config.AttackSkill[2] = skillBackup[0];
-          Config.AttackSkill[4] = skillBackup[1];
-          Skill.setSkill(skillBackup[0], sdk.skills.hand.Right);
-        }
-
-        let sc = command.split(":");
-        switch (sc[1]) {
-          //finale:k:cassid:token
-          case "k":
-            try {
-              let target = parseInt(sc[2], 10);
-
-              let result = Attack.kill(target);
-
-              if (
-                Config.MFTorches.UseSalvation &&
-                me.paladin &&
-                target === sdk.monsters.UberMephisto &&
-                result &&
-                Skill.canUse(sdk.skills.Cleansing)
-              ) {
-                cleaning = true;
-                Config.AttackSkill[2] = sdk.skills.Cleansing;
-                Config.AttackSkill[4] = sdk.skills.Cleansing;
-                Skill.setSkill(sdk.skills.Cleansing, sdk.skills.hand.Right);
-              }
-            } catch (error) {
-              print(error);
-            }
-            break;
-          //finale:k:cassid:token
-          case "c":
-            try {
-              let target =
-                parseInt(sc[2], 10) === 0 ? undefined : parseInt(sc[2], 10);
-
-              Attack.clear(15, 0, target);
-            } catch (error) {
-              print(error);
-            }
-            break;
-          case "b":
-            this.uberTristramToTown();
-            return;
-        }
       }
 
       delay(100);
@@ -327,6 +259,8 @@ export const MFHelper = function () {
   };
 
   function chatEvent({ nick, msg }) {
+    let split;
+
     if (!player) {
       let match = [
         "kill",
@@ -352,6 +286,87 @@ export const MFHelper = function () {
       }
     }
 
+    if (msg.startsWith("keys:") || msg.startsWith("orgs:")) {
+      split = msg.split(":");
+      switch (split[1]) {
+        case "a":
+          this.torchesAction(split[0], 0);
+          break;
+
+        case "o":
+          split[2] == me.name &&
+            this.torchesAction(
+              split[0],
+              2,
+              split[3].split(",").map((x) => Number.parseInt(x))
+            );
+          break;
+      }
+    } else if (msg.startsWith("finale:")) {
+      split = msg.split(":");
+
+      switch (split[1]) {
+        case "g":
+          this.followUberTristram(split[1]);
+          break;
+        case "k":
+          try {
+            let target = parseInt(split[2], 10);
+
+            let result = Attack.kill(target);
+
+            if (
+              Config.MFTorches.UseSalvation &&
+              me.paladin &&
+              target === sdk.monsters.UberMephisto &&
+              result &&
+              Skill.canUse(sdk.skills.Cleansing)
+            ) {
+              cleaning = true;
+              Config.AttackSkill[2] = sdk.skills.Cleansing;
+              Config.AttackSkill[4] = sdk.skills.Cleansing;
+              Skill.setSkill(sdk.skills.Cleansing, sdk.skills.hand.Right);
+            }
+          } catch (error) {
+            print(error);
+          }
+          break;
+        //finale:k:cassid:token
+        case "c":
+          try {
+            let target =
+              parseInt(split[2], 10) === 0 ? undefined : parseInt(split[2], 10);
+
+            Attack.clear(15, 0, target);
+          } catch (error) {
+            print(error);
+          }
+          break;
+        case "b":
+          this.uberTristramToTown();
+          return;
+      }
+    }
+
+    // // have new command
+    // if (command.startsWith("finale:")) {
+    //   //do something now
+    //   oldCommand = command;
+
+    // //reset aura skill
+    // if (
+    //   Config.MFTorches.UseSalvation &&
+    //   cleaning &&
+    //   me.paladin
+    //   // !me.getState(sdk.states.Poison)
+    // ) {
+    //   cleaning = false;
+    //   Config.AttackSkill[2] = skillBackup[0];
+    //   Config.AttackSkill[4] = skillBackup[1];
+    //   Skill.setSkill(skillBackup[0], sdk.skills.hand.Right);
+    // }
+    // }
+
     player && nick === player.name && (command = msg);
   }
 
@@ -366,12 +381,12 @@ export const MFHelper = function () {
     return false;
   }
 
-  addEventListener("chatmsg", chatEvent);
+  addEventListener("chatmsg", chatEvent, this);
   Town.doChores();
   Town.move("portalspot");
 
   if (Config.Leader) {
-    if (!Misc.poll(() => Misc.inMyParty(Config.Leader), 30e3, 1000)) {
+    if (!Misc.poll(() => Misc.inMyParty(Config.Leader), 20e3, 1000)) {
       // throw new Error("MFHelper: Leader not partied");
       print("Leader not found.");
       quit();
@@ -388,7 +403,7 @@ export const MFHelper = function () {
   }
 
   if (player) {
-    if (!Misc.poll(() => player.area, 120 * 60, 100 + me.ping)) {
+    if (!Misc.poll(() => player.area, 10e3, 100 + me.ping)) {
       throw new Error("Failed to wait for player area");
     }
     checkAct();
@@ -477,28 +492,11 @@ export const MFHelper = function () {
         } else {
           print("Failed to use portal.");
         }
-      } else if (command.startsWith("keys:") || command.startsWith("orgs:")) {
-        split = command.split(":");
-        switch (split[1]) {
-          case "a":
-            this.torchesAction(split[0], 0);
-            break;
-
-          case "o":
-            split[2] == me.name &&
-              this.torchesAction(
-                split[0],
-                2,
-                split[3].split(",").map((x) => Number.parseInt(x))
-              );
-            break;
-        }
-      } else if (command.startsWith("finale:")) {
-        split = command.split(":");
-        if (split[1] === "g") {
-          this.followUberTristram(split[1]);
-        }
-      } else {
+      } else if (
+        ["kill", "clearlevel", "clear", "council"].some((c) =>
+          command.includes(c)
+        )
+      ) {
         // fixed the player.area bug iomars
         setting.area = sdk.areas.None;
         switch (true) {
@@ -537,13 +535,14 @@ export const MFHelper = function () {
           setting.classid = parseInt(setting.classid, 10);
         }
 
-        for (let i = 0; i < 5; i += 1) {
-          if (Pather.usePortal(setting.area, player.name)) {
-            break;
+        if (setting.area !== sdk.areas.None) {
+          for (let i = 0; i < 5; i += 1) {
+            if (Pather.usePortal(setting.area, player.name)) {
+              break;
+            }
+            delay(500 + me.ping);
           }
-          delay(500 + me.ping);
         }
-
         // if (!me.inTown && me.area === player.area) {
         if (!me.inTown) {
           Precast.doPrecast(true);

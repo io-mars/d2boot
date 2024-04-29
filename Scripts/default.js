@@ -94,9 +94,9 @@ async function main() {
   }
 
   // Mule handler
-  ["D2BotMule.js", "D2BotMuleLog.js", "D2BotMuleCharm.js"].forEach((s) => {
+  for (const s of ["D2BotMule.js", "D2BotMuleLog.js", "D2BotMuleCharm.js"]) {
     if (getScript(s)) {
-      if (s === "D2BotMuleLog.js") {
+      if (s.toLowerCase() === "D2BotMuleLog.js".toLowerCase()) {
         return MuleLogger.inGameCheck();
       } else {
         while (true) {
@@ -104,7 +104,7 @@ async function main() {
         }
       }
     }
-  });
+  }
 
   let startTime = getTickCount();
 

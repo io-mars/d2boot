@@ -382,8 +382,10 @@ export const MFTorches = function () {
         );
 
         if (!hook) {
-          // continue will reduce 1 agnin
-          step += 2;
+          // continue will reduce 1 again
+          if (step + 2 < path.length) step += 2;
+          else step = path.length - 1;
+
           tries--;
           continue;
         }
@@ -493,6 +495,8 @@ export const MFTorches = function () {
       () => {
         //pick again
         Pickit.pickItems();
+        Town.stash();
+
         owns = mode == TorchesMode.MiniUbers ? me.torchKey : me.torchOrgan;
         return owns.summation() >= quantity * 3;
       },
@@ -513,7 +517,10 @@ export const MFTorches = function () {
           break;
 
         case "p":
+          Town.move("stash");
           Pickit.pickItems();
+          Town.stash();
+
           break;
 
         default:
@@ -714,16 +721,17 @@ export const MFTorches = function () {
     let paths = [
       //bottom
       [
-        { x: 25103, y: 5095 },
+        { x: 25103, y: 5095 }, //0
         { x: 25120, y: 5102 },
         { x: 25140, y: 5102 },
         { x: 25160, y: 5100 },
         { x: 25180, y: 5103 },
         { x: 25180, y: 5123 },
-        { x: 25180, y: 5143 },
-        { x: 25180, y: 5163 },
-        { x: 25180, y: 5183 },
+        { x: 25180, y: 5143 }, //6
+        { x: 25180, y: 5163 }, //7
+        { x: 25180, y: 5183 }, //8 len:9
       ],
+      //top
       [
         { x: 25103, y: 5095 },
         { x: 25080, y: 5095 },
@@ -781,38 +789,29 @@ export const MFTorches = function () {
     if (FinaleMonster.search()) {
       let meph = FinaleMonster.monsters[sdk.monsters.UberMephisto];
 
-      if (meph) {
-        exact = { nodes: me.x > meph.x ? paths[1] : paths[0], step: 0 };
-      } else {
-        //other monster at top
-        let boss =
-          FinaleMonster.monsters[sdk.monsters.UberDiablo] ||
-          FinaleMonster.monsters[sdk.monsters.UberBaal];
-
-        if (me.x > boss.x) paths.reverse();
+      if (meph && me.x > meph.x) {
+        paths.reverse();
       }
     }
 
-    if (!exact) {
-      let index = 0;
-      for (const path in paths) {
-        if (
-          paths[path].some((node, idx) => {
-            Pather.moveTo(node.x, node.y);
-            delay(200);
+    let index = 0;
+    for (const path in paths) {
+      if (
+        paths[path].some((node, idx) => {
+          Pather.moveTo(node.x, node.y);
+          delay(200);
 
-            if (
-              FinaleMonster.search() &&
-              FinaleMonster.monsters[sdk.monsters.UberMephisto]
-            ) {
-              index = idx;
-              return true;
-            }
-          })
-        ) {
-          exact = { nodes: paths[path], step: index };
-          break;
-        }
+          if (
+            FinaleMonster.search() &&
+            FinaleMonster.monsters[sdk.monsters.UberMephisto]
+          ) {
+            index = idx;
+            return true;
+          }
+        })
+      ) {
+        exact = { nodes: paths[path], step: index };
+        break;
       }
     }
 
@@ -828,23 +827,23 @@ export const MFTorches = function () {
           break;
         }
       }
-    }
 
-    say(`finale:g:${getTickCount()}`);
-    if (success & FinaleMonster.LureState.Lured) {
-      Pather.moveTo(exact.nodes[0].x, exact.nodes[0].y);
-      delay(500);
+      say(`finale:g:${getTickCount()}`);
+      if (success & FinaleMonster.LureState.Lured) {
+        Pather.moveTo(exact.nodes[0].x, exact.nodes[0].y);
+        delay(500);
 
-      let um = Game.getMonster(sdk.monsters.UberMephisto);
-      this.attackUberTarget(um);
-      Precast.doPrecast(true);
+        let um = Game.getMonster(sdk.monsters.UberMephisto);
+        this.attackUberTarget(um);
+        Precast.doPrecast(true);
 
-      delay(500);
+        delay(500);
+      }
     }
 
     // full search now
     for (const n of fullpath) {
-      if (me.x > n.x && me.y >= 5090 && me.y <= 5105) continue;
+      // if (me.x > n.x && me.y >= 5090 && me.y <= 5105) continue;
 
       Pather.moveTo(n.x, n.y, 3);
       delay(300);
@@ -858,8 +857,8 @@ export const MFTorches = function () {
       });
 
       if (this.uberCount === 3) {
-        say(`finale:c:0:${getTickCount()}`);
-        Attack.clear();
+        // say(`finale:c:0:${getTickCount()}`);
+        // Attack.clear();
         this.currentGameInfo.doneAreas.push(sdk.areas.UberTristram) &&
           OrgTorchData.update(this.currentGameInfo);
 
@@ -867,6 +866,8 @@ export const MFTorches = function () {
       }
     }
 
+    say(`finale:c:0:${getTickCount()}`);
+    Attack.clear();
     delay(300);
     say(`finale:b:${getTickCount()}`);
 
@@ -981,7 +982,7 @@ export const MFTorches = function () {
 
   //run now
   [TorchesMode.MiniUbers, TorchesMode.UberTristram].forEach((mode) => {
-  // [TorchesMode.MiniUbers].forEach((mode) => {
+    // [TorchesMode.MiniUbers].forEach((mode) => {
     PandemoniumEvent.setMode(mode);
 
     if (PandemoniumEvent.canOpenPortal()) {

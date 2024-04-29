@@ -2996,8 +2996,18 @@ export const ControlAction = {
     },
   },
 
-  locationAction(location) {
-    this.actionEvent[location] && this.actionEvent[location]();
+  locationAction() {
+    let location = getLocation();
+
+    if (this.actionEvent[location]) {
+      this.actionEvent[location]();
+    } else {
+      if (location !== undefined) {
+        D2Bot.printToConsole("Unhandled location " + location);
+        delay(500);
+        D2Bot.restart();
+      }
+    }
   },
 };
 

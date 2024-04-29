@@ -205,7 +205,7 @@ export const AutoBuildTemplate = {
       Config.AttackSkill = [-1, -1, -1, -1, -1, -1, -1]; // Holy Bolt and Meditation for Secondary Skill/Aura.
       Config.LowManaSkill = [0, 120]; // Use Meditation while hitting stuff.
       // Config.Cubing = true; // Will have a cube by now.
-      Config.Dodge = true; // Move away from monsters that get too close. Don't use with short-ranged attacks like Poison Dagger.
+      Config.Dodge = false; // Move away from monsters that get too close. Don't use with short-ranged attacks like Poison Dagger.
       Config.DodgeRange = 5; // Distance to keep from monsters.
     },
   },

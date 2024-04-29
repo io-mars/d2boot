@@ -1,6 +1,5 @@
 import {
   me,
-  getLocation,
   delay,
   print,
   addEventListener,
@@ -225,7 +224,7 @@ const CharmMuler = {
         // }
         MuleCharmData.save(this.account, this.charName, this.charmType);
         Misc.itemLogger("Kept", item);
-        Misc.logItem("Kept", item, result.line);
+        Misc.logItem(`${me.name} Kept`, item, result.line);
 
         break;
       case Pickit.Result.UNID:
@@ -233,6 +232,7 @@ const CharmMuler = {
         break;
       default: // shop speedup test
         Misc.itemLogger("Drop", item);
+        Misc.logItem(`${me.name} Drop`, item);
         item.drop();
         break;
     }
@@ -268,6 +268,7 @@ const CharmMuler = {
 
   muleCharm(location, owner) {
     Town.goToTown(sdk.areas.actOf(location.area));
+    Town.move("portalspot");
 
     let portal = Pather.getPortal(
       location.area,
@@ -419,20 +420,32 @@ function main() {
   CharmMuler.initEvent();
 
   while (true) {
-    if (me.ingame && me.gameReady) {
-      me.updatePlayerGid();
+    while (me.ingame) {
+      if (me.gameReady) {
+        me.updatePlayerGid();
 
-      // Misc.poll(() => !!me.area, 5000, 100);
-      while (!me.area) {
-        delay(200);
+        // Misc.poll(() => !!me.area, 5000, 100);
+        while (!me.area) {
+          delay(200);
+        }
+
+        if (me.dead) {
+          while (!me.inTown) {
+            me.revive();
+            delay(1000);
+          }
+
+          Town.move("portalspot");
+        }
+
+        //doing now
+        CharmMuler.action();
       }
 
-      //doing now
-      CharmMuler.action();
+      delay(1000);
     }
 
-    ControlAction.locationAction(getLocation());
-
+    ControlAction.locationAction();
     delay(500);
   }
 }

@@ -809,7 +809,7 @@ export const BaseConfig = function () {
   //Config.Recipes.push([Recipe.Unique.Armor.ToElite, "Sharkskin Gloves", Roll.NonEth]); // Upgrade Bloodfist or Grave Palm to Elite
   //Config.Recipes.push([Recipe.Unique.Armor.ToElite, "Battle Gauntlets", Roll.NonEth]); // Upgrade Magefist or Lavagout to Elite
   //Config.Recipes.push([Recipe.Unique.Armor.ToElite, "War Boots", Roll.NonEth]); // Upgrade Gore Rider to Elite
-  Config.Recipes.push([Recipe.Unique.Armor.ToElite, "Cuirass", Roll.All]); // Upgrade cuirass to Elite
+  Config.Recipes.push([Recipe.Unique.Armor.ToElite, "Cuirass", Roll.Eth]); // Upgrade cuirass to Elite
 
   // Ingredients for the following recipes will be auto-picked, for classids check libs/NTItemAlias.dbl
 
@@ -829,8 +829,8 @@ export const BaseConfig = function () {
   //Config.Recipes.push([Recipe.Caster.Belt, "Vampirefang Belt"]); // Craft Caster Belt
   //Config.Recipes.push([Recipe.Caster.Shield, "Luna"]); // Craft Caster Shield
   //Config.Recipes.push([Recipe.Caster.Body, "Archon Plate"]); // Craft Caster Armor
-  ////Config.Recipes.push([Recipe.Caster.Amulet]); // Craft Caster Amulet
-  // Config.Recipes.push([Recipe.Caster.Ring]); // Craft Caster Ring
+  Config.Recipes.push([Recipe.Caster.Amulet]); // Craft Caster Amulet
+  Config.Recipes.push([Recipe.Caster.Ring]); // Craft Caster Ring
   //Config.Recipes.push([Recipe.Caster.Weapon, "Seraph Rod"]); // Craft Caster  Weapon
 
   //Config.Recipes.push([Recipe.HitPower.Helm, "Giant Conch"]); // Craft Hit Power Helm
@@ -849,8 +849,8 @@ export const BaseConfig = function () {
   //Config.Recipes.push([Recipe.Safety.Belt, "Spiderweb Sash"]); // Craft Safety Belt
   //Config.Recipes.push([Recipe.Safety.Shield, "Monarch"]); // Craft Safety Shield
   //Config.Recipes.push([Recipe.Safety.Body, "Great Hauberk"]); // Craft Safety Armor
-  //Config.Recipes.push([Recipe.Safety.Amulet]); // Craft Safety Amulet
-  //Config.Recipes.push([Recipe.Safety.Ring]); // Craft Safety Ring
+  // Config.Recipes.push([Recipe.Safety.Amulet]); // Craft Safety Amulet
+  // Config.Recipes.push([Recipe.Safety.Ring]); // Craft Safety Ring
   //Config.Recipes.push([Recipe.Safety.Weapon, "Matriarchal Javelin"]); // Craft Safety Weapon
   //Config.Recipes.push([Recipe.Safety.Weapon, "Matriarchal Spear"]); // Craft Safety Weapon
 
@@ -897,6 +897,22 @@ export const BaseConfig = function () {
     "[type] == polearm # [enhanceddamage] >= 370 && [fireresist] >= 30"
   );
 
+  Config.Runewords.push([Runeword.Stone, "Wire Fleece", Roll.Eth]); // Make Stone Wire Fleece
+  Config.Runewords.push([Runeword.Stone, "Great Hauberk", Roll.Eth]); // Make Stone Great Hauberk
+  Config.Runewords.push([Runeword.Stone, "Archon Plate", Roll.Eth]); // Make Stone Archon Plate
+  Config.Runewords.push([Runeword.Stone, "Sacred Armor", Roll.Eth]); // Make Stone Sacred Armor
+  Config.KeepRunewords.push(
+    "[type] == Armor # [enhanceddefense] >= 280 && [fhr] == 60 && [fireresist] == 15"
+  ); //250-290%
+
+  // Config.Runewords.push([Runeword.Duress, "Wire Fleece", Roll.All]); // Make Duress Wire Fleece
+  // Config.Runewords.push([Runeword.Duress, "Great Hauberk", Roll.All]); // Make Duress Great Hauberk
+  // Config.Runewords.push([Runeword.Duress, "Archon Plate", Roll.All]); // Make Duress Archon Plate
+  // Config.Runewords.push([Runeword.Duress, "Sacred Armor", Roll.All]); // Make Duress Sacred Armor
+  // Config.KeepRunewords.push(
+  //   "[type] == Armor # [enhanceddefense] >= 190 && [fhr] == 40 && [itemcrushingblow] == 15 && [fireresist] >= 15"
+  // ); //+150-200%
+
   // Config.Runewords.push([Runeword.BreathoftheDying, "Great Poleaxe", Roll.Eth]); // Make Obedience Great Poleaxe
   // Config.KeepRunewords.push(
   //   "[type] == polearm # [enhanceddamage] >= 350 && [ias] == 60"
@@ -923,7 +939,7 @@ export const BaseConfig = function () {
   //Config.Runewords.push([Runeword.Spirit, "Phase Blade"]); // Make Spirit Phase Blade
   Config.Runewords.push([Runeword.Spirit, "Monarch", Roll.NonEth]); // Make Spirit Monarch
   Config.Runewords.push([Runeword.Spirit, "Sacred Targe", Roll.NonEth]); // Make Spirit Sacred Targe
-  Config.Runewords.push([Runeword.Spirit, "Kurast Shield"]); // Make Spirit Kurast Shield
+  Config.Runewords.push([Runeword.Spirit, "Kurast Shield", Roll.NonEth]); // Make Spirit Kurast Shield
   //Config.Runewords.push([Runeword.Spirit, "Vortex Shield"]); // Make Spirit Vortex Shield
   Config.KeepRunewords.push(
     "[type] == sword || [type] == shield || [type] == auricshields # [fcr] == 35"
@@ -1041,6 +1057,12 @@ export const Follower = function () {
 
   Config.Cubing = true; // Set to true to enable cubing.
 
+  // DClone config
+  Config.StopOnDClone = false; // Go to town and idle as soon as Diablo walks the Earth
+  Config.SoJWaitTime = 0; // Time in minutes to wait for another SoJ sale before leaving game. 0 = disabled
+  Config.KillDclone = false; // Go to Palace Cellar 3 and try to kill Diablo Clone. Pointless if you already have Annihilus.
+  Config.DCloneQuit = false; // 1 = quit when Diablo walks, 2 = quit on soj sales, 0 = disabled
+
   Config.MinGameTime = 60; // Min game time in seconds. Bot will TP to town and stay in game if the run is completed before.
   Config.MaxGameTime = 0; // Maximum game time in seconds. Quit game when limit is reached.
   Config.OpenChests.Enabled = false; // Open chests. Controls key buying.
@@ -1055,12 +1077,18 @@ export const FollowerLeader = function () {
   Config.QuitTimeout = 0; // waiting time before quit game, avoid jion game together case crash.
 
   Scripts.Follower = false; // Script that follows a manually played leader around like a merc. For a list of commands, see Follower.js
+  // DClone config
+  Config.StopOnDClone = false; // Go to town and idle as soon as Diablo walks the Earth
+  Config.SoJWaitTime = 0; // Time in minutes to wait for another SoJ sale before leaving game. 0 = disabled
+  Config.KillDclone = false; // Go to Palace Cellar 3 and try to kill Diablo Clone. Pointless if you already have Annihilus.
+  Config.DCloneQuit = false; // 1 = quit when Diablo walks, 2 = quit on soj sales, 0 = disabled
 
   // If Config.Leader is set, the bot will only accept invites from leader. If Config.PublicMode is not 0, Baal and Diablo script will open Town Portals.
   Config.PublicMode = 1; //1 = invite and accept, 2 = accept only, 3 = invite only, 0 = disable
 };
 
 export const FollowerPicker = function () {
+  Config.OpenChests.Enabled = true; // Open chests. Controls key buying.
   Config.Follower.Picker = true; //
   Config.Follower.PickGold = true; //
 };
@@ -1088,7 +1116,7 @@ export const MFHelper = function () {
   Config.DiabloHelper.SealOrder = ["vizier", "seis", "infector"]; // the order in which to clear the seals. If seals are excluded, they won't be checked unless diablo fails to appear
   Config.DiabloHelper.RecheckSeals = false; // Teleport to each seal and double-check that it was opened and boss was killed if Diablo doesn't appear
 
-  Scripts.BaalHelper = true; // 
+  Scripts.BaalHelper = true; //
   Config.BaalHelper.Wait = 2; // minutes to wait for a runner to be in Throne
   Config.BaalHelper.KillNihlathak = false; // Kill Nihlathak before going to Throne
   Config.BaalHelper.FastChaos = false; // Kill Diablo before going to Throne
@@ -1191,12 +1219,12 @@ export const MFHelperLeader = function () {
 
     numbers &&
       numbers.forEach((profile) => {
-        let string = Misc.fileAction(
-          `data/${profile}.json`,
-          Misc.FileActionMode.read
-        );
-        let data = JSON.parse(string);
-        data && data.torches && keys.addArray(data.torches);
+        let file = `data/${profile}.json`;
+        if (Misc.fileAction(file, Misc.FileActionMode.exists)) {
+          let string = Misc.fileAction(file, Misc.FileActionMode.read);
+          let data = JSON.parse(string);
+          data && data.torches && keys.addArray(data.torches);
+        }
       });
 
     Config.MFTorches.TorchesQuantity = keys;

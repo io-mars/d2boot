@@ -165,7 +165,7 @@ export const AutoBuildTemplate = {
       Config.Traps = [261, 261, 261, 261, 261];
       Config.BossTraps = [261, 261, 261, 261, 261];
       Config.SummonShadow = "Warrior";
-      Config.Dodge = true; // Move away from monsters that get too close. Don't use with short-ranged attacks like Poison Dagger.
+      Config.Dodge = false; // Move away from monsters that get too close. Don't use with short-ranged attacks like Poison Dagger.
       Config.DodgeRange = 12; // Distance to keep from monsters.
       Config.TownCheck = true; // Do go to town for more potions
       Config.MinColumn = [3, 3, 3, 3]; // Should have a decent belt by now
@@ -215,7 +215,7 @@ export const AutoBuildTemplate = {
       Config.Traps = [271, 271, 271, 271, 271];
       Config.BossTraps = [271, 271, 271, 271, 271];
       // Config.Cubing = true; // Will have a cube by now.
-      Config.Dodge = true; // Move away from monsters that get too close. Don't use with short-ranged attacks like Poison Dagger.
+      Config.Dodge = false; // Move away from monsters that get too close. Don't use with short-ranged attacks like Poison Dagger.
       Config.DodgeRange = 12; // Distance to keep from monsters.
     },
   },

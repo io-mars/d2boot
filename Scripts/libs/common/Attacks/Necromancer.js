@@ -632,9 +632,10 @@ export const ClassAttack = {
               getDistance(corpse, unit) <= range
             ) {
               // Added corpse ID so I can see when it blows another monster with the same ClassID and Name
-              me.overhead(
-                `\xFFc1Exploding:\xFFc0 ${corpse.name} (${corpse.classid}:${corpse.gid})`
-              );
+              me.overhead(`\xFFc1exploding:\xFFc0 ${corpse.name}`);
+              // me.overhead(
+              //   `\xFFc1Exploding:\xFFc0 ${corpse.name} (${corpse.classid}:${corpse.gid})`
+              // );
 
               if (
                 Skill.cast(Config.ExplodeCorpses, sdk.skills.hand.Right, corpse)

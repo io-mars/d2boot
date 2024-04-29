@@ -676,7 +676,7 @@ function RushThread() {
     }
 
     Pather.moveTo(10089, 12622);
-    //MOTO make portal bug in ArreatSummit
+    //MTODO make portal bug in ArreatSummit
     Pather.makePortal(false, true);
     this.log("3");
 

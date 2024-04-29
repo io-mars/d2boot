@@ -6,8 +6,8 @@ export const AutoBuildTemplate = {
     //SkillPoints: [-1],										// This doesn't matter. We don't have skill points to spend at lvl 1]
     //StatPoints: [-1,-1,-1,-1,-1],								// This doesn't matter. We don't have stat points to spend at lvl 1
     Update: function () {
-      Config.TownCheck = false; // 回鎮上買藥水.Don't go to town for more potions
-      Config.StashGold = 200; // 錢少於多少不要存.Minimum amount of gold to stash.
+      Config.TownCheck = false; //Don't go to town for more potions
+      Config.StashGold = 200; //Minimum amount of gold to stash.
       Config.AttackSkill = [-1, 500, 0, 500, 0, -1, -1];
       Config.LowManaSkill = [0, -1];
       Config.ScanShrines = [15, 13, 12, 14, 7, 6, 2];
@@ -22,7 +22,7 @@ export const AutoBuildTemplate = {
       Config.StashGold = 500; // Minimum amount of gold to stash.
       Config.Follower.PickGold = true;
       Config.Follower.teleportOff = true; //mars set teleport off
-      Config.Follower.SwitchAct = false; //跟随Leader自动切换act
+      Config.Follower.SwitchAct = false; //
 
       // Speedup config. Full packet casting is not recommended for melee skills.
       Config.FCR = 255;
@@ -127,7 +127,7 @@ export const AutoBuildTemplate = {
       Config.LowManaSkill = [-1, -1]; // Use Blessed Aim while hitting stuff.
       Config.SkeletonMages = "max";
       Config.LowGold = 2000; //Turning off picking up trash items for gold
-      Config.UseMerc = true; // 是否使用佣兵。这个设定在非资料片中总是为false。 // Use merc. This is ignored and always false in d2classic.
+      Config.UseMerc = true; // Use merc. This is ignored and always false in d2classic.
     },
   },
 
