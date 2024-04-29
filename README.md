@@ -9,7 +9,8 @@ scripts based on [kolbot](https://github.com/kolton/d2bot-with-kolbot);
 
 ## Requirements
 
-`vscode` + `mysys2`(`MINGW32`) + `gcc`
+- `vscode` + `mysys2`(`MINGW32`) + `gcc`
+- [`cv2pdb`](https://github.com/rainers/cv2pdb/releases) the PDB file converter
 
 > the last version release.
 

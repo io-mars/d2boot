@@ -19,7 +19,6 @@ ifeq ($(PREFIX),)
 endif
 
 CFLAGS		:= -Wall -m32 -masm=intel $(DEFINES) $(INCLUDE) 
-# CFLAGS		:= -std=c99 -Wall -m32 -masm=intel -finput-charset=utf-8 -fexec-charset=gbk $(DEFINES) $(INCLUDE) 
 
 BUILD_DIR			:= $(PREFIX)
 TARGET 				:= $(BUILD_DIR)/$(TARGET)
@@ -89,8 +88,8 @@ clean:
 	-rm -rf $(OBJS) $(TARGET) ${TARGET_FINAL}
 
 publish:
-	cd publish && cmd //C mklink D2Boot.ini D:\hackSpace\D2Boot\D2Boot.ini
+	cd publish && cmd //C mklink D2Boot.ini D:\D2Boot\D2Boot.ini
 	# cd publish && cmd //C dir
-	# cd publish && cmd //C "mklink /D Scripts D:\hackSpace\D2Boot\Scripts"
-	# cd publish && cmd //C mklink D2Boot.ini D:\hackSpace\D2Boot\D2Boot.ini
-	# cd publish && cmd //C mklink D2Boot.dll D:\hackSpace\D2Boot\release\D2Boot.dll
+	# cd publish && cmd //C "mklink /D Scripts D:\D2Boot\Scripts"
+	# cd publish && cmd //C mklink D2Boot.ini D:\D2Boot\D2Boot.ini
+	# cd publish && cmd //C mklink D2Boot.dll D:\D2Boot\release\D2Boot.dll
