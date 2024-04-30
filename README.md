@@ -4,6 +4,9 @@ Bot system for Diablo II 1.13d, migrated [d2bs](https://github.com/noah-/d2bs) t
 
 scripts based on [kolbot](https://github.com/kolton/d2bot-with-kolbot);
 
+![d2bot#](./resource/d2bot.png)
+![d2boot](./resource/d2boot.png)
+
 > - **DON'T USED** `D2Boot` on battle.net!
 > - the project is just for fun and try quickjs;
 
