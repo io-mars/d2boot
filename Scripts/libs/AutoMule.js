@@ -883,38 +883,7 @@ export const AutoMule = {
     return false;
   },
 
-  checkUniqueCharm(charm) {
-    let item;
-
-    Misc.poll(
-      () => {
-        item = Game.getItem(charm, sdk.items.mode.onGround);
-        return item;
-      },
-      2000,
-      200
-    );
-
-    if (!item) {
-      return false;
-    }
-
-    do {
-      if (item.unique) {
-        return item;
-      }
-    } while (item.getNext());
-
-    return false;
-  },
-
   callCharmMuler(charm) {
-    if (!this.checkUniqueCharm(charm)) {
-      print(`\xFFc8AutoMule\xFFc0 :: can't found charm!`);
-
-      return false;
-    }
-
     if (
       !Config.MFTorches.MuleProfile ||
       Config.MFTorches.MuleProfile.trim() === ""

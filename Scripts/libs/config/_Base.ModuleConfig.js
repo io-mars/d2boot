@@ -1051,7 +1051,7 @@ export const Follower = function () {
 
   Scripts.Follower = true; // Script that follows a manually played leader around like a merc. For a list of commands, see Follower.js
   Config.Follower.Picker = false;
-  Config.Follower.PickGold = false;
+  Config.Follower.PickGold = true;
   Config.Follower.SwitchAct = true;
   Config.PublicMode = 2; // 1 = invite and accept, 2 = accept only, 3 = invite only, 0 = disable.
 
@@ -1322,6 +1322,7 @@ export const ItemUpgrader = function () {
 };
 
 export const GemPicker = function () {
+  FollowerPicker();
   Config.PickitFiles.push("gem.nip");
   Config.ScanShrines.push(sdk.shrines.Gem);
 

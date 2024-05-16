@@ -77,22 +77,10 @@ import { NTIP } from "../NTItemParser.js";
  */
 
 export const Follower = function () {
-  let i,
-    stop,
-    leader,
-    leaderUnit,
-    charClass,
-    piece,
-    skill,
-    result,
-    unit,
-    player,
-    coord;
+  let leader, charClass;
   let commanders = [Config.Leader];
-  let allowSay = true;
-  let attack = true;
-  let openContainers = true;
-  let action = "";
+  let [allowSay, attack, openContainers, stop] = [true, true, true, false];
+  let actions = [];
   //iomars
   let minGold = 100;
 
@@ -102,36 +90,37 @@ export const Follower = function () {
   };
 
   // Change areas to where leader is
-  this.checkExit = function (unit, area) {
-    if (unit.inTown) return false;
+  this.checkExit = function (player, area) {
+    // if (player.inTown) return false;
 
-    let target;
-    let exits = getArea().exits;
-
-    for (let i = 0; i < exits.length; i += 1) {
-      if (exits[i].target === area) {
-        return 1;
-      }
-    }
-
-    if (unit.inTown) {
-      target = Game.getObject("waypoint");
-
-      if (target && target.distance < 20) {
-        return 3;
-      }
-    }
-
-    target = Game.getObject("portal");
-
+    let target = Game.getObject("portal");
     if (target) {
       do {
         if (target.objtype === area) {
-          Pather.usePortal(null, null, target);
-
-          return 2;
+          this.announce(`Taking portal ${Pather.getAreaName(area)}.`);
+          return Pather.usePortal(null, null, target);
         }
       } while (target.getNext());
+    }
+
+    if (player.inTown) {
+      target = Game.getObject("waypoint");
+
+      if (target && target.distance < 20) {
+        this.announce(`Taking waypoint ${Pather.getAreaName(area)}.`);
+        return Pather.useWaypoint(area, true);
+      } else {
+        this.announce(`Backing town ${Pather.getAreaName(area)}.`);
+        return Pather.makePortal(true);
+      }
+    }
+
+    let exits = getArea()?.exits;
+    for (let exit of exits) {
+      if (exit.target === area) {
+        this.announce(`Taking exit ${Pather.getAreaName(area)}.`);
+        return Pather.moveToExit(area, true);
+      }
     }
 
     // Arcane<->Cellar portal
@@ -141,9 +130,8 @@ export const Follower = function () {
       (me.inArea(sdk.areas.PalaceCellarLvl3) &&
         area === sdk.areas.ArcaneSanctuary)
     ) {
-      Pather.usePortal(null);
-
-      return 4;
+      this.announce(`Special transit ${Pather.getAreaName(area)}.`);
+      return Pather.usePortal(null);
     }
 
     // Tal-Rasha's tomb->Duriel's lair
@@ -152,13 +140,12 @@ export const Follower = function () {
       me.area <= sdk.areas.TalRashasTomb7 &&
       area === sdk.areas.DurielsLair
     ) {
-      Pather.useUnit(
+      this.announce(`Special transit ${Pather.getAreaName(area)}.`);
+      return Pather.useUnit(
         sdk.unittype.Object,
         sdk.objects.PortaltoDurielsLair,
         area
       );
-
-      return 4;
     }
 
     // Throne->Chamber
@@ -169,13 +156,14 @@ export const Follower = function () {
       target = Game.getObject(sdk.objects.WorldstonePortal);
 
       if (target) {
-        Pather.usePortal(null, null, target);
-
-        return 4;
+        this.announce(`Special transit ${Pather.getAreaName(area)}.`);
+        return Pather.usePortal(null, null, target);
       }
     }
 
-    return false;
+    this.announce(`Back oneself ${Pather.getAreaName(area)}.`);
+
+    return Pather.makePortal(true);
   };
 
   // Talk to a NPC
@@ -286,15 +274,13 @@ export const Follower = function () {
   };
 
   // Get leader's act from Party Unit
-  this.checkLeaderAct = function (unit) {
-    let tick = getTickCount();
-
-    //iomars fix get area=0 bug
-    while (unit.area === 0 && getTickCount() - tick < 10000) {
-      delay(500);
+  this.checkLeaderAct = function (player) {
+    //iomars fix area null/zero bug
+    while (!player.area) {
+      delay(100);
     }
 
-    return sdk.areas.actOf(unit.area);
+    return sdk.areas.actOf(player.area);
   };
 
   this.pickPotions = function (range = 5) {
@@ -390,6 +376,12 @@ export const Follower = function () {
   };
 
   this.pickAction = function (mode) {
+    if (!me.inTown) {
+      this.announce("I'm not in town!");
+
+      return false;
+    }
+
     if (me.dead) {
       return false;
     }
@@ -398,14 +390,8 @@ export const Follower = function () {
       delay(40);
     }
 
-    //move to leader first
-    leaderUnit = Misc.getPlayerUnit(Config.Leader);
-
-    if (leaderUnit && leaderUnit.distance <= 60) {
-      if (leaderUnit.distance > 4) {
-        Pather.moveToUnit(leaderUnit);
-      }
-    }
+    let pu = Misc.getPlayerUnit(Config.Leader);
+    pu && Pather.moveToUnit(pu);
 
     let item = Game.getUnits(sdk.unittype.Item);
 
@@ -427,25 +413,24 @@ export const Follower = function () {
       return false;
     }
 
-    let i,
-      items = me.getItems();
+    let items = me.getItems();
 
-    for (i = 0; i < items.length; i += 1) {
+    for (let item of items) {
       if (
-        items[i].mode === sdk.items.mode.inStorage &&
-        items[i].location === sdk.storage.Inventory &&
-        (items[i].itemType === sdk.items.type.Rune ||
-          (items[i].classid >= sdk.items.quest.KeyofTerror &&
-            items[i].classid <= sdk.items.quest.MephistosBrain))
+        item.mode === sdk.items.mode.inStorage &&
+        item.location === sdk.storage.Inventory &&
+        (item.itemType === sdk.items.type.Rune ||
+          (item.classid >= sdk.items.quest.KeyofTerror &&
+            item.classid <= sdk.items.quest.MephistosBrain))
       ) {
-        if (Storage.Stash.CanFit(items[i])) {
-          Storage.Stash.MoveTo(items[i]);
+        if (Storage.Stash.CanFit(item)) {
+          Storage.Stash.MoveTo(item);
         } else {
           me.overhead(
-            "sorry, inventory is full, drop the item:[" + items[i].code + "]:("
+            "sorry, inventory is full, drop the item:[" + item.code + "]:("
           );
-          say(", inventory is full, drop the item:[" + items[i].code + "]:(");
-          items[i].drop();
+          say(", inventory is full, drop the item:[" + item.code + "]:(");
+          item.drop();
           delay(1000);
           me.cancel();
         }
@@ -471,19 +456,18 @@ export const Follower = function () {
   };
 
   this.runeSummary = function () {
-    let i,
-      idx,
+    let idx,
       items,
       total = 0,
       sumString = "RuneSummary:",
       summary = new Array(33);
 
     items = me.getItems();
-    for (i = 0; i < items.length; i += 1) {
-      if (items[i].mode === 0 && items[i].itemType === 74) {
+    for (let item of items) {
+      if (item.mode === 0 && item.itemType === 74) {
         total += 1;
         // parseInt must set radix:10
-        idx = parseInt(items[i].code.replace(/[^0-9]/gi, ""), 10);
+        idx = parseInt(item.code.replace(/[^0-9]/gi, ""), 10);
 
         if (summary[idx] === undefined) {
           summary[idx] = 0;
@@ -886,7 +870,142 @@ export const Follower = function () {
     return quantity == -1 ? 100 : quantity;
   };
 
-  this.chatEvent = function ({ nick, msg }) {
+  this.specialAction = function (action) {
+    switch (action) {
+      case "cow":
+        if (me.inArea(sdk.areas.RogueEncampment)) {
+          Town.move("portalspot");
+          !Pather.usePortal(sdk.areas.MooMooFarm) &&
+            this.announce("Failed to use cow portal.");
+        }
+
+        break;
+      case "move":
+        let coord = CollMap.getRandCoordinate(me.x, -5, 5, me.y, -5, 5);
+        Pather.moveTo(coord.x, coord.y);
+
+        break;
+      case "wp":
+      case me.name + "wp":
+        if (me.inTown) {
+          break;
+        }
+
+        delay(rand(1, 3) * 500);
+
+        let wp = Game.getObject("waypoint");
+
+        if (wp) {
+          for (let i = 0; i < 3; i += 1) {
+            if (Pather.getWP(me.area)) {
+              this.announce("Got wp.");
+              break;
+            }
+          }
+
+          this.announce("Failed to get wp.");
+        }
+
+        me.cancel();
+
+        break;
+      case "c":
+        !me.inTown && Town.getCorpse();
+
+        break;
+      case "p":
+        this.announce("!Picking items.");
+        Pickit.pickItems();
+        openContainers && Misc.openChests(20);
+        this.announce("!Done picking.");
+
+        break;
+      case "1":
+        !me.inTown && !me.inArea(leader.area) && Pather.makePortal(true);
+
+        if (leader.inTown && Misc.getPlayerAct(Config.Leader) !== me.act) {
+          this.announce("Going to leader's town.");
+          Town.goToTown(Misc.getPlayerAct(Config.Leader));
+          Town.move("portalspot");
+        }
+
+        if (me.inTown) {
+          delay(rand(1, 8) * 50);
+          this.announce("Going outside.");
+          Town.move("portalspot");
+
+          for (let i = 0; i < 5; i += 1) {
+            if (me.inTown && Pather.usePortal(null, leader.name)) {
+              break;
+            }
+            delay(500 + me.ping);
+          }
+        }
+
+        break;
+      case "2":
+        if (!me.inTown) {
+          this.announce("Going to town.");
+
+          for (let i = 0; i < 5; i += 1) {
+            if (!me.inTown && Pather.usePortal(null, leader.name)) {
+              break;
+            }
+            delay(500 + me.ping);
+          }
+
+          Town.doChores();
+          Town.move("portalspot");
+        }
+
+        break;
+      case "3":
+        if (me.inTown) {
+          this.announce("Running town chores");
+          Town.doChores();
+          Town.move("portalspot");
+          this.announce("Ready");
+        }
+
+        break;
+      case "h":
+        me.barbarian && Skill.cast(sdk.skills.Howl);
+
+        break;
+      case "bo":
+        // checks if we have cta or warcries
+        me.barbarian && Precast.needOutOfTownCast() && Precast.doPrecast(true);
+
+        break;
+      case "a2":
+      case "a3":
+      case "a4":
+      case "a5":
+        this.changeAct(parseInt(action[1], 10));
+
+        break;
+      case me.name + " tp":
+        let tp = Town.getTpTool();
+
+        if (tp) {
+          tp.interact();
+
+          break;
+        }
+
+        this.announce("No TP scrolls or tomes.");
+
+        break;
+    }
+
+    if (action.indexOf("talk") > -1) {
+      this.talk(action.split(" ")[1]);
+    }
+  };
+
+  this.chatAction = function (nick, msg) {
+    let piece, skill;
+
     if (msg && nick === Config.Leader) {
       switch (msg) {
         case "tele":
@@ -1125,7 +1244,7 @@ export const Follower = function () {
             break;
           }
 
-          action = msg;
+          actions.push(msg);
 
           break;
       }
@@ -1146,14 +1265,58 @@ export const Follower = function () {
         this.announce("Switching leader to " + piece);
 
         Config.Leader = piece;
-        leader = Misc.findPlayer(Config.Leader);
-        leaderUnit = Misc.getPlayerUnit(Config.Leader);
       }
     }
   };
 
+  this.chatEvent = function ({ nick, msg }) {
+    this.chatAction(nick, msg);
+  };
+
+  this.gameEvent = function ({ mode, param1, param2, name1, name2 }) {
+    // console.log("gameevent", mode, param1, param2, name1, name2);
+    if (
+      name1 === Config.Leader &&
+      ((mode === 0x07 && param1 === 0x02 && param2 === 0x09) || mode === 0x03)
+    ) {
+      recheck = true;
+    }
+  };
+
+  this.getLocation = function (player) {
+    if (!player) this.announce("can't found leader's location.");
+
+    // fixed area is null or zero
+    while (!player.area) {
+      delay(100);
+    }
+
+    return { area: player.area, x: player.x, y: player.y };
+  };
+
+  this.getLeaderPlayer = function () {
+    let player = Misc.getPlayerUnit(Config.Leader);
+    if (player) return player;
+
+    // found other player
+    // player = Game.getPlayer();
+    // if (player) {
+    //   do {
+    //     if (player.name !== me.name) {
+    //       return player;
+    //     }
+    //   } while (player.getNext());
+    // }
+
+    return Misc.findPlayer(Config.Leader);
+  };
+
   // START
+  let recheck = false;
+  let leaderUnit, location, distance;
   addEventListener("chatmsg", this.chatEvent, this);
+  addEventListener("gameevent", this.gameEvent, this);
+
   openContainers &&
     Config.OpenChests.Enabled &&
     Config.OpenChests.Types.push("all");
@@ -1174,50 +1337,58 @@ export const Follower = function () {
     this.announce("Leader not found.");
     delay(1000);
     quit();
+  }
+
+  //iomars
+  if (Config.Follower.Runer || Config.Follower.Picker) {
+    this.announce(
+      "Leader found, i'm a" +
+        (Config.Follower.Runer ? " \xFFc8Runer\xFFc0" : "") +
+        (Config.Follower.Picker ? " \xFFc8Picker\xFFc0" : "")
+    );
   } else {
-    //iomars
-    if (Config.Follower.Runer || Config.Follower.Picker) {
-      this.announce(
-        "Leader found, i'm a" +
-          (Config.Follower.Runer ? " \xFFc8Runer\xFFc0" : "") +
-          (Config.Follower.Picker ? " \xFFc8Picker\xFFc0" : "")
-      );
-    } else {
-      this.announce("Leader found.");
-    }
+    this.announce("Leader found.");
+  }
 
-    //iomars
-    if (Config.Follower.AuraSkills.length) {
-      this.announce("i'm a \xFFc;AuraHelper\xFFc0, command:[ah].");
-    }
+  if (Config.Follower.AuraSkills.length) {
+    this.announce("i'm a \xFFc;AuraHelper\xFFc0, command:[ah].");
+  }
 
-    //iomars
-    if (Config.Follower.teleportOff) {
-      Pather.teleport = false;
-      this.announce("teleport off.");
-    }
+  if (Config.Follower.teleportOff) {
+    Pather.teleport = false;
+    this.announce("teleport off.");
+  }
 
-    //iomars
-    //get gold quantity after in game, avoid checkItem lag
-    if (Config.Follower.PickGold) {
-      minGold = this.getNTIPGoldQuantity();
-      print(
-        "follower.pickGold set [\xFFc2True\xFFc0], pick min gold:[\xFFc2" +
-          minGold.toString() +
-          "\xFFc0]"
-      );
-    }
+  //get gold quantity after in game, avoid checkItem lag
+  if (Config.Follower.PickGold) {
+    minGold = this.getNTIPGoldQuantity();
+    print(
+      "follower.pickGold set [\xFFc2True\xFFc0], pick min gold:[\xFFc2" +
+        minGold.toString() +
+        "\xFFc0]"
+    );
   }
 
   while (!Misc.inMyParty(Config.Leader)) {
     delay(500);
   }
+
   this.announce("Partied.");
 
   me.inTown && Town.doChores() && Town.move("portalspot");
 
   // Main Loop
-  while (Misc.inMyParty(Config.Leader)) {
+  while (true) {
+    if (recheck) {
+      if (
+        !Misc.poll(() => Misc.inMyParty(Config.Leader), Time.seconds(2), 200)
+      ) {
+        this.announce("Leader left party.");
+        break;
+      }
+      recheck = false;
+    }
+
     if (me.mode === sdk.player.mode.Dead) {
       while (!me.inTown) {
         me.revive();
@@ -1234,43 +1405,50 @@ export const Follower = function () {
 
     if (!me.inTown) {
       if (!leaderUnit || !copyUnit(leaderUnit).x) {
-        leaderUnit = Misc.getPlayerUnit(Config.Leader);
-
-        if (leaderUnit) {
-          this.announce("Leader unit found.");
-        }
-      }
-
-      if (!leaderUnit) {
-        player = Game.getPlayer();
-
-        if (player) {
-          do {
-            if (player.name !== me.name) {
-              Pather.moveToUnit(player);
-
-              break;
-            }
-          } while (player.getNext());
-        }
-      }
-
-      if (leaderUnit && leaderUnit.distance <= 60) {
-        if (leaderUnit.distance > 4) {
-          Pather.moveToUnit(leaderUnit);
-        }
-      } else {
-        //iomars
-        //maybe have a faraway distance from leader at same area
-        console.debug(`faraway distance from leader`);
+        leaderUnit = this.getLeaderPlayer();
 
         if (!leaderUnit) {
-          leaderUnit = getParty(Config.Leader);
+          this.announce("Leader not found.");
+          delay(500);
+          break;
         }
+      }
 
-        if (leaderUnit && leaderUnit.area === me.area) {
-          Pather.moveToUnit(leaderUnit);
-        }
+      location = this.getLocation(leaderUnit);
+      distance = [location.x, location.y].distance;
+
+      // iomars fixed area lag bug when leader enter a exist,check leader again and waiting
+      // the getUnit's range is 60?
+      if (me.inArea(location.area) && distance >= 60) {
+        Misc.poll(
+          () => {
+            leaderUnit = this.getLeaderPlayer();
+            return leaderUnit.area && leaderUnit.area !== location.area;
+          },
+          Time.seconds(2),
+          500
+        );
+
+        print(
+          `\xFFc4Follower\xFFc0: check area:${leaderUnit.area}-${
+            location.area
+          } distance ${Math.round(distance)}.`
+        );
+        //set again
+        location = this.getLocation(leaderUnit);
+        distance = [location.x, location.y].distance;
+      }
+
+      if (me.inArea(location.area)) {
+        distance >= 60 &&
+          print(
+            `\xFFc4Follower\xFFc0: faraway distance from leader in ${Pather.getAreaName(
+              location.area
+            )} distance ${Math.round(distance)}.`
+          );
+        distance > 4 && Pather.moveTo(location.x, location.y);
+      } else {
+        this.checkExit(leaderUnit, location.area);
       }
 
       if (attack) {
@@ -1283,53 +1461,11 @@ export const Follower = function () {
       me.paladin &&
         Config.AttackSkill[2] > 0 &&
         Skill.setSkill(Config.AttackSkill[2], sdk.skills.hand.Right);
-
-      if (leader.area !== me.area && !me.inTown) {
-        while (leader.area === 0) {
-          delay(100);
-        }
-
-        result = this.checkExit(leader, leader.area);
-
-        switch (result) {
-          case 1:
-            this.announce("Taking exit.");
-            delay(500);
-            Pather.moveToExit(leader.area, true);
-
-            break;
-          case 2:
-            this.announce("Taking portal.");
-
-            break;
-          case 3:
-            this.announce("Taking waypoint.");
-            delay(500);
-            Pather.useWaypoint(leader.area, true);
-
-            break;
-          case 4:
-            this.announce("Special transit.");
-
-            break;
-          //iomars
-          default:
-            this.announce("Back oneself.");
-            Pather.makePortal(true);
-
-            break;
-        }
-
-        while (me.area === 0) {
-          delay(100);
-        }
-
-        leaderUnit = Misc.getPlayerUnit(Config.Leader);
-      }
     } else {
       //iomars change Act
       if (Config.Follower.SwitchAct) {
         let leaderAct = this.checkLeaderAct(leader);
+
         if (me.inTown && leaderAct !== me.act) {
           this.announce("going act" + leaderAct);
           Town.goToTown(leaderAct);
@@ -1338,147 +1474,13 @@ export const Follower = function () {
       }
     }
 
-    switch (action) {
-      case "cow":
-        if (me.inArea(sdk.areas.RogueEncampment)) {
-          Town.move("portalspot");
-          !Pather.usePortal(sdk.areas.MooMooFarm) &&
-            this.announce("Failed to use cow portal.");
-        }
-
-        break;
-      case "move":
-        coord = CollMap.getRandCoordinate(me.x, -5, 5, me.y, -5, 5);
-        Pather.moveTo(coord.x, coord.y);
-
-        break;
-      case "wp":
-      case me.name + "wp":
-        if (me.inTown) {
-          break;
-        }
-
-        delay(rand(1, 3) * 500);
-
-        unit = Game.getObject("waypoint");
-
-        if (unit) {
-          for (i = 0; i < 3; i += 1) {
-            if (Pather.getWP(me.area)) {
-              this.announce("Got wp.");
-              break;
-            }
-          }
-
-          i === 3 && this.announce("Failed to get wp.");
-        }
-
-        me.cancel();
-
-        break;
-      case "c":
-        !me.inTown && Town.getCorpse();
-
-        break;
-      case "p":
-        this.announce("!Picking items.");
-        Pickit.pickItems();
-        openContainers && Misc.openChests(20);
-        this.announce("!Done picking.");
-
-        break;
-      case "1":
-        if (
-          me.inTown &&
-          leader.inTown &&
-          Misc.getPlayerAct(Config.Leader) !== me.act
-        ) {
-          this.announce("Going to leader's town.");
-          Town.goToTown(Misc.getPlayerAct(Config.Leader));
-          Town.move("portalspot");
-        } else if (me.inTown) {
-          delay(rand(1, 8) * 50);
-          this.announce("Going outside.");
-          Town.goToTown(Misc.getPlayerAct(Config.Leader));
-          Town.move("portalspot");
-
-          for (let i = 0; i < 5; i += 1) {
-            if (me.inTown && Pather.usePortal(null, leader.name)) {
-              break;
-            }
-            delay(500 + me.ping);
-          }
-
-          //iomars bug here blocked
-          while (!me.inTown && !Misc.getPlayerUnit(Config.Leader) && !me.dead) {
-            Attack.clear(10);
-            delay(200);
-          }
-        }
-
-        break;
-      case "2":
-        if (!me.inTown) {
-          this.announce("Going to town.");
-
-          for (let i = 0; i < 5; i += 1) {
-            if (!me.inTown && Pather.usePortal(null, leader.name)) {
-              break;
-            }
-            delay(500 + me.ping);
-          }
-
-          Town.doChores();
-          Town.move("portalspot");
-        }
-
-        break;
-      case "3":
-        if (me.inTown) {
-          this.announce("Running town chores");
-          Town.doChores();
-          Town.move("portalspot");
-          this.announce("Ready");
-        }
-
-        break;
-      case "h":
-        me.barbarian && Skill.cast(sdk.skills.Howl);
-
-        break;
-      case "bo":
-        // checks if we have cta or warcries
-        me.barbarian && Precast.needOutOfTownCast() && Precast.doPrecast(true);
-
-        break;
-      case "a2":
-      case "a3":
-      case "a4":
-      case "a5":
-        this.changeAct(parseInt(action[1], 10));
-
-        break;
-      case me.name + " tp":
-        unit = Town.getTpTool();
-
-        if (unit) {
-          unit.interact();
-
-          break;
-        }
-
-        this.announce("No TP scrolls or tomes.");
-
-        break;
+    if (actions.length) {
+      let action = actions.shift();
+      this.specialAction(action);
     }
-
-    if (action.indexOf("talk") > -1) {
-      this.talk(action.split(" ")[1]);
-    }
-
-    action = "";
 
     delay(100);
   }
+
   return true;
 };

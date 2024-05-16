@@ -1078,7 +1078,7 @@ export const TextHooks = {
   },
 
   getFollowStatus() {
-    let status = { players: 0, follows: 1, tome: -1 };
+    let status = { players: 0, follows: 1, tome: 0 };
 
     let party = getParty();
     if (party) {
@@ -1097,7 +1097,7 @@ export const TextHooks = {
       sdk.storage.Inventory
     );
     if (tome) {
-      status.tome = tome.getStat(sdk.stats.Quantity);
+      status.tome = !!tome ? tome.getStat(sdk.stats.Quantity) : 0;
     }
 
     return status;

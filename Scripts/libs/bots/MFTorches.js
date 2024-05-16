@@ -10,7 +10,6 @@ import {
   copyUnit,
   getRoom,
   getDistance,
-  debugLog,
 } from "boot";
 
 import { sdk } from "../modules/sdk.js";
@@ -348,7 +347,6 @@ export const MFTorches = function () {
 
         if (hooked) {
           boss = this.monsters[sdk.monsters.UberMephisto];
-
           // found = true;
           hooked & this.HookState.Extra && step++;
 
@@ -713,6 +711,31 @@ export const MFTorches = function () {
     return result;
   };
 
+  this.checkUniqueCharm = function (charm) {
+    let item;
+
+    Misc.poll(
+      () => {
+        item = Game.getItem(charm, sdk.items.mode.onGround);
+        return item;
+      },
+      2000,
+      200
+    );
+
+    if (!item) {
+      return false;
+    }
+
+    do {
+      if (item.unique) {
+        return item;
+      }
+    } while (item.getNext());
+
+    return false;
+  };
+
   // re-write this, lure doesn't always work and other classes can do ubers
   this.uberTrist = function () {
     let useSalvation =
@@ -843,8 +866,6 @@ export const MFTorches = function () {
 
     // full search now
     for (const n of fullpath) {
-      // if (me.x > n.x && me.y >= 5090 && me.y <= 5105) continue;
-
       Pather.moveTo(n.x, n.y, 3);
       delay(300);
 
@@ -870,6 +891,15 @@ export const MFTorches = function () {
     Attack.clear();
     delay(300);
     say(`finale:b:${getTickCount()}`);
+
+    let item = this.checkUniqueCharm(sdk.items.LargeCharm);
+    if (!item) {
+      print(`\xFFc8MFTorches\xFFc0 :: can't found charm!`);
+
+      return false;
+    }
+
+    Pather.moveTo(item.x, item.y);
 
     AutoMule.callCharmMuler(sdk.items.LargeCharm);
   };

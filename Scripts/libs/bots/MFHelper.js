@@ -535,7 +535,7 @@ export const MFHelper = function () {
           setting.classid = parseInt(setting.classid, 10);
         }
 
-        if (setting.area !== sdk.areas.None) {
+        if (setting.area) {
           for (let i = 0; i < 5; i += 1) {
             if (Pather.usePortal(setting.area, player.name)) {
               break;
