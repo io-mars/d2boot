@@ -1,5 +1,6 @@
 import { me, print, FileTools } from "boot";
 import { CustomConfig, TeamBaseConfig } from "../config/_CustomConfig.js";
+import { D2Bot } from "../OOG.js";
 
 export const Scripts = {};
 
@@ -205,8 +206,8 @@ export const Config = {
 
     if (Config.Silence && !Config.LocalChat.Enabled) {
       // Override the say function with print, so it just gets printed to console
-      global._say = global.say;
-      global.say = (what) => print("Tryed to say: " + what);
+      globalThis._say = globalThis.say;
+      globalThis.say = (what) => print("Tryed to say: " + what);
     }
 
     Config.Loaded = true;

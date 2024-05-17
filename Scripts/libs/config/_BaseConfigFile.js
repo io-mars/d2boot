@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 /* Brief instructions:
  * - the role of this file is only to keep the required info for completing the specific character configuration files
  * - copy the desired script/config section and paste it to your character configuration file, named Class.CharName.js
@@ -239,9 +238,15 @@ Config.OrgTorch.WaitForKeys = true; // Enable Torch System to get keys from othe
 Config.OrgTorch.WaitTimeout = 15; // Time in minutes to wait for keys before moving on
 Config.OrgTorch.UseSalvation = true; // Use Salvation aura on Mephisto (if possible)
 Config.OrgTorch.GetFade = false; // Get fade by standing in a fire. You MUST have Last Wish, Treachery, or SpiritWard on your character being worn.
-Config.OrgTorch.PreGame.Antidote.At = [sdk.areas.MatronsDen, sdk.areas.UberTristram]; // Chug x antidotes before each area
+Config.OrgTorch.PreGame.Antidote.At = [
+  sdk.areas.MatronsDen,
+  sdk.areas.UberTristram,
+]; // Chug x antidotes before each area
 Config.OrgTorch.PreGame.Antidote.Drink = 10; // Chug x antidotes. Each antidote gives +50 poison res and +10 max poison for 30 seconds. The duration stacks. 10 potions == 5 minutes
-Config.OrgTorch.PreGame.Thawing.At = [sdk.areas.FurnaceofPain, sdk.areas.UberTristram]; // Chug x thawing pots before each area
+Config.OrgTorch.PreGame.Thawing.At = [
+  sdk.areas.FurnaceofPain,
+  sdk.areas.UberTristram,
+]; // Chug x thawing pots before each area
 Config.OrgTorch.PreGame.Thawing.Drink = 10; // Chug x thawing pots. Each thawing pot gives +50 cold res and +10 max cold for 30 seconds. The duration stacks. 10 potions == 5 minutes
 
 // ##### AUTO-RUSH ##### //
@@ -800,7 +805,9 @@ Config.KeepRunewords.push("[type] == polearm # [meditationaura] == 17"); // medi
 
 Config.Runewords.push([Runeword.Grief, "Phase Blade"]); // Make Grief Phase Blade
 //Config.Runewords.push([Runeword.Grief, "Berserker Axe"]); // Make Grief Berserker Axe
-Config.KeepRunewords.push("([type] == sword || [type] == axe) # [plusmaxdamage] >= 390"); // medium Grief
+Config.KeepRunewords.push(
+  "([type] == sword || [type] == axe) # [plusmaxdamage] >= 390"
+); // medium Grief
 //Config.KeepRunewords.push("([type] == sword || [type] == axe) # [itemfasterattackrate] >= 40 && [plusmaxdamage] >= 400"); // perfect Grief  and *optional [itempiercepois] >= 25
 
 Config.Runewords.push([Runeword.CallToArms, "Crystal Sword"]); // Make CTA Crystal Sword
@@ -819,7 +826,9 @@ Config.Runewords.push([Runeword.Spirit, "Monarch", Roll.NonEth]); // Make Spirit
 Config.Runewords.push([Runeword.Spirit, "Sacred Targe", Roll.NonEth]); // Make Spirit Sacred Targe
 Config.Runewords.push([Runeword.Spirit, "Kurast Shield"]); // Make Spirit Kurast Shield
 //Config.Runewords.push([Runeword.Spirit, "Vortex Shield"]); // Make Spirit Vortex Shield
-Config.KeepRunewords.push("[type] == sword || [type] == shield || [type] == auricshields # [fcr] == 35"); // middle spirit
+Config.KeepRunewords.push(
+  "[type] == sword || [type] == shield || [type] == auricshields # [fcr] == 35"
+); // middle spirit
 //Config.KeepRunewords.push("[type] == sword || [type] == shield || [type] == auricshields # [fcr] == 35 && [maxmana] >= 112 && [itemabsorbmagic] >=8"); // perfect spirit
 
 //Config.Runewords.push([Runeword.Prudence, "Sacred Armor", Roll.Eth]); // Make ethereal Prudence Sacred Armor

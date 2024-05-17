@@ -7,6 +7,7 @@ import {
   print,
   me,
   FileTools,
+  removeEventListener,
 } from "boot";
 
 import { Config } from "../common/Config.js";
@@ -56,7 +57,7 @@ export const UserAddon = function () {
 
   const onChatInput = ({ speaker, msg }) => {
     if (msg.length && msg[0] === ".") {
-      command = str.split(" ")[0].split(".")[1];
+      command = msg.split(" ")[0].split(".")[1];
 
       return true;
     }

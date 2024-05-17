@@ -1506,10 +1506,10 @@ JSAPI_FUNC(unit_getQuest)
   if (argc < 2 || !JS_IsNumber(argv[0]) || !JS_IsNumber(argv[1]))
     return JS_FALSE;
 
-  uint32_t nAct, nQuest;
-  JS_ToUint32(ctx, &nAct, argv[0]);
-  JS_ToUint32(ctx, &nQuest, argv[1]);
-  int res = D2COMMON_GetQuestFlag(D2CLIENT_GetQuestInfo(), nAct, nQuest);
+  uint32_t nQuestId, nState;
+  JS_ToUint32(ctx, &nQuestId, argv[0]);
+  JS_ToUint32(ctx, &nState, argv[1]);
+  int res = D2COMMON_GetQuestFlag(D2CLIENT_GetQuestInfo(), nQuestId, nState);
 
   return JS_NewUint32(ctx, res);
 }

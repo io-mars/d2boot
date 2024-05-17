@@ -13,6 +13,7 @@ import {
 } from "boot";
 
 import { sdk } from "./modules/sdk.js";
+import { Config } from "./common/Config.js";
 import { Town } from "./common/Town.js";
 import { Misc } from "./common/Misc.js";
 import { Pickit } from "./common/Pickit.js";

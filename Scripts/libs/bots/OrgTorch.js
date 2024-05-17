@@ -16,6 +16,21 @@
  *         but have a helper who comes in with max fanat or conviction
  *      - bo barb or war cry barb would make killing main boss easier with all the surrounding mobs being stunned
  */
+
+import {
+  addEventListener,
+  delay,
+  me,
+  say,
+  print,
+  getTickCount,
+  FileTools,
+  transmute,
+  copyUnit,
+  getRoom,
+  getDistance,
+} from "boot";
+
 import { sdk } from "../modules/sdk.js";
 import { Config } from "../common/Config.js";
 import { Game, Misc, Packet } from "../common/Misc.js";

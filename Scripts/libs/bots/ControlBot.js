@@ -563,7 +563,8 @@ export const ControlBot = function () {
         Pather.makePortal();
         say(Pather.getAreaName(me.area) + " TP up");
 
-        for (let timeout = 0; timeout < 20; timeout++) {
+        let timeout;
+        for (timeout = 0; timeout < 20; timeout++) {
           if (Game.getPlayer(nick)) {
             break;
           }
@@ -687,7 +688,6 @@ export const ControlBot = function () {
         : [msg.substring(0, pos), nick, msg.substring(pos + 1)];
   }
 
-  // eslint-disable-next-line no-unused-vars
   function gameEvent({ mode, param1, param2, name1, name2 }) {
     switch (mode) {
       case 0x02:

@@ -16,6 +16,7 @@ import { Config } from "../Config.js";
 import { Skill, Game, Sort } from "../Misc.js";
 import { Pather } from "../Pather.js";
 import { Precast } from "../Precast.js";
+import { Pickit } from "../Pickit.js";
 
 // todo - add howl
 export const ClassAttack = {

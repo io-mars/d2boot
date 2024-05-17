@@ -20,6 +20,7 @@ import {
 import { sdk } from "./modules/sdk.js";
 import { Game } from "./common/Misc.js";
 import { Pather } from "./common/Pather.js";
+import { Pickit } from "./common/Pickit.js";
 
 export const ActionHooks = {
   hooks: [],

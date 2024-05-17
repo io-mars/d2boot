@@ -5,7 +5,6 @@ import {
   delay,
   print,
   addEventListener,
-  debugLog,
   load,
   FileTools,
   getTickCount,
@@ -36,7 +35,6 @@ function receiveCopyData(mode, msg) {
 }
 
 function main() {
-  // debugLog(me.profile);
   addEventListener("copydata", receiveCopyData);
   addEventListener("scriptmsg", Starter.scriptMsgEvent);
 

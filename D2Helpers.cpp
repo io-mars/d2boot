@@ -997,6 +997,22 @@ DWORD __declspec(naked) __fastcall D2CLIENT_GetUnitName_STUB(DWORD UnitAny)
       "jmp %0\n\t" ::"m"(D2CLIENT_GetUnitName_I));
 }
 
+DWORD __declspec(naked) __fastcall D2CLIENT_GetUnitFromId_STUB(DWORD dwUnitId, DWORD dwType)
+{
+  __asm__ __volatile__(
+      "pop eax\n\t"
+      "push edx\n\t" // dwType
+      "push eax\n\t" // return address
+
+      "shl edx, 9\n\t"
+      "mov eax, %0\n\t"
+      "add edx, eax\n\t"
+      "mov eax, ecx\n\t" // dwUnitId
+      "and eax, 0x7F\n\t"
+      "jmp %1\n\t" ::"m"(p_D2CLIENT_pUnitTable),
+      "m"(D2CLIENT_GetUnitFromId_I));
+}
+
 void __declspec(naked) __fastcall D2CLIENT_SetSelectedUnit_STUB(DWORD UnitAny)
 {
   __asm__ __volatile__(

@@ -233,13 +233,13 @@ export const NTIP = {
    * @param item */
   // GetTier: generateTierFunc("Tier"),
   GetTier() {
-    return generateTierFunc("Tier");
+    return NTIP.generateTierFunc("Tier");
   },
 
   /**@function
    * @param item */
   GetMercTier() {
-    return generateTierFunc("Merctier");
+    return NTIP.generateTierFunc("Merctier");
   },
 
   CheckItem(item, entryList, verbose) {

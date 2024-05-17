@@ -38,6 +38,23 @@ JSAPI_FUNC(my_gamePrint)
   return JS_TRUE;
 }
 
+JSAPI_FUNC(my_stringToEUC)
+{
+  if (argc < 1 || !JS_IsString(argv[0]))
+    return JS_FALSE;
+
+  wchar_t *wVal = nullptr;
+  JS_ToUnicodeString(ctx, &wVal, argv[0]);
+
+  char *szText = UnicodeToAnsi(wVal, CP_ACP);
+  JSValue val = JS_NewString(ctx, szText);
+
+  free(szText);
+  free(wVal);
+
+  return val;
+}
+
 JSAPI_FUNC(my_print)
 {
   if (argc < 1 || !JS_IsString(argv[0]))
@@ -215,6 +232,7 @@ JSAPI_FUNC(my_getLocaleString)
   uint32_t localeId;
 
   JS_ToUint32(ctx, &localeId, argv[0]);
+  // no need to free
   wchar_t *wString = D2LANG_GetLocaleText(localeId);
   return JS_NewUTF8String(ctx, wString);
 }
@@ -1237,8 +1255,8 @@ JSAPI_FUNC(my_sendCopyData)
   free(windowClassName);
   free(windowName);
   JS_FreeCString(ctx, data);
-  
-  //return 1
+
+  // return 1
   return JS_NewInt32(ctx, res);
 }
 
@@ -1266,6 +1284,7 @@ static const JSCFunctionListEntry js_boot_funcs[] = {
     JS_CFUNC_DEF("debugLog", 1, my_debugLog),
     JS_CFUNC_DEF("delay", 1, my_delay),
     JS_CFUNC_DEF("print", 1, my_print),
+    JS_CFUNC_DEF("stringToEUC", 1, my_stringToEUC),
     JS_CFUNC_DEF("gamePrint", 1, my_gamePrint),
     JS_CFUNC_DEF("load", 1, my_load),
     JS_CFUNC_DEF("clearAllEvents", 0, my_clearAllEvents),

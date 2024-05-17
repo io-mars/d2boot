@@ -1,12 +1,9 @@
 import {
   me,
   print,
-  getUIFlag,
   getScript,
   delay,
   addEventListener,
-  say,
-  getDistance,
   scriptBroadcast,
 } from "boot";
 

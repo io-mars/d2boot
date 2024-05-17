@@ -31,6 +31,8 @@ import { Storage } from "./Storage.js";
 import { Cubing } from "./Cubing.js";
 import { Runewords } from "./Runewords.js";
 import { Pickit } from "./Pickit.js";
+import { D2Bot } from "../OOG.js";
+
 import { CraftingSystem } from "../CraftingSystem.js";
 import { NTIPAliasClassID } from "../NTItemAlias.js";
 
@@ -303,7 +305,6 @@ export const Town = {
           Town.move(NPC.Meshif);
           break;
         }
-      // eslint-disable-next-line no-fallthrough
       default:
         Town.move(NPC[name]);
     }

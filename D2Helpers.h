@@ -116,6 +116,8 @@ double GetDistance(long x1, long y1, long x2, long y2, DistanceType type = ::Euc
 Level *GetLevel(DWORD dwLevelNo);
 
 DWORD __fastcall D2CLIENT_GetUnitName_STUB(DWORD UnitAny);
+DWORD __fastcall D2CLIENT_GetUnitFromId_STUB(DWORD dwUnitId, DWORD dwType);
+
 DWORD __fastcall D2CLIENT_GetUIVar_STUB(DWORD varno);
 void __fastcall D2CLIENT_SetSelectedUnit_STUB(DWORD UnitAny);
 

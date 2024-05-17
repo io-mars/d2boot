@@ -31,12 +31,13 @@ import {
   takeScreenshot,
   say,
   debugLog,
+  stringToEUC,
 } from "boot";
 import { sdk } from "../modules/sdk.js";
 import { Config } from "./Config.js";
 import { Precast } from "./Precast.js";
 import { Town } from "./Town.js";
-import { Pather } from "./Pather.js";
+import { Pather, NodeAction } from "./Pather.js";
 import { Attack } from "./Attack.js";
 import { Pickit } from "./Pickit.js";
 import { DataFile, D2Bot } from "../OOG.js";
@@ -3942,7 +3943,6 @@ export const LocalChat = function () {
       case 2:
         removeEventListener("chatinputblocker", onChatInput);
         addEventListener("chatinputblocker", onChatInput);
-      // eslint-disable-next-line no-fallthrough
       case 1:
         removeEventListener("copydata", onChatRecv);
         addEventListener("copydata", onChatRecv);

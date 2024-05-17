@@ -38,6 +38,14 @@
     "prettier.printWidth": 80,
     "prettier.trailingComma": "es5",
     "terminal.integrated.tabs.enabled": false,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "eslint.run": "onSave",
+    "eslint.enable": true,
+    // "eslint.debug": true,
+    "eslint.options": {
+      "overrideConfigFile": "eslint.config.mjs"
+      // "cwd": "./D2Boot/Scripts"
+    },
+    "eslint.workingDirectories": ["./Scripts"]
   }
 }

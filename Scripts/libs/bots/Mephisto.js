@@ -1,7 +1,7 @@
 import { delay, getCollision, getDistance, getTickCount, me, say } from "boot";
 import { sdk } from "../modules/sdk.js";
 import { Config } from "../common/Config.js";
-import { Game } from "../common/Misc.js";
+import { Game, Skill } from "../common/Misc.js";
 import { Precast } from "../common/Precast.js";
 import { Town } from "../common/Town.js";
 import { Pather } from "../common/Pather.js";
@@ -44,7 +44,7 @@ export const Mephisto = function () {
         }
       }
 
-      if (ClassAttack.doAttack(meph) < 2) {
+      if (Attack.ClassAttack.doAttack(meph) < 2) {
         break;
       }
 

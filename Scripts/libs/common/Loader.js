@@ -1,4 +1,5 @@
 import { me, print, say, getTickCount } from "boot";
+import { sdk } from "../modules/sdk.js";
 import { Scripts, Config } from "./Config.js";
 import { Misc, Time, Messaging } from "./Misc.js";
 import { Town } from "./Town.js";

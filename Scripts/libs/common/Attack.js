@@ -407,7 +407,7 @@ export const Attack = {
     if (!classId || !percent) return false;
     let target =
       typeof classId === "object"
-        ? classid
+        ? classId
         : Misc.poll(() => Game.getMonster(classId), 2000, 100);
 
     if (!target) {

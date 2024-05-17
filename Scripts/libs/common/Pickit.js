@@ -91,7 +91,6 @@ export const Pickit = {
     }
   },
 
-  // eslint-disable-next-line no-unused-vars
   itemEvent({ gid, mode, code, global }) {
     if (gid > 0 && mode === 0) {
       Pickit.gidList.push(gid);

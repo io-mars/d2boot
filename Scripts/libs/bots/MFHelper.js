@@ -22,6 +22,7 @@ import { Town } from "../common/Town.js";
 import { Pather } from "../common/Pather.js";
 import { Attack } from "../common/Attack.js";
 import { Pickit } from "../common/Pickit.js";
+import { Common } from "../common/Common.js";
 
 export const MFHelper = function () {
   let player, playerAct, split;

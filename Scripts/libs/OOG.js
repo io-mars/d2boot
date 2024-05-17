@@ -294,7 +294,6 @@ export const Starter = {
           ) {
             break;
           }
-        // eslint-disable-next-line no-fallthrough
         case "Nightmare":
           if (
             Controls.NightmareSP.click() &&
@@ -302,7 +301,6 @@ export const Starter = {
           ) {
             break;
           }
-        // eslint-disable-next-line no-fallthrough
         case "Normal":
           Controls.NormalSP.click();
 

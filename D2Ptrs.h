@@ -308,7 +308,7 @@ FUNCPTR(D2COMMON, FixOverheadMsg, void __stdcall, (OverheadMsg * pMsg, DWORD dwU
 FUNCPTR(D2COMMON, AddRoomData, void __stdcall, (Act * ptAct, int LevelId, int Xpos, int Ypos, Room1 *pRoom), 0x24990)
 FUNCPTR(D2COMMON, RemoveRoomData, void __stdcall, (Act * ptAct, int LevelId, int Xpos, int Ypos, Room1 *pRoom), 0x24930)
 
-FUNCPTR(D2COMMON, GetQuestFlag, int __stdcall, (void *QuestInfo, DWORD dwAct, DWORD dwQuest), 0x2D7A0)
+FUNCPTR(D2COMMON, GetQuestFlag, int __stdcall, (void *QuestInfo, DWORD dwQuestId, DWORD dwState), 0x2D7A0)
 
 FUNCPTR(D2COMMON, AbsScreenToMap, void __stdcall, (long *pX, long *pY), 0x35810)
 FUNCPTR(D2COMMON, MapToAbsScreen, void __stdcall, (long *pX, long *pY), 0x35AA0)
@@ -471,6 +471,8 @@ FUNCPTR(D2GAME, Rand, DWORD __fastcall, (DWORD * seed), 0x1050)
 #define D2CLIENT_SetUIState(dwVarNo, value) (D2CLIENT_SetUIVar(dwVarNo, value, 0))
 #define D2CLIENT_InitAutomapLayer(layerlvl) ((AutomapLayer *)D2CLIENT_InitAutomapLayer_STUB(layerlvl))
 #define D2CLIENT_GetUnitName(x) (wchar_t *)D2CLIENT_GetUnitName_STUB((DWORD)x)
+// iomars
+#define D2CLIENT_GetUnitFromId(dwUnitId, dwType) ((UnitAny *)D2CLIENT_GetUnitFromId_STUB(dwUnitId, dwType))
 #define D2CLIENT_SetSelectedUnit(x) (D2CLIENT_SetSelectedUnit_STUB((DWORD)x))
 // #define D2CLIENT_LoadUIImage(x)							((CellFile*)D2CLIENT_LoadUIImage_ASM(x))
 #define D2CLIENT_Interact_STUB(x) (D2CLIENT_Interact_ASM((DWORD)x))

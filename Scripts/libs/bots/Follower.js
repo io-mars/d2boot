@@ -10,6 +10,7 @@ import {
   print,
   getTickCount,
   getParty,
+  submitItem,
   getSkillById,
   transmute,
 } from "boot";
@@ -25,6 +26,7 @@ import { Pickit } from "../common/Pickit.js";
 import { Storage } from "../common/Storage.js";
 import { Cubing } from "../common/Cubing.js";
 import { NTIP } from "../NTItemParser.js";
+import { NTIPAliasClassID } from "../NTItemAlias.js";
 
 /**
  *  @filename    Follower.js

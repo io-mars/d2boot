@@ -6,7 +6,6 @@ import {
   print,
   addEventListener,
   sendKey,
-  debugLog,
   load,
   FileTools,
   getTickCount,
@@ -18,7 +17,6 @@ import { Starter, D2Bot, DataFile, ControlAction } from "@/OOG.js";
 import { StarterConfig, AdvancedConfig } from "@/config/_StarterConfig.js";
 
 function main() {
-  // debugLog(me.profile);
   addEventListener("copydata", Starter.receiveCopyData);
   addEventListener("scriptmsg", Starter.scriptMsgEvent);
 

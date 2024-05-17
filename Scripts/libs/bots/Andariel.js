@@ -15,7 +15,7 @@ export const Andariel = function () {
 
     Config.MFLeader &&
       Pather.makePortal() &&
-      say(`kill ${sdk.monsters.Andariel}@${area}`);
+      say(`kill ${sdk.monsters.Andariel}@${me.area}`);
 
     for (let i = 0; i < 300 && target.attackable; i += 1) {
       Attack.ClassAttack.doAttack(target);

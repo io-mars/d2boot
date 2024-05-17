@@ -23,6 +23,7 @@ import { Pickit } from "../common/Pickit.js";
 import { Storage } from "../common/Storage.js";
 import { Cubing } from "../common/Cubing.js";
 import { AutoMule } from "../AutoMule.js";
+import { NTIP } from "../NTItemParser.js";
 
 export const MFTorches = function () {
   this.teamOwns = undefined;

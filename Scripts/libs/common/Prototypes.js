@@ -30,6 +30,7 @@ import { Pather } from "./Pather.js";
 import { Skill, Misc, Game, Packet, Time, PacketBuilder } from "./Misc.js";
 import { Town } from "./Town.js";
 import { Cubing } from "./Cubing.js";
+import { Storage } from "./Storage.js";
 
 //------------------------------------
 // Polyfills FIRST!!
@@ -354,7 +355,6 @@ if (!Object.hasOwn(Error.prototype, "isInterrupted")) {
     }
 
     // Stupid reference thing
-    // eslint-disable-next-line no-unused-vars
     const test = original(-1);
 
     let [first] = args,

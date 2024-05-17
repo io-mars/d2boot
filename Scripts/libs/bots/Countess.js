@@ -5,7 +5,7 @@ import { Precast } from "../common/Precast.js";
 import { Town } from "../common/Town.js";
 import { Pather } from "../common/Pather.js";
 import { Attack } from "../common/Attack.js";
-import { Game } from "../common/Misc.js";
+import { Misc, Game } from "../common/Misc.js";
 
 export const Countess = function () {
   Town.doChores();

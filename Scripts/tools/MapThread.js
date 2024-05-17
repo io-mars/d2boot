@@ -128,8 +128,8 @@ const MapThread = {
         break;
     }
 
-    qolObj.action &&
-      Messaging.sendToScript(MapMode.mapHelperFilePath, JSON.stringify(qolObj));
+    // qolObj.action &&
+    //   Messaging.sendToScript(MapMode.mapHelperFilePath, JSON.stringify(qolObj));
 
     return true;
   },

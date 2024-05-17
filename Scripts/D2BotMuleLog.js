@@ -58,7 +58,7 @@ function initEvent() {
       obj = JSON.parse(FileTools.readText("logs/MuleLog.json"));
 
       if (obj.currAcc) {
-        for (i = 0; i < muleInfo.accounts.length; i += 1) {
+        for (let i = 0; i < muleInfo.accounts.length; i += 1) {
           if (muleInfo.accounts[i].split("/")[0] === obj.currAcc) {
             muleInfo.accounts.splice(0, i);
             muleInfo.chars.splice(0, i);

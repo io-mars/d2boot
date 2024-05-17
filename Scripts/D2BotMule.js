@@ -16,6 +16,7 @@ import {
   getScript,
   quit,
   getLocaleString,
+  getParty,
 } from "boot";
 
 import "@/common/Prototypes.js";
@@ -721,7 +722,7 @@ const Mule = {
       function () {
         !Starter.locationTimeout(
           Starter.Config.PleaseWaitTimeout * 1e3,
-          location
+          sdk.game.locations.CharSelectPleaseWait
         ) && Controls.OkCentered.click();
       };
     ControlAction.actionEvent[sdk.game.locations.SelectDifficultySP] =
@@ -731,7 +732,7 @@ const Mule = {
       function () {
         !Starter.locationTimeout(
           Starter.Config.ConnectingTimeout * 1e3,
-          location
+          sdk.game.locations.MainMenuConnecting
         ) && Controls.LoginCancelWait.click();
       };
     ControlAction.actionEvent[sdk.game.locations.CharSelectConnecting] =
@@ -742,7 +743,7 @@ const Mule = {
       function () {
         !Starter.locationTimeout(
           Starter.Config.PleaseWaitTimeout * 1e3,
-          location
+          sdk.game.locations.LobbyPleaseWait
         ) && Controls.OkCentered.click();
       };
     ControlAction.actionEvent[sdk.game.locations.GameNameExists] = function () {
@@ -852,7 +853,7 @@ Starter.updateCount = function () {
   Controls.CharSelectExit.click();
 };
 
-function gameEvent(mode, param1, param2, name1, name2) {
+function gameEvent({ mode, param1, param2, name1, name2 }) {
   if (!me.ingame || !me.gameReady || !me.name) {
     return;
   }

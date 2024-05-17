@@ -29,7 +29,7 @@ import { Precast } from "./Precast.js";
 
 // TODO: this needs to be re-worked
 // Perform certain actions after moving to each node
-const NodeAction = {
+export const NodeAction = {
   shrinesToIgnore: [],
 
   // Run all the functions within NodeAction (except for itself)

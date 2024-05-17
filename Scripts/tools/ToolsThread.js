@@ -22,6 +22,8 @@ import { Common } from "@/common/Common.js";
 import { Pather } from "@/common/Pather.js";
 import { Attack } from "@/common/Attack.js";
 import { Pickit } from "@/common/Pickit.js";
+import { Cubing } from "@/common/Cubing.js";
+import { Runewords } from "@/common/Runewords.js";
 import { Misc, Game, Time, Messaging, Packet } from "@/common/Misc.js";
 import { D2Bot, DataFile } from "@/OOG.js";
 

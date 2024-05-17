@@ -1676,7 +1676,6 @@ export const Common = {
 
               break;
             }
-          // eslint-disable-next-line no-fallthrough
           case sdk.player.class.Druid:
             if (
               [sdk.skills.Fissure, sdk.skills.Volcano].includes(
@@ -1693,7 +1692,6 @@ export const Common = {
 
               break;
             }
-          // eslint-disable-next-line no-fallthrough
           case sdk.player.class.Barbarian:
             [15101, 5045].distance > 3 && Pather.moveTo(15101, 5045);
 

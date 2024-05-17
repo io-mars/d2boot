@@ -1,4 +1,4 @@
-import { me, delay, getParty, getTickCount, say } from "boot";
+import { me, delay, getParty, getTickCount, say, print } from "boot";
 import { sdk } from "../modules/sdk.js";
 import { Config } from "../common/Config.js";
 import { Precast } from "../common/Precast.js";
@@ -8,6 +8,7 @@ import { Attack } from "../common/Attack.js";
 import { Common } from "../common/Common.js";
 import { Loader } from "../common/Loader.js";
 import { Game, Misc, Time } from "../common/Misc.js";
+import { D2Bot } from "../OOG.js";
 
 export const BaalHelper = function () {
   Config.BaalHelper.KillNihlathak && Loader.runScript("Nihlathak");

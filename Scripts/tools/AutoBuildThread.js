@@ -217,7 +217,7 @@ function getRequiredSkills(id) {
 
   let requirements = [];
   searchSkillTree(id);
-  const increasing = () => a - b;
+  const increasing = (a, b) => a - b;
   return requirements.sort(increasing);
 }
 
@@ -375,15 +375,15 @@ async function main() {
         spendSkillPoints();
         spendStatPoints();
 
-        Config.AutoSkill.Enabled &&
-          AutoSkill.init(Config.AutoSkill.Build, Config.AutoSkill.Save);
-        Config.AutoStat.Enabled &&
-          AutoStat.init(
-            Config.AutoStat.Build,
-            Config.AutoStat.Save,
-            Config.AutoStat.BlockChance,
-            Config.AutoStat.UseBulk
-          );
+        // Config.AutoSkill.Enabled &&
+        //   AutoSkill.init(Config.AutoSkill.Build, Config.AutoSkill.Save);
+        // Config.AutoStat.Enabled &&
+        //   AutoStat.init(
+        //     Config.AutoStat.Build,
+        //     Config.AutoStat.Save,
+        //     Config.AutoStat.BlockChance,
+        //     Config.AutoStat.UseBulk
+        //   );
         scriptBroadcast({ event: "level up" });
         //??
         // AutoBuild.applyConfigUpdates(); // scriptBroadcast() won't trigger listener on this thread.
