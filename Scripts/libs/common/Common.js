@@ -2205,10 +2205,25 @@ export const Common = {
       return str;
     },
     hookInfo() {
-      if (!Scripts.MFTorches || !Config.MFLeader) return;
+      if (!Config.HookInfo) return;
 
-      let x = 720;
-      let y = 250;
+      // [
+      //   sdk.uiflags.Inventory,
+      //   sdk.uiflags.Stash,
+      //   sdk.uiflags.EscMenu,
+      //   sdk.uiflags.Shop,
+      //   sdk.uiflags.Cube,
+      //   sdk.uiflags.StatsWindow,
+      //   sdk.uiflags.QuickSkill,
+      //   sdk.uiflags.SkillWindow,
+      //   sdk.uiflags.Quest,
+      //   sdk.uiflags.ChatBox,
+      //   sdk.uiflags.Msgs,
+      //   sdk.uiflags.MercScreen,
+      // ].some((ui) => getUIFlag(ui))
+
+      let x = 506;
+      let y = 35;
       let frameYsize = 35;
 
       this.hooks.push(
@@ -2232,9 +2247,9 @@ export const Common = {
         )
       );
 
-      this.hooks.push(new Box(x + 2, y - 15, 116, frameYsize, 0x0, 0, 2));
-      this.hooks.push(new Frame(x, y - 15, 120, frameYsize, 2));
-      this.hooks[this.hooks.length - 2].zorder = 0;
+      this.hooks.push(new Box(x + 2, y - 15, 86, frameYsize, 0x0, 0, 2));
+      this.hooks.push(new Frame(x, y - 15, 90, frameYsize, 2));
+      this.hooks[this.hooks.length - 2].zorder = 5;
     },
   },
 

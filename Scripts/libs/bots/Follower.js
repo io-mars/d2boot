@@ -9,7 +9,6 @@ import {
   say,
   print,
   getTickCount,
-  getParty,
   submitItem,
   getSkillById,
   transmute,
@@ -1289,11 +1288,19 @@ export const Follower = function () {
     if (!player) this.announce("can't found leader's location.");
 
     // fixed area is null or zero
-    while (!player.area) {
-      delay(100);
-    }
+    // while (!player.area) {
+    //   delay(100);
+    // }
 
-    return { area: player.area, x: player.x, y: player.y };
+    if (Misc.poll(() => player.area, Time.seconds(1), 200))
+      return { area: player.area, x: player.x, y: player.y };
+
+    print(
+      `\xFFc4Follower\xFFc0: check area:${leaderUnit.area}-${
+        location.area
+      } distance ${Math.round(distance)}.`
+    );
+    return false;
   };
 
   this.getLeaderPlayer = function () {
@@ -1417,27 +1424,23 @@ export const Follower = function () {
       }
 
       location = this.getLocation(leaderUnit);
+      if (!location) continue;
+
       distance = [location.x, location.y].distance;
 
       // iomars fixed area lag bug when leader enter a exist,check leader again and waiting
       // the getUnit's range is 60?
       if (me.inArea(location.area) && distance >= 60) {
         Misc.poll(
-          () => {
-            leaderUnit = this.getLeaderPlayer();
-            return leaderUnit.area && leaderUnit.area !== location.area;
-          },
-          Time.seconds(2),
-          500
+          () => leaderUnit.area && leaderUnit.area !== location.area,
+          Time.seconds(1),
+          200
         );
 
-        print(
-          `\xFFc4Follower\xFFc0: check area:${leaderUnit.area}-${
-            location.area
-          } distance ${Math.round(distance)}.`
-        );
         //set again
         location = this.getLocation(leaderUnit);
+        if (!location) continue;
+
         distance = [location.x, location.y].distance;
       }
 

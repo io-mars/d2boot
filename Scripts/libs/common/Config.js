@@ -475,6 +475,7 @@ export const Config = {
 
   // Script specific
   MFLeader: false,
+  HookInfo: false,
   Mausoleum: {
     KillBishibosh: false,
     KillBloodRaven: false,

@@ -1070,6 +1070,55 @@ export const Follower = function () {
   Config.OpenChests.Types = ["chest", "chest3", "armorstand", "weaponrack"]; // which chests to open, use "all" to open all chests. See sdk/chests.txt for full list of chest names
 };
 
+const SetAfterConfigure = function () {
+  Config.HookInfo = true;
+
+  Config.AfterConfigure = () => {
+    if (!Config.HookInfo) return false;
+
+    let message = [];
+    let keys = [...me.torchKey, ...me.torchOrgan];
+
+    let numbers = JoinSettings[me.profile];
+
+    numbers &&
+      numbers.forEach((profile) => {
+        let file = `data/${profile}.json`;
+        if (Misc.fileAction(file, Misc.FileActionMode.exists)) {
+          let string = Misc.fileAction(file, Misc.FileActionMode.read);
+          let data = JSON.parse(string);
+          data && data.torches && keys.addArray(data.torches);
+        }
+      });
+
+    Config.MFTorches.TorchesQuantity = keys;
+    // let min = Math.min(...keys);
+    // this.setting(keys);
+
+    if (keys[0] > Config.MFTorches.MaxQuantity + 3 && Scripts.Countess) {
+      Scripts.Countess = false;
+      message.push(`\xFFc9Countess: \xFFc2false\xFFc0`);
+    }
+    if (keys[1] > Config.MFTorches.MaxQuantity && Scripts.Summoner) {
+      Scripts.Summoner = false;
+      message.push(`\xFFc9Summoner: \xFFc2false\xFFc0`);
+    }
+    if (
+      keys[2] > Config.MFTorches.MaxQuantity + 3 &&
+      Scripts.Pindleskin &&
+      Config.Pindleskin.KillNihlathak
+    ) {
+      Config.Pindleskin.KillNihlathak = false;
+      message.push(`\xFFc9Nihlathak: \xFFc2false\xFFc0`);
+    }
+
+    message.push(
+      `${message.length ? " " : ""}keys/organs [\xFFc2${keys.join()}\xFFc0]`
+    );
+    return message.join();
+  };
+};
+
 export const FollowerLeader = function () {
   Config.Leader = "";
   // Leader's ingame character name. Leave blank to try auto-detection (works in AutoBaal, Wakka, MFHelper)
@@ -1085,6 +1134,8 @@ export const FollowerLeader = function () {
 
   // If Config.Leader is set, the bot will only accept invites from leader. If Config.PublicMode is not 0, Baal and Diablo script will open Town Portals.
   Config.PublicMode = 1; //1 = invite and accept, 2 = accept only, 3 = invite only, 0 = disable
+  //
+  SetAfterConfigure();
 };
 
 export const FollowerPicker = function () {
@@ -1207,52 +1258,8 @@ export const MFHelperLeader = function () {
 
   Config.MinGameTime = 60; //Min game time in seconds. Bot will TP to town and stay in game if the run is completed before.
   Config.MaxGameTime = 1200; //Maximum game time in seconds. Quit game when limit is reached.
-
-  Config.AfterConfigure = () => {
-    if (!Scripts.MFTorches || !Config.MFLeader || !Config.MFTorches.MaxQuantity)
-      return false;
-
-    let message = [];
-    let keys = [...me.torchKey, ...me.torchOrgan];
-
-    let numbers = JoinSettings[me.profile];
-
-    numbers &&
-      numbers.forEach((profile) => {
-        let file = `data/${profile}.json`;
-        if (Misc.fileAction(file, Misc.FileActionMode.exists)) {
-          let string = Misc.fileAction(file, Misc.FileActionMode.read);
-          let data = JSON.parse(string);
-          data && data.torches && keys.addArray(data.torches);
-        }
-      });
-
-    Config.MFTorches.TorchesQuantity = keys;
-    // let min = Math.min(...keys);
-    // this.setting(keys);
-
-    if (keys[0] > Config.MFTorches.MaxQuantity + 3 && Scripts.Countess) {
-      Scripts.Countess = false;
-      message.push(`\xFFc9Countess: \xFFc2false\xFFc0`);
-    }
-    if (keys[1] > Config.MFTorches.MaxQuantity && Scripts.Summoner) {
-      Scripts.Summoner = false;
-      message.push(`\xFFc9Summoner: \xFFc2false\xFFc0`);
-    }
-    if (
-      keys[2] > Config.MFTorches.MaxQuantity + 3 &&
-      Scripts.Pindleskin &&
-      Config.Pindleskin.KillNihlathak
-    ) {
-      Config.Pindleskin.KillNihlathak = false;
-      message.push(`\xFFc9Nihlathak: \xFFc2false\xFFc0`);
-    }
-
-    message.push(
-      `${message.length ? " " : ""}keys/organs [\xFFc2${keys.join()}\xFFc0]`
-    );
-    return message.join();
-  };
+  //
+  SetAfterConfigure();
 };
 
 export const RunewordMaker = function () {
