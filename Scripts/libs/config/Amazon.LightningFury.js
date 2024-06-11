@@ -50,6 +50,8 @@ export const LoadConfig = function () {
   Config.UseSlowMissiles = false; // Use slow missiles as a precast
   Config.UseDecoy = false; // Use decoy with merc stomp
   Config.SummonValkyrie = true; // Summon Valkyrie
+  Config.AutoSwitchJavelin = true; // switch replenish javelin when less RepairPercent, like Titan's Revenge, must equipped at main solt
+  Config.RepairPercent = 40; // Durability percent of any equipped item that will trigger repairs.
 
   Config.AutoBuild.Template = "Javelin"; //	The name of the build associated with an existing
 };

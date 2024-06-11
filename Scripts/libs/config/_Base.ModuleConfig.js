@@ -560,7 +560,7 @@ export const BaseConfig = function () {
   };
 
   // Weapon slot settings
-  Config.PrimarySlot = -1; //  primary weapon slot: -1 = disabled (will try to determine primary slot by using non-cta slot that's not empty), 0 = slot I, 1 = slot II
+  Config.PrimarySlot = -1; // primary weapon slot: -1 = disabled (will try to determine primary slot by using non-cta slot that's not empty), 0 = slot I, 1 = slot II
   Config.MFSwitchPercent = 0; // Boss life % to switch to non-primary weapon slot. Set to 0 to disable.
   Config.TeleSwitch = false; // Switch to secondary (non-primary) slot when teleporting more than 5 nodes.
 
@@ -600,6 +600,7 @@ export const BaseConfig = function () {
   Config.UseSlowMissiles = true; // Use slow missiles as a precast
   Config.UseDecoy = true; // Use decoy with merc stomp
   Config.SummonValkyrie = true; // Summon Valkyrie
+  Config.AutoSwitchJavelin = false; // switch replenish javelin when less RepairPercent, like Titan's Revenge, must equipped at main solt
 
   /* ### ASSASSIN ### */
   Config.UseTraps = true; // Set to true to use traps

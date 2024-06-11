@@ -251,7 +251,9 @@ export const ClassAttack = {
             checkCollision(me, corpse, sdk.collision.BlockWall)) &&
             Pather.moveToUnit(corpse);
           Config.FindItemSwitch &&
-            me.switchWeapons(Attack.getPrimarySlot() ^ 1);
+            me.switchWeapons(
+              Attack.getPrimarySlot() ^ sdk.player.slot.Secondary
+            );
 
           CorpseLoop: for (let j = 0; j < 3; j += 1) {
             Skill.cast(sdk.skills.FindItem, sdk.skills.hand.Right, corpse);

@@ -897,14 +897,15 @@ export const Follower = function () {
         let wp = Game.getObject("waypoint");
 
         if (wp) {
-          for (let i = 0; i < 3; i += 1) {
+          let i;
+          for (i = 0; i < 3; i += 1) {
             if (Pather.getWP(me.area)) {
               this.announce("Got wp.");
               break;
             }
           }
 
-          this.announce("Failed to get wp.");
+          i === 3 && this.announce("Failed to get wp.");
         }
 
         me.cancel();

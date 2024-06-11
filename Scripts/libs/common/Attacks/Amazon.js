@@ -10,7 +10,6 @@ import {
 } from "boot";
 
 import { Town } from "../Town.js";
-import { CollMap } from "../CollMap.js";
 import { sdk } from "../../modules/sdk.js";
 import { Attack } from "../Attack.js";
 import { Config } from "../Config.js";
@@ -86,10 +85,76 @@ export const ClassAttack = {
     return skills;
   },
 
+  switchJavelin(limit = 20) {
+    let getMainSolt = (replenished) => {
+      let item = me.getItem(-1, sdk.items.mode.Equipped);
+
+      if (item) {
+        do {
+          if (
+            [sdk.body.RightArm, sdk.body.LeftArm].includes(item.bodylocation) &&
+            [sdk.items.type.Javelin, sdk.items.type.AmazonJavelin].includes(
+              item.itemType
+            )
+          ) {
+            if (replenished && item.getStat(sdk.stats.ReplenishQuantity))
+              return item;
+            else return item;
+          }
+        } while (item.getNext());
+      }
+
+      return false;
+    };
+
+    let javelin = getMainSolt(true);
+
+    if (!javelin) {
+      Town.goToTown();
+      throw new Error(
+        "Equipped a replenishs quantity javelin at main solt, or set Config.AutoSwitchJavelin=false"
+      );
+    }
+
+    if (
+      (javelin.getStat(sdk.stats.Quantity) * 100) /
+        (getBaseStat("items", javelin.classid, "maxstack") +
+          javelin.getStat(sdk.stats.ExtraStack)) <
+      Config.RepairPercent
+    ) {
+      me.switchWeapons(sdk.player.slot.Secondary);
+      console.log(
+        `\xFFc7Attack\xFFc0: switch Javelin, ethereal:${
+          javelin.ethereal
+        } quantity:${javelin.getStat(sdk.stats.Quantity)}`
+      );
+    }
+
+    //check again finally
+    javelin = getMainSolt(false);
+    if (
+      !javelin ||
+      (javelin.ethereal && javelin.getStat(sdk.stats.Quantity) <= limit)
+    ) {
+      Town.goToTown();
+      throw new Error(
+        !javelin
+          ? "Need equipped a javelin."
+          : "Ethereal javelin limited protection."
+      );
+    }
+
+    //let can check repair after switchJavelin
+    if (!javelin.ethereal) return false;
+
+    return true;
+  },
+
   doAttack(unit, preattack) {
     if (!unit) return Attack.Result.SUCCESS;
     let gid = unit.gid;
-    let needRepair = Town.needRepair();
+    let needRepair =
+      Config.AutoSwitchJavelin && this.switchJavelin() ? [] : Town.needRepair();
 
     if ((Config.MercWatch && Town.needMerc()) || needRepair.length > 0) {
       print("towncheck");
@@ -226,7 +291,10 @@ export const ClassAttack = {
   afterAttack() {
     Precast.doPrecast(false);
 
-    let needRepair = Town.needRepair() || [];
+    let needRepair =
+      Config.AutoSwitchJavelin && this.switchJavelin()
+        ? []
+        : Town.needRepair() || [];
 
     // Repair check, mainly to restock arrows
     needRepair.length > 0 && Town.visitTown(true);

@@ -415,6 +415,7 @@ export const Config = {
   UseSlowMissiles: false,
   UseDecoy: false,
   SummonValkyrie: false,
+  AutoSwitchJavelin: false,
 
   // Sorceress specific
   UseTelekinesis: false,

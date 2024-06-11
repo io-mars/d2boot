@@ -198,7 +198,8 @@ export const Precast = {
 
     if (classid < 0) return me.weaponswitch;
 
-    me.weaponswitch !== 0 && me.switchWeapons(0);
+    me.weaponswitch !== sdk.player.slot.Main &&
+      me.switchWeapons(sdk.player.slot.Main);
 
     let [sumCurr, sumSwap] = [0, 0];
     const sumStats = function (item) {
@@ -471,7 +472,7 @@ export const Precast = {
       delay(40);
     }
 
-    let [buffSummons, forceBo] = [false, false];
+    let [buffSummons, forceBo, primarySlot] = [false, false, true];
 
     // Force BO 30 seconds before it expires
     if (this.haveCTA > -1) {
@@ -493,6 +494,7 @@ export const Precast = {
             sdk.skills.Valkyrie,
             sdk.summons.type.Valkyrie
           ));
+        primarySlot = !Config.AutoSwitchJavelin;
 
         break;
       case sdk.player.class.Sorceress:
@@ -784,7 +786,7 @@ export const Precast = {
     }
 
     buffSummons && this.haveCTA > -1 && this.precastCTA(force);
-    me.switchWeapons(Attack.getPrimarySlot());
+    primarySlot && me.switchWeapons(Attack.getPrimarySlot());
 
     return true;
   },

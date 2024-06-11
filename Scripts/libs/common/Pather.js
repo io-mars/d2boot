@@ -423,7 +423,7 @@ export const Pather = {
     useTeleport &&
       Config.TeleSwitch &&
       path.length > 5 &&
-      me.switchWeapons(Attack.getPrimarySlot() ^ 1);
+      me.switchWeapons(Attack.getPrimarySlot() ^ sdk.player.slot.Secondary);
 
     while (path.length > 0) {
       // Abort if dead
@@ -562,7 +562,7 @@ export const Pather = {
 
     useTeleport &&
       Config.TeleSwitch &&
-      me.switchWeapons(Attack.getPrimarySlot() ^ 1);
+      me.switchWeapons(Attack.getPrimarySlot() ^ sdk.player.slot.Secondary);
     PathDebug.removeHooks();
 
     return getDistance(me, node.x, node.y) < 5;

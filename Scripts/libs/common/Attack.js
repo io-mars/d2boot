@@ -60,23 +60,28 @@ export const Attack = {
 
   // Initialize attacks
   async asyncInit(notify = true) {
+    let classModule;
+
     try {
       if (Config.Wereform) {
-        import("./Attacks/Wereform.js");
+        classModule = await import("./Attacks/Wereform.js");
       } else if (
         FileTools.exists("./Attacks/" + Config.CustomClassAttack + ".js") &&
         Config.CustomClassAttack
       ) {
         console.log("Loading custom attack file");
-        await import("./Attacks/" + Config.CustomClassAttack + ".js");
+        classModule = await import(
+          "./Attacks/" + Config.CustomClassAttack + ".js"
+        );
       } else {
-        const classModule = await import(
+        classModule = await import(
           "./Attacks/" + sdk.player.class.nameOf(me.classid) + ".js"
         );
-        if (classModule && classModule.ClassAttack)
-          this.ClassAttack = classModule.ClassAttack;
-        else throw new Error("Loading class attack error.");
       }
+
+      if (classModule && classModule.ClassAttack)
+        this.ClassAttack = classModule.ClassAttack;
+      else throw new Error("Loading class attack error.");
     } catch (error) {
       showConsole();
       console.error(error);
@@ -345,7 +350,7 @@ export const Attack = {
         this.deploy(target, Config.DodgeRange, 5, 9);
       Config.MFSwitchPercent &&
         target.hpPercent < Config.MFSwitchPercent &&
-        me.switchWeapons(this.getPrimarySlot() ^ 1);
+        me.switchWeapons(this.getPrimarySlot() ^ sdk.player.slot.Secondary);
 
       if (
         attackCount > 0 &&
