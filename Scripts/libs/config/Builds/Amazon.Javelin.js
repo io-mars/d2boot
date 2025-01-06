@@ -39,7 +39,8 @@ export const AutoBuildTemplate = {
       ];
       Config.Follower.PickGold = false;
       Config.Follower.teleportOff = true; //mars set teleport off
-      Config.Follower.SwitchAct = false; //跟随Leader自动切换act
+      Config.Follower.SwitchAct = false; //
+      Config.AutoSwitchJavelin = false; // switch replenish javelin when less RepairPercent, like Titan's Revenge, must equipped at main solt
     },
   },
 
@@ -76,7 +77,7 @@ export const AutoBuildTemplate = {
     ], //
     Update: function () {
       Config.LowGold = 2000; //Turning off picking up trash items for gold
-      Config.UseMerc = true; // 是否使用佣兵。这个设定在非资料片中总是为false。 // Use merc. This is ignored and always false in d2classic.
+      Config.UseMerc = true; //Use merc. This is ignored and always false in d2classic.
     },
   },
 

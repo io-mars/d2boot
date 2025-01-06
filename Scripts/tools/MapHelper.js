@@ -82,6 +82,11 @@ function MapHelper() {
           break;
         }
 
+        if (me.area === sdk.areas.MooMooFarm) {
+          this.announce("cow");
+          break;
+        }
+
         Pather.makePortal();
         this.announce("1");
         break;

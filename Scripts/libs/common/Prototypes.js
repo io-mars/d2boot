@@ -415,11 +415,30 @@ Unit.prototype.__defineGetter__("dead", function () {
 Unit.prototype.__defineGetter__("inTown", function () {
   if (this.type > sdk.unittype.Player)
     throw new Error("Unit.inTown: Must be used with player units.");
+
+  if (this.area) return sdk.areas.Towns.includes(this.area);
+
+  let tick = getTickCount();
+  while (getTickCount() - tick < 1000) {
+    if (this.area) return sdk.areas.Towns.includes(this.area);
+
+    delay(50);
+  }
+
   return sdk.areas.Towns.includes(this.area);
 });
 
 // Check if party unit is in town
 Party.prototype.__defineGetter__("inTown", function () {
+  if (this.area) return sdk.areas.Towns.includes(this.area);
+
+  let tick = getTickCount();
+  while (getTickCount() - tick < 1000) {
+    if (this.area) return sdk.areas.Towns.includes(this.area);
+
+    delay(50);
+  }
+
   return sdk.areas.Towns.includes(this.area);
 });
 

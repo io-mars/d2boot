@@ -40,7 +40,6 @@ const scriptEvent = function (msg) {
 };
 
 const copyDataEvent = function ({ mode, msg }) {
-  // print(`---DBG--default--copyDataEvent:${mode} ${JSON.stringify(msg)}`);
   if (mode === 0 && msg === "mule") {
     if (AutoMule.getInfo() && AutoMule.getInfo().hasOwnProperty("muleInfo")) {
       if (AutoMule.getMuleItems().length > 0) {

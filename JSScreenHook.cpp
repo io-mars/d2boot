@@ -256,10 +256,10 @@ static JSValue js_text_hook_ctor(JSContext *ctx, JSValueConst new_target, int ar
     JS_ToUint32(ctx, &y, argv[2]);
 
   if (argc > 3 && JS_IsNumber(argv[3]))
-    JS_ToUint32(ctx, &color, argv[3]);
+    JS_ToUint32(ctx, &font, argv[3]);
 
   if (argc > 4 && JS_IsNumber(argv[4]))
-    JS_ToUint32(ctx, &font, argv[4]);
+    JS_ToUint32(ctx, &color, argv[4]);
 
   if (argc > 5 && JS_IsNumber(argv[5]))
     JS_ToUint32(ctx, &align, argv[5]);

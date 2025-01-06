@@ -25,7 +25,6 @@ void GameActChange_Intercept(void);
 void GameActChange2_Intercept(void);
 void GameLeave_Intercept(void);
 
-void CongratsScreen_Intercept(void);
 void ChannelInput_Intercept(void);
 void ChatPacketRecv_Interception();
 

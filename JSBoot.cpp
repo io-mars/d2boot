@@ -966,6 +966,7 @@ JSAPI_FUNC(my_quit)
   return JS_TRUE;
 }
 
+// If you pass 1, it will return which tab is selected, 0 for 1st, 1 for 2nd
 JSAPI_FUNC(my_weaponSwitch)
 {
   GAME_READY();

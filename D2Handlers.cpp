@@ -102,6 +102,10 @@ DWORD WINAPI D2Thread(LPVOID lpParam)
         bInGame = false;
       }
       break;
+    case ClientStateCongratsScreen:
+      // just keydown 0x40000000
+      SendKeyPress(WM_KEYDOWN, VK_RETURN, 0);
+      break;
 
     case ClientStateBusy:
     case ClientStateNull:
@@ -294,6 +298,8 @@ DWORD __fastcall GamePacketReceived(BYTE *pPacket, DWORD dwSize)
     return !GamePacketEvent(pPacket, dwSize) && ItemActionHandler(pPacket, dwSize);
   case 0xA7:
     return !GamePacketEvent(pPacket, dwSize) && DelayedStateHandler(pPacket, dwSize);
+  case 0x81:
+    return !GamePacketEvent(pPacket, dwSize) && HirelingIdHandler(pPacket, dwSize);
   }
 
   return !GamePacketEvent(pPacket, dwSize);

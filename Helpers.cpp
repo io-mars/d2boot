@@ -889,40 +889,27 @@ unsigned __int32 __fastcall sfh(const char *data, int len)
 
 int FormatString(char **szString, const char *szFormat, va_list argptr)
 {
-  char buffer[BUFFER_SIZE];
-
-  unsigned int len = vsnprintf(buffer, _countof(buffer), szFormat, argptr);
+  // return right size
+  // unsigned int len = vsnprintf(NULL, 0, szFormat, argptr);
+  unsigned int len = _vscprintf(szFormat, argptr);
 
   // free by caller
-  if (len < _countof(buffer))
-  {
-    *szString = strdup(buffer);
-  }
-  else
-  {
-    *szString = (char *)malloc((len + 1) * sizeof(char));
-    vsnprintf(*szString, len + 1, szFormat, argptr);
-  }
+  *szString = (char *)malloc((len + 1) * sizeof(char));
+  vsnprintf(*szString, len + 1, szFormat, argptr);
 
   return len;
 }
 
 int FormatString(wchar_t **wsString, const wchar_t *szFormat, va_list argptr)
 {
-  wchar_t buffer[BUFFER_SIZE];
+  // error! it's return -1
+  // unsigned int len = vswprintf(NULL, 0, szFormat, argptr);
 
-  unsigned int len = vswprintf(buffer, _countof(buffer), szFormat, argptr);
+  unsigned int len = _vscwprintf(szFormat, argptr);
 
   // free by caller
-  if (len < _countof(buffer))
-  {
-    *wsString = wcsdup(buffer);
-  }
-  else
-  {
-    *wsString = (wchar_t *)malloc((len + 1) * sizeof(wchar_t));
-    vswprintf(*wsString, len + 1, szFormat, argptr);
-  }
+  *wsString = (wchar_t *)malloc((len + 1) * sizeof(wchar_t));
+  vswprintf(*wsString, len + 1, szFormat, argptr);
 
   return len;
 }

@@ -7,7 +7,7 @@ export const Scripts = {};
 export const Config = {
   async baseInit(notify) {
     let baseConfigNames = [];
-    let leaderVar = { memberIndex: 0 };
+    let teamVar = { memberIndex: 0 };
 
     for (let configer in TeamBaseConfig) {
       TeamBaseConfig[configer].forEach((item) => {
@@ -24,26 +24,32 @@ export const Config = {
           if (item.hasOwnProperty("Leader")) {
             //the this is Config in arrow function
             //just like Config.Leader = team.Leader;
-            leaderVar.Leader = item.Prefix + item.Leader;
+            teamVar.Leader = item.Prefix + item.Leader;
           }
           //set quitList
           if (item.hasOwnProperty("QuitList")) {
-            leaderVar.QuitList = item.Prefix + item.QuitList;
+            if (typeof item.QuitList === "string")
+              teamVar.QuitList = item.Prefix + item.QuitList;
+
+            if (item.QuitList instanceof Array) {
+              teamVar.QuitList = item.QuitList.map((n) => item.Prefix + n);
+            }
           }
           //set AuraHelper
           if (item.hasOwnProperty("AuraHelper")) {
-            leaderVar.AuraHelper = item.Prefix + item.AuraHelper;
+            teamVar.AuraHelper = item.Prefix + item.AuraHelper;
           }
           //set quit timeout
           if (
             item.hasOwnProperty("SetQuitTimeout") &&
             item.SetQuitTimeout === true
           ) {
-            leaderVar.SetQuitTimeout = true;
+            teamVar.SetQuitTimeout = true;
             //the last index
-            leaderVar.memberIndex = item.Members.indexOf(
+            let idx = item.Members.indexOf(
               me.charname.slice(item.Prefix.length)
             );
+            teamVar.memberIndex = idx >= 8 ? idx - 8 : idx;
           }
         }
       });
@@ -70,14 +76,14 @@ export const Config = {
     }
 
     //set the team's property
-    leaderVar.Leader && (Config.Leader = leaderVar.Leader);
-    leaderVar.AuraHelper && (Config.Follower.AuraHelper = leaderVar.AuraHelper);
-    leaderVar.QuitList && (Config.QuitList = leaderVar.QuitList);
-    leaderVar.SetQuitTimeout &&
+    teamVar.Leader && (Config.Leader = teamVar.Leader);
+    teamVar.AuraHelper && (Config.Follower.AuraHelper = teamVar.AuraHelper);
+    teamVar.QuitList && (Config.QuitList = teamVar.QuitList);
+    teamVar.SetQuitTimeout &&
       (Config.QuitTimeout =
-        leaderVar.memberIndex < 3
-          ? 5000 + leaderVar.memberIndex * 5 * 1000
-          : 10000 + leaderVar.memberIndex * 4 * 1000);
+        teamVar.memberIndex < 3
+          ? 5000 + teamVar.memberIndex * 5 * 1000
+          : 10000 + teamVar.memberIndex * 4 * 1000);
   },
 
   async asyncInit(notify) {
@@ -788,6 +794,7 @@ export const Config = {
   //
   QuitTimeout: 0,
   AfterConfigure: undefined,
+  AllowSay: false,
   MFTorches: {
     TorchesQuantity: [0, 0, 0, 0, 0, 0],
     MaxQuantity: 0,

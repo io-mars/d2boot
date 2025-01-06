@@ -26,6 +26,7 @@ import { Cubing } from "@/common/Cubing.js";
 import { Runewords } from "@/common/Runewords.js";
 import { Misc, Game, Time, Messaging, Packet } from "@/common/Misc.js";
 import { D2Bot, DataFile } from "@/OOG.js";
+import { MuleLogger } from "@/MuleLogger.js";
 
 function ToolsThread() {
   let ironGolem,
@@ -153,6 +154,12 @@ function ToolsThread() {
           stats[value] &&
             print(`${key}--${value}--${JSON.stringify(stats[value])}`);
         }
+        break;
+
+      case sdk.keys.Numpad6: // log character to char viewer
+        MuleLogger.logChar();
+        me.overhead("Logged char: " + me.name);
+
         break;
     }
   };
@@ -379,6 +386,8 @@ function ToolsThread() {
         if (Config.UseMerc) {
           let merc = me.getMerc();
           if (!!merc) {
+            Common.Toolsthread.mercHook(merc);
+
             let mercHP = getMercHP();
 
             if (mercHP > 0 && merc.mode !== sdk.monsters.mode.Dead) {
@@ -432,6 +441,7 @@ function ToolsThread() {
           delay(5000);
         }
       }
+      Common.Toolsthread.mercHook();
     } catch (error) {
       Misc.errorReport(error, "ToolsThread");
       quitFlag = true;

@@ -156,14 +156,13 @@ const Container = function (name, width, height, location) {
     //Loop buffer looking for spot to place item.
     for (y = 0; y < this.width - (sx - 1); y += 1) {
       Loop: for (x = 0; x < this.height - (sy - 1); x += 1) {
-        // for BUG MTODO
         try {
           //Check if there is something in this spot.
           if (this.buffer[x][y] > 0) {
             continue;
           }
         } catch (error) {
-          print(error);
+          // for BUG MTODO
         }
 
         //Loop the item size to make sure we can fit it.

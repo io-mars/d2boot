@@ -147,16 +147,16 @@ void GameDrawOOG_Intercept(void)
   GameDrawOOG();
 }
 
-void __declspec(naked) CongratsScreen_Intercept(void)
-{
-  __asm__ __volatile__(
-      "call %0\n\t"
-      "pushad\n\t"
-      "call %1\n\t"
-      "popad\n\t"
-      "ret\n\t" ::"m"(D2CLIENT_CongratsScreen_I),
-      "p"(SetMaxDiff));
-}
+// void __declspec(naked) CongratsScreen_Intercept(void)
+// {
+//   __asm__ __volatile__(
+//       "call %0\n\t"
+//       "pushad\n\t"
+//       "call %1\n\t"
+//       "popad\n\t"
+//       "ret\n\t" ::"m"(D2CLIENT_CongratsScreen_I),
+//       "p"(SetMaxDiff));
+// }
 
 void __declspec(naked) GameActChange_Intercept(void)
 {

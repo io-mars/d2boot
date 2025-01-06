@@ -16,7 +16,7 @@ export const AutoBuildTemplate = {
       Config.UseTraps = false; // Set to true to use traps
       Config.Follower.PickGold = true;
       Config.Follower.teleportOff = true; //mars set teleport off
-      Config.Follower.SwitchAct = false; //跟随Leader自动切换act
+      Config.Follower.SwitchAct = false; //
     },
   },
 
@@ -57,7 +57,7 @@ export const AutoBuildTemplate = {
       Config.MinColumn = [1, 1, 1, 1];
       Config.AttackSkill = [-1, 0, -1, 0, -1, -1, -1]; // Use  bow
       Config.LowManaSkill = [0, -1];
-      Config.TownCheck = true;
+      // Config.TownCheck = true;
     },
   },
 
@@ -117,8 +117,8 @@ export const AutoBuildTemplate = {
       Config.UseTraps = true;
       Config.Traps = [261, 261, 261, 261, 261]; //261 Charged Bolt Sentry
       Config.BossTraps = [261, 261, 261, 261, 261];
-      Config.LowGold = 2000; //Turning off picking up trash items for gold
-      Config.UseMerc = true; // 是否使用佣兵。这个设定在非资料片中总是为false。 // Use merc. This is ignored and always false in d2classic.
+      // Config.LowGold = 2000; //Turning off picking up trash items for gold
+      Config.UseMerc = true; // Use merc. This is ignored and always false in d2classic.
     },
   },
 
@@ -136,22 +136,22 @@ export const AutoBuildTemplate = {
 
   15: {
     SkillPoints: [-1], // Save Point + 1 (6 saved points remain)
-    StatPoints: [0, 3, 3, 3, 3], // Vitality + 5 (80)
+    // StatPoints: [0, 3, 3, 3, 3], // Vitality + 5 (80)
     Update: function () {
       // Config.OpenChests.Enabled = false; // Eyes on the prize!
-      Config.LowGold = 9000;
+      // Config.LowGold = 9000;
     },
   },
 
   16: {
     SkillPoints: [-1], // Save Point + 1 (7 saved points remain)
-    StatPoints: [3, 3, 3, 3, 3], // Vitality + 5 (85)
+    // StatPoints: [3, 3, 3, 3, 3], // Vitality + 5 (85)
     Update: function () {},
   },
 
   17: {
     SkillPoints: [-1], // Save Point + 1 (8 saved points remain)
-    StatPoints: [0, 0, 0, 3, 3], // Vitality + 5 (90)
+    // StatPoints: [0, 0, 0, 3, 3], // Vitality + 5 (90)
     Update: function () {},
   },
 
@@ -170,43 +170,43 @@ export const AutoBuildTemplate = {
       Config.TownCheck = true; // Do go to town for more potions
       Config.MinColumn = [3, 3, 3, 3]; // Should have a decent belt by now
       Config.Charge = false; // Don't waste mana on charging while walking
-      Config.MPBuffer = 8; // Need lots of mana for Blessed Hammer!
+      // Config.MPBuffer = 8; // Need lots of mana for Blessed Hammer!
     },
   },
 
   19: {
     SkillPoints: [-1], // Blessed Hammer + 1, Concentration + 1 (level 2) (level 2) (5 saved points remain)
-    StatPoints: [0, 0, 0, 3, 3], // Vitality + 5 (100)
+    // StatPoints: [0, 0, 0, 3, 3], // Vitality + 5 (100)
     Update: function () {},
   },
 
   20: {
     SkillPoints: [-1], // Blessed Hammer + 1, Concentration + 1 (level 3) (level 3) (4 saved points remain)
-    StatPoints: [0, 0, 0, 3, 3], // Vitality + 5 (105)
+    // StatPoints: [0, 0, 0, 3, 3], // Vitality + 5 (105)
     Update: function () {},
   },
 
   21: {
     SkillPoints: [-1], // Blessed Hammer + 1, Concentration + 1 (level 4) (level 4) (3 saved points remain)
-    StatPoints: [0, 0, 0, 3, 3], // Vitality + 5 (110)
+    // StatPoints: [0, 0, 0, 3, 3], // Vitality + 5 (110)
     Update: function () {},
   },
 
   22: {
     SkillPoints: [-1], // Blessed Hammer + 1, Concentration + 1 (level 5) (level 5) (2 saved points remain)
-    StatPoints: [3, 3, 3, 3, 3], // Vitality + 5 (115)
+    // StatPoints: [3, 3, 3, 3, 3], // Vitality + 5 (115)
     Update: function () {},
   },
 
   23: {
     SkillPoints: [-1], // Blessed Hammer + 1 (level 6) (2 saved points remain)
-    StatPoints: [3, 3, 3, 3, 3], // Vitality + 5 (120)
+    // StatPoints: [3, 3, 3, 3, 3], // Vitality + 5 (120)
     Update: function () {},
   },
 
   24: {
     SkillPoints: [271, 273], // Blessed Hammer + 1, Holy Shield + 1, Meditation + 1 (level 7) (level 1) (level 1) (0 saved points remain)
-    StatPoints: [3, 3, 3, 3, 3], // Vitality + 5 (125)
+    // StatPoints: [3, 3, 3, 3, 3], // Vitality + 5 (125)
     Update: function () {
       Config.AttackSkill = [273, 0, 0, 0, 0, -1, 273]; // Holy Bolt and Meditation for Secondary Skill/Aura.
       Config.LowManaSkill = [-1, -1]; // Use Meditation while hitting stuff.
@@ -221,39 +221,39 @@ export const AutoBuildTemplate = {
 
   25: {
     SkillPoints: [271], // Blessed Hammer + 1 (level 8)
-    StatPoints: [3, 3, 3, 3, 3], // Vitality + 5 (130)
+    // StatPoints: [3, 3, 3, 3, 3], // Vitality + 5 (130)
     Update: function () {
-      Config.LowGold = 15000;
+      // Config.LowGold = 15000;
     },
   },
 
   26: {
     SkillPoints: [271], // Blessed Hammer + 1 (level 9)
-    StatPoints: [3, 3, 3, 3, 3], // Vitality + 5 (135)
+    // StatPoints: [3, 3, 3, 3, 3], // Vitality + 5 (135)
     Update: function () {},
   },
 
   27: {
     SkillPoints: [271], // Blessed Hammer + 1, Blessed Aim + 1 (level 10) (level 3) (Norm Radament)
-    StatPoints: [3, 3, 3, 3, 3], // Vitality + 5 (140)
+    // StatPoints: [3, 3, 3, 3, 3], // Vitality + 5 (140)
     Update: function () {},
   },
 
   28: {
     SkillPoints: [271], // Blessed Hammer + 1 (level 11)
-    StatPoints: [3, 3, 3, 3, 3], // Vitality + 5 (145)
+    // StatPoints: [3, 3, 3, 3, 3], // Vitality + 5 (145)
     Update: function () {},
   },
 
   29: {
     SkillPoints: [271], // Blessed Hammer + 1 (level 12)
-    StatPoints: [3, 3, 3, 3, 3], // Vitality + 5 (150)
+    // StatPoints: [3, 3, 3, 3, 3], // Vitality + 5 (150)
     Update: function () {},
   },
 
   30: {
     SkillPoints: [279, 276], // Blessed Hammer + 1, Blessed Aim + 2 (level 13) (level 5) (Norm Izual)
-    StatPoints: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3], // Vitality + 10 (160) (Norm Lam Esen's Tome)
+    // StatPoints: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3], // Vitality + 10 (160) (Norm Lam Esen's Tome)
     Update: function () {
       Config.AttackSkill = [273, 255, 0, 255, 0, -1, 273]; // Holy Bolt and Meditation for Secondary Skill/Aura.
       Config.LowManaSkill = [-1, -1];

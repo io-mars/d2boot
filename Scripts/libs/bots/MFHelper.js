@@ -387,10 +387,11 @@ export const MFHelper = function () {
   Town.move("portalspot");
 
   if (Config.Leader) {
-    if (!Misc.poll(() => Misc.inMyParty(Config.Leader), 20e3, 1000)) {
+    if (!Misc.poll(() => Misc.inMyParty(Config.Leader), 5e3, 1000)) {
       // throw new Error("MFHelper: Leader not partied");
-      print("Leader not found.");
-      quit();
+      // print("Leader not found.");
+      // quit();
+      return false;
     }
 
     Misc.poll(

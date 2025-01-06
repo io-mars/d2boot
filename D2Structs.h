@@ -135,7 +135,7 @@ struct CellFile
 		WORD dwFlags;
 		BYTE mylastcol;
 		BYTE mytabno : 1;
-	};									 // 0x04
+	}; // 0x04
 	DWORD eFormat;			 // 0x08
 	DWORD termination;	 // 0x0C
 	DWORD numdirs;			 // 0x10
@@ -170,16 +170,16 @@ struct AutomapLayer2
 // iomars
 /*
 struct LevelTxt {
-	DWORD dwLevelNo;				//0x00
-	DWORD _1[60];					//0x04
-	BYTE _2;						//0xF4
-	char szName[40];				//0xF5
+	DWORD dwLevelNo;						//0x00
+	DWORD _1[60];								//0x04
+	BYTE _2; 										//0xF4
+	char szName[40];						//0xF5
 	char szEntranceText[40];		//0x11D
-	char szLevelDesc[41];			//0x145
-	wchar_t wName[40];				//0x16E
-	wchar_t wEntranceText[40];		//0x1BE
-	BYTE nObjGroup[8];				//0x196
-	BYTE nObjPrb[8];				//0x19E
+	char szLevelDesc[41];				//0x145
+	wchar_t wName[40];					//0x16E
+	wchar_t wEntranceText[40];	//0x1BE
+	BYTE nObjGroup[8];					//0x196
+	BYTE nObjPrb[8];						//0x19E
 };
 */
 struct LevelTxt
@@ -189,7 +189,7 @@ struct LevelTxt
 	BYTE nAct;								 //+03
 	DWORD _1[2];							 //+04
 	DWORD dwWarpDist;					 //+0C
-	WORD nMonLv[2][3];				 //+10	Area Level
+	WORD nMonLv[2][3];				 //+10  Area Level
 	DWORD nMonDen[3];					 //+1C
 	BYTE monumin[3];					 //+28
 	BYTE monumax[3];					 //+2B
@@ -252,7 +252,7 @@ struct Control
 		struct
 		{											 // Buttons
 			DWORD _12[2];				 // 0x5C
-			wchar_t wText2[256]; // 0x6C
+			wchar_t wText2[256]; // 0x64
 		};
 	};
 };
@@ -399,7 +399,7 @@ struct Level
 	{
 		DWORD RoomCenterY[9];
 		DWORD WarpY[9];
-	};									 // 0x204
+	}; // 0x204
 	DWORD dwRoomEntries; // 0x228
 };
 
@@ -413,7 +413,7 @@ struct Room2
 		DWORD dwRoomNumber;	 // 0x00
 		DWORD _1;						 // 0x04
 		DWORD *pdwSubNumber; // 0x08
-	} * pType2Info;				 // 0x20
+	} *pType2Info;				 // 0x20
 	Room2 *pRoom2Next;		 // 0x24
 	DWORD dwRoomFlags;		 // 0x28
 	DWORD dwRoomsNear;		 // 0x2C
@@ -579,7 +579,7 @@ struct Skill
 	DWORD ItemId;					 // 0x34 0xFFFFFFFF if not a charge
 	DWORD ChargesLeft;		 // 0x38
 	DWORD IsCharge;				 // 0x3C 1 for charge, else 0
-};											 // size = 0x40
+}; // size = 0x40
 
 struct Info
 {
@@ -630,7 +630,7 @@ struct ItemTxt
 	{
 		DWORD dwCode;
 		char szCode[4];
-	};								 // 0x40
+	}; // 0x40
 	BYTE _2[0x70];		 // 0x84
 	WORD nLocaleTxtNo; // 0xF4
 	BYTE _2a[0x19];		 // 0xF7
@@ -684,7 +684,9 @@ struct MonsterData
 	DWORD _5;						// 0x28
 	struct
 	{
-		wchar_t wName[28];
+		// ioamrs
+		// wchar_t wName[28];
+		wchar_t *wName;
 	}; // 0x2C
 };
 
@@ -746,7 +748,7 @@ struct UnitAny
 		MonsterData *pMonsterData;
 		ObjectData *pObjectData;
 		// TileData *pTileData doesn't appear to exist anymore
-	};							 // 0x14
+	}; // 0x14
 	DWORD dwAct;		 // 0x18
 	Act *pAct;			 // 0x1C
 	DWORD dwSeed[2]; // 0x20
@@ -756,7 +758,7 @@ struct UnitAny
 		Path *pPath;
 		ItemPath *pItemPath;
 		ObjectPath *pObjectPath;
-	};												// 0x2C
+	}; // 0x2C
 	DWORD _3[5];							// 0x30
 	DWORD dwGfxFrame;					// 0x44
 	DWORD dwFrameRemain;			// 0x48

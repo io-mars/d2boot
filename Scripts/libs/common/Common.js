@@ -20,6 +20,7 @@ import {
   Text,
   Box,
   Frame,
+  getUIFlag,
 } from "boot";
 
 import { sdk } from "../modules/sdk.js";
@@ -1770,6 +1771,7 @@ export const Common = {
     timerLastDrink: [],
     cloneWalked: false,
     hooks: [],
+    mercHooks: [],
 
     checkPing(print = true) {
       // Quit after at least 5 seconds in game
@@ -2231,18 +2233,18 @@ export const Common = {
           `Keys: ÿc0${Config.MFTorches.TorchesQuantity.slice(0, 3)}`,
           x,
           y,
-          4,
           13,
+          4,
           2
         )
       );
       this.hooks.push(
         new Text(
-          `Orgs: ÿc0${Config.MFTorches.TorchesQuantity.slice(-3)}`,
+          `Hebs: ÿc0${Config.MFTorches.TorchesQuantity.slice(-3)}`,
           x,
           y + 15,
-          4,
           13,
+          4,
           2
         )
       );
@@ -2250,6 +2252,74 @@ export const Common = {
       this.hooks.push(new Box(x + 2, y - 15, 86, frameYsize, 0x0, 0, 2));
       this.hooks.push(new Frame(x, y - 15, 90, frameYsize, 2));
       this.hooks[this.hooks.length - 2].zorder = 5;
+    },
+
+    mercSkill(merc) {
+      let txt;
+      if (merc.hirelingId >= 6 && merc.hirelingId <= 14) {
+        let aura, diff;
+        switch (merc.hirelingId) {
+          case 6:
+          case 12:
+            aura = "Prayer";
+            break;
+          case 7:
+          case 13:
+            aura = "Defiance";
+            break;
+          case 8:
+          case 14:
+            aura = "Blessed Aim";
+            break;
+          case 9:
+            aura = "Thorns";
+            break;
+          case 10:
+            aura = "Holy Freeze";
+            break;
+          case 11:
+            aura = "Might";
+            break;
+          default:
+            break;
+        }
+        switch (merc.hirelingId) {
+          case 6:
+          case 7:
+          case 8:
+            diff = "Normal";
+            break;
+          case 9:
+          case 10:
+          case 11:
+            diff = "Nightmare";
+            break;
+          default:
+            diff = "Hell";
+            break;
+        }
+
+        txt = `Skill: ÿc2 Jab,${aura} (${diff})`;
+      } else {
+        txt = `Skill: ÿc2${merc.skills.map((s) => sdk.skills.skillById[s])}`;
+      }
+
+      return txt;
+    },
+
+    mercHook() {
+      let x = 90;
+      let y = 460;
+      if (getUIFlag(sdk.uiflags.MercScreen)) {
+        if (!this.mercHooks.length) {
+          // x = x + getTextSize(txt, 13)[0];
+          let merc = me.getMerc(true);
+          merc &&
+            this.mercHooks.push(new Text(this.mercSkill(merc), x, y, 6, 4, 0));
+        }
+      } else {
+        this.mercHooks.length && this.mercHooks.splice(0);
+      }
     },
   },
 

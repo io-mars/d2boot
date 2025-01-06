@@ -55,7 +55,7 @@ make PREFIX=release pdb
 ### Step 3 - run `d2bot#`
 
 1. add new profile at `d2bot#`;
-2. edit `Scripts\libs\config\_BaseConfigFile.js`/`_CustomConfig.js`/`_StarterConfig.js` for team play;
+2. edit `Scripts\libs\config\_Base.ModuleConfig.js.js`/`_CustomConfig.js`/`_StarterConfig.js` for team play;
 3. set the stash size at `Scripts\libs\common\Storage.js`;
 
    ```js

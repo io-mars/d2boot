@@ -3,12 +3,14 @@
 #ifndef __D2BOOT_H__
 #define __D2BOOT_H__
 
-#define D2BOOT_MAJOR L"1.0.8"
+#define D2BOOT_MAJOR L"1.1.1"
 #ifdef DEBUG
 #define D2BOOT_VERSION D2BOOT_MAJOR L"d"
 #else
 #define D2BOOT_VERSION D2BOOT_MAJOR L"u"
 #endif
+
+#define DLLAPI __declspec(dllexport)
 
 #include <windows.h>
 #include <map>
@@ -120,13 +122,14 @@ struct Variables
   DWORD dwSelectedUnitId;
   DWORD dwSelectedUnitType;
   // POINT pMouseCoords;
+  DWORD dwHirelingId;
 };
 
 extern Variables Vars;
 
 // declare WINAPI for remotethread call
-BOOL WINAPI Startup(void);
-void WINAPI DetachShutdown(void);
-void Shutdown(void);
+extern "C" BOOL DLLAPI APIENTRY Startup(void);
+// void WINAPI DetachShutdown(void);
+extern "C" void DLLAPI APIENTRY Shutdown(void);
 
 #endif

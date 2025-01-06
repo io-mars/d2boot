@@ -80,19 +80,19 @@ import { NTIPAliasClassID } from "../NTItemAlias.js";
 export const Follower = function () {
   let leader, charClass;
   let commanders = [Config.Leader];
-  let [allowSay, attack, openContainers, stop] = [true, true, true, false];
+  let [allowSay, attack, openContainers, stop] = [false, true, true, false];
   let actions = [];
   //iomars
   let minGold = 100;
 
   this.announce = function (msg = "") {
-    if (!allowSay) return;
+    if (!allowSay && !Config.AllowSay) return;
     say(msg);
   };
 
   // Change areas to where leader is
   this.checkExit = function (player, area) {
-    // if (player.inTown) return false;
+    if (player.inTown) return false;
 
     let target = Game.getObject("portal");
     if (target) {
@@ -835,11 +835,11 @@ export const Follower = function () {
     Config.AttackSkill[4] = nextSkill;
 
     if (Skill.setSkill(nextSkill, sdk.skills.hand.Right)) {
-      this.announce(`active aura: ${getSkillById(nextSkill)}(${nextSkill})`);
+      say(`active aura: ${getSkillById(nextSkill)}(${nextSkill})`);
       return true;
     }
 
-    this.announce(`cant set aura: ${getSkillById(nextSkill)}(${nextSkill})`);
+    say(`cant set aura: ${getSkillById(nextSkill)}(${nextSkill})`);
     return false;
   };
 
@@ -925,13 +925,14 @@ export const Follower = function () {
       case "1":
         !me.inTown && !me.inArea(leader.area) && Pather.makePortal(true);
 
-        if (leader.inTown && Misc.getPlayerAct(Config.Leader) !== me.act) {
+        // if (leader.inTown && Misc.getPlayerAct(Config.Leader) !== me.act) {
+        if (Misc.getPlayerAct(Config.Leader) !== me.act) {
           this.announce("Going to leader's town.");
           Town.goToTown(Misc.getPlayerAct(Config.Leader));
           Town.move("portalspot");
         }
 
-        if (me.inTown) {
+        if (me.inTown && !leader.inTown) {
           delay(rand(1, 8) * 50);
           this.announce("Going outside.");
           Town.move("portalspot");
@@ -1199,14 +1200,14 @@ export const Follower = function () {
               skill = parseInt(msg.split(" ")[2], 10);
 
               if (me.getSkill(skill, sdk.skills.subindex.SoftPoints)) {
-                this.announce("Active aura is: " + skill);
+                say(`active aura: ${getSkillById(skill)}(${skill})`);
 
                 Config.AttackSkill[2] = skill;
                 Config.AttackSkill[4] = skill;
 
                 Skill.setSkill(skill, sdk.skills.hand.Right);
               } else {
-                this.announce("I don't have that aura.");
+                say("I don't have that aura.");
               }
             }
 

@@ -1659,6 +1659,28 @@ JSAPI_FUNC(unit_getMerc)
           return JS_FALSE;
         }
 
+        // added hirelingId
+        JS_DefinePropertyValueStr(ctx, jsunit, "hirelingId", Vars.dwHirelingId, JS_PROP_C_W_E);
+
+        if (argc > 0 && JS_IsBool(argv[0]))
+        {
+          // int bSkill = !!JS_ToBool(ctx, argv[0]);
+          if (argv[0] == JS_TRUE && pMerc->pInfo)
+          {
+            JSValue arr = JS_NewArray(ctx);
+            int nCount = 0;
+
+            for (Skill *pSkill = pMerc->pInfo->pFirstSkill; pSkill; pSkill = pSkill->pNextSkill)
+            {
+              JSValue nSkill = JS_NewUint32(ctx, pSkill->pSkillInfo->wSkillId);
+              JS_DefinePropertyValueUint32(ctx, arr, nCount, nSkill, JS_PROP_C_W_E);
+              nCount++;
+            }
+
+            JS_DefinePropertyValueStr(ctx, jsunit, "skills", arr, JS_PROP_C_W_E);
+          }
+        }
+
         return jsunit;
       }
     }
@@ -2039,7 +2061,7 @@ static const JSCFunctionListEntry js_unit_proto_funcs[] = {
     JS_CFUNC_DEF("getNext", 0, unit_getNext),
     JS_CFUNC_DEF("cancel", 0, unit_cancel),
     JS_CFUNC_DEF("getQuest", 2, unit_getQuest),
-    JS_CFUNC_DEF("getMerc", 0, unit_getMerc),
+    JS_CFUNC_DEF("getMerc", 1, unit_getMerc),
 
     JS_CFUNC_DEF("getParent", 0, unit_getParent),
     JS_CFUNC_DEF("getFlags", 1, item_getFlags),

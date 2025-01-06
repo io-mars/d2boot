@@ -95,15 +95,15 @@ UnitAny *GetUnit(const char *szName, DWORD dwClassId, DWORD dwType, DWORD dwMode
 
   // If we have a valid type, just check that value, other wise, check all
   // values. There are 6 valid types, 0-5
-  if (dwType == 3)
+  if (dwType == UNIT_MISSILE)
     return GetUnitFromTables(p_D2CLIENT_ClientSideUnitHashTables, dwType,
                              dwType, szName, dwClassId, dwType, dwMode, dwUnitId);
 
-  if (dwType >= 0 && dwType <= 5)
+  if (dwType >= UNIT_PLAYER && dwType <= UNIT_TILE)
     return GetUnitFromTables(p_D2CLIENT_ServerSideUnitHashTables, dwType,
                              dwType, szName, dwClassId, dwType, dwMode, dwUnitId);
   else
-    return GetUnitFromTables(p_D2CLIENT_ServerSideUnitHashTables, 0, 5,
+    return GetUnitFromTables(p_D2CLIENT_ServerSideUnitHashTables, UNIT_PLAYER, UNIT_TILE,
                              szName, dwClassId, dwType, dwMode, dwUnitId);
 
   /*	EnterCriticalSection(&Vars.cUnitListSection);
@@ -201,20 +201,20 @@ UnitAny *GetNextUnit(UnitAny *pUnit, const char *szName, DWORD dwClassId, DWORD 
 
   if (!pUnit)
     return NULL;
-  if (dwType == 3)
+  if (dwType == UNIT_MISSILE)
     return GetNextUnitFromTables(pUnit, p_D2CLIENT_ClientSideUnitHashTables, dwType, dwType, szName, dwClassId, dwType, dwMode);
 
-  if (dwType >= 0 && dwType <= 5)
+  if (dwType >= UNIT_PLAYER && dwType <= UNIT_TILE)
     return GetNextUnitFromTables(pUnit, p_D2CLIENT_ServerSideUnitHashTables, dwType, dwType, szName, dwClassId, dwType, dwMode);
   else
-    return GetNextUnitFromTables(pUnit, p_D2CLIENT_ServerSideUnitHashTables, 0, 5, szName, dwClassId, dwType, dwMode);
+    return GetNextUnitFromTables(pUnit, p_D2CLIENT_ServerSideUnitHashTables, UNIT_PLAYER, UNIT_TILE, szName, dwClassId, dwType, dwMode);
 }
 
 UnitAny *GetInvUnit(UnitAny *pOwner, const char *szName, DWORD dwClassId, DWORD dwMode, DWORD dwUnitId)
 {
   for (UnitAny *pItem = D2COMMON_GetItemFromInventory(pOwner->pInventory); pItem; pItem = D2COMMON_GetNextItemFromInventory(pItem))
   {
-    if (CheckUnit(pItem, szName, dwClassId, 4, dwMode, dwUnitId))
+    if (CheckUnit(pItem, szName, dwClassId, UNIT_ITEM, dwMode, dwUnitId))
       return pItem;
   }
 
@@ -231,7 +231,7 @@ UnitAny *GetInvNextUnit(UnitAny *pUnit, UnitAny *pOwner, const char *szName, DWO
       // Get the next matching unit from the owner's inventory
       for (UnitAny *pItem = D2COMMON_GetNextItemFromInventory(pUnit); pItem; pItem = D2COMMON_GetNextItemFromInventory(pItem))
       {
-        if (CheckUnit(pItem, szName, dwClassId, 4, dwMode, (DWORD)-1))
+        if (CheckUnit(pItem, szName, dwClassId, UNIT_ITEM, dwMode, (DWORD)-1))
           return pItem;
       }
     }

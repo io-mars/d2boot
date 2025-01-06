@@ -62,7 +62,7 @@ void DrawPresets(Room2 *pRoom2)
   // Grabs all the preset units in room.
   for (PresetUnit *pUnit = pRoom2->pPreset; pUnit; pUnit = pUnit->pPresetNext)
   {
-    int mCell = -1;
+    int mCell = -1;         // the frame number at MaxiMap(s).dc6
     if (pUnit->dwType == 1) // Special NPCs.
     {
       if (pUnit->dwTxtFileNo == 256) // Izzy

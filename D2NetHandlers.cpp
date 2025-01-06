@@ -201,3 +201,31 @@ DWORD DelayedStateHandler(BYTE *pPacket, DWORD dwSize)
 
   return TRUE;
 }
+
+DWORD HirelingIdHandler(BYTE *pPacket, DWORD dwSize)
+{
+  // Assign Merc
+  // 81 [BYTE Hireing type] [WORD Merc Kind] [DWORD Owner Id] [DWORD Merc Id] [DWORD nSeed] [DWORD wName]
+  // 81          07               5201        01 00 00 00      01 00 00 00     83 95 76 20  0E 04 00 00
+
+  BYTE nHirelingType = pPacket[1];
+
+  if (nHirelingType != 7)
+    return TRUE;
+
+  if (*(DWORD *)&pPacket[4] != D2CLIENT_GetPlayerUnit()->dwUnitId)
+    return TRUE;
+
+  WORD nHirelingId = *(WORD *)&pPacket[18];
+
+  // just handle the patch package
+  if (Vars.dwHirelingId != nHirelingId)
+    Vars.dwHirelingId = nHirelingId;
+
+  if (nHirelingId)
+  {
+    pPacket[18] = 0;
+    pPacket[19] = 0;
+  }
+  return TRUE;
+}

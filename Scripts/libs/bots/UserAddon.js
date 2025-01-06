@@ -93,7 +93,7 @@ export const UserAddon = function () {
     }
 
     if (i === flags.length && !title) {
-      title = new Text(":: D2Boot user addon ::", 400, 525, 4, 0, 2);
+      title = new Text(":: D2Boot user addon ::", 400, 525, 0, 4, 2);
       dummy = new Text("`", 1, 1); // Prevents crash
     }
 

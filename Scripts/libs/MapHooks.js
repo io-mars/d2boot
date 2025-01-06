@@ -483,8 +483,8 @@ export const ItemHooks = {
           785 - getTextSize(eth + code, 0)[0] + Hooks.resfix.x,
           // 665 + Hooks.resfix.x,
           136 + this.modifier + this.hooks.length * 14,
-          color,
           0,
+          color,
           0
         )
       );
@@ -638,8 +638,8 @@ export const MonsterHooks = {
         unit.spectype & 0xf ? "O" : "X",
         unit.x,
         unit.y,
-        this.specTypeColor(unit),
         1,
+        this.specTypeColor(unit),
         null,
         true
       ),
@@ -731,7 +731,7 @@ export const ShrineHooks = {
     let typeName;
 
     typeName = this.shrines[shrine.objtype];
-    typeName && arr.push(new Text(typeName, shrine.x, shrine.y, 4, 6, 2, true));
+    typeName && arr.push(new Text(typeName, shrine.x, shrine.y, 6, 4, 2, true));
 
     return arr;
   },
@@ -939,8 +939,8 @@ export const TextHooks = {
             "Ping: " + me.ping,
             785 + Hooks.resfix.x,
             56 + this.modifier,
-            4,
             1,
+            4,
             1
           ),
         });
@@ -953,8 +953,8 @@ export const TextHooks = {
             this.timer(),
             785 + Hooks.resfix.x,
             72 + this.modifier,
-            4,
             1,
+            4,
             1
           ),
         });
@@ -970,8 +970,8 @@ export const TextHooks = {
                 : "0"),
             785 + Hooks.resfix.x,
             88 + this.modifier,
-            4,
             1,
+            4,
             1
           ),
         });
@@ -984,8 +984,8 @@ export const TextHooks = {
             this.getLevel(),
             785 + Hooks.resfix.x,
             104 + this.modifier,
-            4,
             1,
+            4,
             1
           ),
         });
@@ -998,8 +998,8 @@ export const TextHooks = {
             "follows:",
             736 + Hooks.resfix.x,
             120 + this.modifier,
-            4,
             1,
+            4,
             1
           ),
         });
@@ -1012,8 +1012,8 @@ export const TextHooks = {
             ":",
             766 + Hooks.resfix.x,
             120 + this.modifier,
-            4,
             1,
+            4,
             1
           ),
         });
@@ -1026,8 +1026,8 @@ export const TextHooks = {
             "-/-",
             760 + Hooks.resfix.x,
             120 + this.modifier,
-            4,
             1,
+            4,
             1
           ),
         });
@@ -1040,8 +1040,8 @@ export const TextHooks = {
             "--",
             785 + Hooks.resfix.x,
             120 + this.modifier,
-            4,
             1,
+            4,
             1
           ),
         });
@@ -1211,7 +1211,7 @@ export const VectorHooks = {
 
   addNames(area) {
     this.names.push(
-      new Text(Pather.getAreaName(area.target), area.x, area.y, 0, 6, 2, true)
+      new Text(Pather.getAreaName(area.target), area.x, area.y, 6, 0, 2, true)
     );
   },
 

@@ -208,6 +208,7 @@ VARPTR(D2CLIENT, NoPickUp, DWORD, 0x11D574) // unused but I want to add it
 VARPTR(D2CLIENT, ChatMsg, wchar_t *, 0x11D650)
 VARPTR(D2CLIENT, OrificeId, DWORD, 0x11C9B8)
 VARPTR(D2CLIENT, CursorItemMode, DWORD, 0x11C9B0)
+VARPTR(D2CLIENT, CongratsScreen, DWORD, 0x1246EC) //
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // D2Client Stubs
@@ -246,9 +247,6 @@ ASMPTR(D2CLIENT, BodyClickTable, 0xEE4B8)
 ASMPTR(D2CLIENT, GetMinionCount_I, 0x8E5B0)
 
 ASMPTR(D2CLIENT, GameLeave_I, 0xB4370)
-
-// MTODO
-ASMPTR(D2CLIENT, CongratsScreen_I, 0xF6190) // Updated 1.14d //004F6190-BASE
 
 ASMPTR(D2CLIENT, ClickMap_I, 0x11C8B4)
 ASMPTR(D2CLIENT, ClickMap_II, 0x11D2CC)
