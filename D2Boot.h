@@ -3,7 +3,7 @@
 #ifndef __D2BOOT_H__
 #define __D2BOOT_H__
 
-#define D2BOOT_MAJOR L"1.1.1"
+#define D2BOOT_MAJOR L"1.1.2"
 #ifdef DEBUG
 #define D2BOOT_VERSION D2BOOT_MAJOR L"d"
 #else

@@ -19,8 +19,8 @@ PatchHook Patches[] = {
     {PatchCall, GetDllOffset(L"D2Client.dll", 0x1B047), (DWORD)GameActChange_Intercept, 5}, // 1.13d
     {PatchJmp, GetDllOffset(L"D2Client.dll", 0x1B474), (DWORD)GameActChange2_Intercept, 5}, // 1.13d
 
-    // {PatchBytes, GetDllOffset(L"D2CLIENT.DLL", 0x4EBFB), (BYTE)0x75, 1},  // Congrats Screen 1.14d
-    // {PatchCall, GetDllOffset(L"D2Client.dll", 0x4EBEF), (DWORD)CongratsScreen_Intercept, 5}, // Updated 1.14d //0044EBEF-BASE
+    {PatchBytes, GetDllOffset(L"D2Client.dll", 0x44F3D), (BYTE)0x75, 1},                     // Congrats Screen 1.13d
+    {PatchCall, GetDllOffset(L"D2Client.dll", 0x44F32), (DWORD)CongratsScreen_Intercept, 5}, // 1.13d
 
     {PatchCall, GetDllOffset(L"D2Client.dll", 0x461AD), (DWORD)GameLeave_Intercept, 5},  // 1.13d
     {PatchCall, GetDllOffset(L"D2Client.dll", 0x29560), (DWORD)GameAttack_Intercept, 5}, // 1.13d
@@ -44,17 +44,16 @@ PatchHook Conditional[] = {
     {PatchJmp, GetDllOffset(L"BNCLIENT.DLL", 0x15EB3), (DWORD)ClassicSTUB, 5, &Vars.bUseRawCDKey},
     {PatchJmp, GetDllOffset(L"BNCLIENT.DLL", 0x161B8), (DWORD)LodSTUB, 5, &Vars.bUseRawCDKey},
 
-    // 1.13d the game.exe dont load d2gfx.dll when create process, so have to use d2m.dll for multi
-    // {PatchCall, GetDllOffset(L"D2CLIENT.dll", 0x443FE), (DWORD)FailToJoin_Interception, 6, &Vars.bReduceFTJ}, // FTJ Reducer  1.13d
-    // {PatchCall, GetDllOffset(L"D2Gfx.DLL", 0xB6A8), (DWORD)Multi, 6, &Vars.bMulti},                           // 1.13d
-    // {PatchCall, GetDllOffset(L"D2Gfx.DLL", 0xB8D9), (DWORD)Windowname, 6, &Vars.bMulti},                      // 1.13d
-    // // {PatchJmp, GetDllOffset(L"D2Launch.dll", 0x10B03), (DWORD)InitMainMenu, 5},                               // 1.13d
-    // //
-    // {PatchCall, GetDllOffset(L"BNCLIENT.dll", 0xF494), (DWORD)CacheFix, 6, &Vars.bCacheFix}, // 1.13d
-    // {PatchCall, GetDllOffset(L"BNCLIENT.dll", 0xF7E4), (DWORD)CacheFix, 6, &Vars.bCacheFix}, // 1.13d
+    {PatchCall, GetDllOffset(L"D2Gfx.DLL", 0xB6A8), (DWORD)Multi, 6, &Vars.bMulti},      // 1.13d
+    {PatchCall, GetDllOffset(L"D2Gfx.DLL", 0xB8D9), (DWORD)Windowname, 6, &Vars.bMulti}, // 1.13d
+    // {PatchJmp, GetDllOffset(L"D2Launch.dll", 0x10B03), (DWORD)InitMainMenu, 5},          // 1.13d
+
+    {PatchCall, GetDllOffset(L"BNCLIENT.dll", 0xF494), (DWORD)CacheFix, 6, &Vars.bCacheFix}, // 1.13d
+    {PatchCall, GetDllOffset(L"BNCLIENT.dll", 0xF7E4), (DWORD)CacheFix, 6, &Vars.bCacheFix}, // 1.13d
 
     {PatchBytes, GetDllOffset(L"D2CLIENT.dll", 0x27713), (WORD)0x9090, 2, &Vars.bSleepy}, // Sleep // 1.13d
     {PatchBytes, GetDllOffset(L"D2Win.DLL", 0xEDAF), (BYTE)0xEB, 1, &Vars.bSleepy},       // OOG Sleep // 1.13d
 
-    {PatchBytes, GetDllOffset(L"D2MCPCLIENT.dll", 0x61E0), (DWORD)0xc3, 1}, // RD Blocker  1.13d
+    {PatchBytes, GetDllOffset(L"D2MCPCLIENT.dll", 0x61E0), (DWORD)0xc3, 1},                                   // RD Blocker  1.13d
+    {PatchCall, GetDllOffset(L"D2CLIENT.dll", 0x443FE), (DWORD)FailToJoin_Interception, 6, &Vars.bReduceFTJ}, // FTJ Reducer  1.13d
 };

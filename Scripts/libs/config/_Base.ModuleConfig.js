@@ -787,6 +787,9 @@ export const BaseConfig = function () {
    * Use Roll.Eth, Roll.NonEth or Roll.All to determine what kind of base item to roll - ethereal, non-ethereal or all.
    * !!NOTE!!: Socket.Weapon main recipe must be in pickit,the Cubing validItem is :'ntipResult === Pickit.Result.WANTED'
    */
+  Config.Recipes.push([Recipe.Socket.Weapon, "Halberd", Roll.Eth]); // Socket ethereal Halberd
+  Config.Recipes.push([Recipe.Socket.Weapon, "Poleaxe", Roll.Eth]); // Socket ethereal Great Poleaxe
+
   Config.Recipes.push([Recipe.Socket.Weapon, "Phase Blade", Roll.NonEth]); // Socket Phase Blade
   Config.Recipes.push([Recipe.Socket.Weapon, "Colossus Blade", Roll.Eth]); // Socket ethereal Colossus Blade
   Config.Recipes.push([Recipe.Socket.Weapon, "Berserker Axe", Roll.Eth]); // Socket ethereal Berserker
@@ -1303,6 +1306,7 @@ export const RunewordMaker = function () {
 };
 
 export const KeyPicker = function () {
+  Config.Follower.Picker = true; //pick item
   Config.PickitFiles.push("key.nip");
 };
 
@@ -1413,15 +1417,18 @@ export const Enchanter = function () {
 };
 
 export const CharmPicker = function () {
+  Config.Follower.Picker = true; //pick item
   Config.PickitFiles.push("charm.nip");
 };
 
 export const ArrowPicker = function () {
+  Config.Follower.Picker = true; //pick item
   Config.PickitFiles.push("arrow.nip");
 };
 
 export const AutoBuilder = function () {
   Config.PickitFiles.push("arrow.nip");
+  Config.AllowSay = true;
 
   // AutoBuild System ( See /d2bs/kolbot/libs/config/Builds/README.txt for instructions )
   Config.AutoBuild.Enabled = true; //	This will enable or disable the AutoBuild system

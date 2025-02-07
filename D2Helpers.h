@@ -34,7 +34,6 @@ enum ClientGameState
   ClientStateNull,
   ClientStateMenu,
   ClientStateInGame,
-  ClientStateCongratsScreen,
   ClientStateBusy
 };
 

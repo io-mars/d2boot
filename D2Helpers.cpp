@@ -142,11 +142,6 @@ ClientGameState ClientState(void)
 
   if (player && !firstControl)
   {
-    if (*p_D2CLIENT_CongratsScreen)
-    {
-      return ClientStateCongratsScreen;
-    }
-
     if (player && player->pUpdateUnit)
     {
       state = ClientStateBusy;
@@ -186,7 +181,6 @@ bool WaitForGameReady(void)
     {
     case ClientStateNull:
     case ClientStateMenu:
-    case ClientStateCongratsScreen:
       return false;
     case ClientStateInGame:
       return true;

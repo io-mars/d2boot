@@ -33,7 +33,7 @@ int WINAPI LogMessageBoxA_Intercept(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, 
 VOID __fastcall ClassicSTUB();
 VOID __fastcall LodSTUB();
 
-VOID __fastcall InitMainMenu();
+// VOID __fastcall InitMainMenu();
 HMODULE __stdcall Multi(LPSTR Class, LPSTR Window);
 HANDLE __stdcall Windowname(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int x, int y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu,
                             HINSTANCE hInstance, LPVOID lpParam);

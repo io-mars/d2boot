@@ -21,6 +21,7 @@ import {
   Box,
   Frame,
   getUIFlag,
+  getSkillById,
 } from "boot";
 
 import { sdk } from "../modules/sdk.js";
@@ -2249,7 +2250,7 @@ export const Common = {
         )
       );
 
-      this.hooks.push(new Box(x + 2, y - 15, 86, frameYsize, 0x0, 0, 2));
+      this.hooks.push(new Box(x, y - 15, 90, frameYsize, 0x0, 0, 2));
       this.hooks.push(new Frame(x, y - 15, 90, frameYsize, 2));
       this.hooks[this.hooks.length - 2].zorder = 5;
     },
@@ -2301,7 +2302,9 @@ export const Common = {
 
         txt = `Skill: ÿc2 Jab,${aura} (${diff})`;
       } else {
-        txt = `Skill: ÿc2${merc.skills.map((s) => sdk.skills.skillById[s])}`;
+        txt = `Skill: ÿc2${merc.skills.map((s) =>
+          sdk.skills.Hireling[s] ? sdk.skills.Hireling[s] : getSkillById(s)
+        )}`;
       }
 
       return txt;

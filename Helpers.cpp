@@ -11,6 +11,7 @@
 #include "Control.h"
 #include "Script.h"
 #include "Profile.h"
+#include "CommandLine.h"
 
 #define BUFFER_SIZE 128
 
@@ -823,6 +824,52 @@ void InitCommandLine()
   memcpy(Vars.szCommandLine, line, std::min(sizeof(Vars.szCommandLine), sizeof(wchar_t) * wcslen(line)));
   // LPWSTR cline = (WCHAR *)L"C:\\Program Files (x86)\\Diablo II\\Game.exe -w";
   // memcpy(line, cline, sizeof(LPWSTR) * wcslen(cline));
+
+  ParseCommandLine(Vars.szCommandLine);
+
+  sLine *command = nullptr;
+
+  Vars.bUseRawCDKey = FALSE;
+
+  if ((command = GetCommand(L"-title")))
+  {
+    int len = wcslen((wchar_t *)command->szText);
+    wcsncat(Vars.szTitle, command->szText, len);
+  }
+
+  if ((command = GetCommand(L"-profile")))
+  {
+    int len = wcslen((wchar_t *)command->szText);
+    wcsncat(Vars.szProfile, command->szText, len);
+  }
+
+  if (GetCommand(L"-sleepy"))
+    Vars.bSleepy = TRUE;
+
+  if (GetCommand(L"-cachefix"))
+    Vars.bCacheFix = TRUE;
+
+  if (GetCommand(L"-multi"))
+    Vars.bMulti = TRUE;
+
+  if (GetCommand(L"-ftj"))
+    Vars.bReduceFTJ = TRUE;
+
+  if ((command = GetCommand(L"-d2c")))
+  {
+    Vars.bUseRawCDKey = TRUE;
+    char *keys = UnicodeToAnsi(command->szText);
+    strncat(Vars.szClassic, keys, 30 - 1);
+    free(keys);
+  }
+
+  if ((command = GetCommand(L"-d2x")))
+  {
+    char *keys = UnicodeToAnsi(command->szText);
+    strncat(Vars.szLod, keys, 30 - 1);
+    free(keys);
+  }
+  FreeCommandLine();
 }
 
 // MTODO

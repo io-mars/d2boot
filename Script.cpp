@@ -461,14 +461,17 @@ void Script::WaitForExecEvent(int timeout)
   int amt = timeout - (GetTickCount() - start);
 
   while (amt > 0)
-  { // had a script deadlock here, make sure were positve with amt
-    WaitForSingleObjectEx(eventSignal, amt, true);
-    ResetEvent(eventSignal);
-    if (IsAborted())
-      break;
+  {
+    // had a script deadlock here, make sure were positve with amt
+    if (WaitForSingleObjectEx(eventSignal, amt, true) == WAIT_OBJECT_0)
+    {
+      ResetEvent(eventSignal);
+      if (IsAborted())
+        break;
 
-    // pop event and exec
-    ExecEvent();
+      // pop event and exec
+      ExecEvent();
+    }
 
     amt = timeout - (GetTickCount() - start);
     // SleepEx(10,true);	// ex for delayed setTimer

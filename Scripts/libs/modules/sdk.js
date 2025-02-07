@@ -593,6 +593,9 @@ export const sdk = {
       ShadowDisciplines: 49,
       MartialArts: 50,
     },
+    Hireling: {
+      336: "RogueMissile",
+    },
   },
   skillTabs: undefined,
 

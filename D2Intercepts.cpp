@@ -147,16 +147,16 @@ void GameDrawOOG_Intercept(void)
   GameDrawOOG();
 }
 
-// void __declspec(naked) CongratsScreen_Intercept(void)
-// {
-//   __asm__ __volatile__(
-//       "call %0\n\t"
-//       "pushad\n\t"
-//       "call %1\n\t"
-//       "popad\n\t"
-//       "ret\n\t" ::"m"(D2CLIENT_CongratsScreen_I),
-//       "p"(SetMaxDiff));
-// }
+void __declspec(naked) CongratsScreen_Intercept(void)
+{
+  __asm__ __volatile__(
+      "call %0\n\t"
+      "pushad\n\t"
+      "call %1\n\t"
+      "popad\n\t"
+      "ret\n\t" ::"m"(D2CLIENT_CongratsScreen_I),
+      "p"(SetMaxDiff));
+}
 
 void __declspec(naked) GameActChange_Intercept(void)
 {
@@ -245,7 +245,7 @@ VOID __declspec(naked) ChatPacketRecv_Interception()
       "ret\n\t" ::"p"(ChatPacketRecv));
 }
 
-WINUSERAPI int WINAPI MessageBoxA(_In_opt_ HWND hWnd, _In_opt_ LPCSTR lpText, _In_opt_ LPCSTR lpCaption, _In_ UINT uType);
+// WINUSERAPI int WINAPI MessageBoxA(_In_opt_ HWND hWnd, _In_opt_ LPCSTR lpText, _In_opt_ LPCSTR lpCaption, _In_ UINT uType);
 
 int WINAPI LogMessageBoxA_Intercept(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType)
 {
@@ -263,14 +263,16 @@ HMODULE __stdcall Multi(LPSTR Class, LPSTR Window)
 }
 
 // DWORD MainMenuAddress() { return GetDllOffset(L"D2Launch.dll", 0x10B08); } // Backjmp.
+
 // VOID __declspec(naked) __fastcall InitMainMenu()
 // {
 //   __asm__ __volatile__(
-//       "call Shutdown\n\t"
+//       "call %0\n\t"
 //       "pop esi\n\t"
 //       "pop ebp\n\t"
 //       "add esp,0x20\n\t"
-//       "jmp [MainMenuAddress]\n\t");
+//       "jmp %1\n\t" ::"p"(Shutdown),
+//       "m"(MainMenuAddress));
 // }
 
 HANDLE __stdcall Windowname(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int x, int y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu,

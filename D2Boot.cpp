@@ -6,13 +6,23 @@
 #include "ScreenHook.h"
 #include "Console.h"
 #include "D2Handlers.h"
-#include "CommandLine.h"
 
 static HANDLE hD2Thread = INVALID_HANDLE_VALUE;
 // static HANDLE hEventThread = INVALID_HANDLE_VALUE;
 
 BOOL initialize(HANDLE hModule, LPVOID lpReserved)
 {
+#ifdef DEBUG
+  wchar_t szProcess[20] = L"";
+  GetEnvironmentVariable(L"ATTACH_CONSOLE_PROCESS", szProcess, 20);
+  DWORD dwProcess = _wtoi(szProcess);
+  AttachConsole(dwProcess);
+  freopen("conout$", "w", stdout);
+  freopen("conin$", "r", stdin);
+  freopen("conout$", "w", stdout);
+  freopen("conout$", "w", stderr);
+#endif
+
   if (lpReserved != NULL)
   {
     Vars.pModule = (Module *)lpReserved;
@@ -35,53 +45,28 @@ BOOL initialize(HANDLE hModule, LPVOID lpReserved)
   InitSettings();
 
   InitCommandLine();
-  ParseCommandLine(Vars.szCommandLine);
 
-  sLine *command = nullptr;
-
-  Vars.bUseRawCDKey = FALSE;
-
-  if ((command = GetCommand(L"-title")))
-  {
-    int len = wcslen((wchar_t *)command->szText);
-    wcsncat(Vars.szTitle, command->szText, len);
-  }
-
-  if ((command = GetCommand(L"-profile")))
-  {
-    int len = wcslen((wchar_t *)command->szText);
-    wcsncat(Vars.szProfile, command->szText, len);
-  }
-
-  if (GetCommand(L"-sleepy"))
-    Vars.bSleepy = TRUE;
-
-  if (GetCommand(L"-cachefix"))
-    Vars.bCacheFix = TRUE;
-
-  if (GetCommand(L"-multi"))
-    Vars.bMulti = TRUE;
-
-  if (GetCommand(L"-ftj"))
-    Vars.bReduceFTJ = TRUE;
-
-  if ((command = GetCommand(L"-d2c")))
-  {
-    Vars.bUseRawCDKey = TRUE;
-    char *keys = UnicodeToAnsi(command->szText);
-    strncat(Vars.szClassic, keys, 30 - 1);
-    free(keys);
-  }
-
-  if ((command = GetCommand(L"-d2x")))
-  {
-    char *keys = UnicodeToAnsi(command->szText);
-    strncat(Vars.szLod, keys, 30 - 1);
-    free(keys);
-  }
-  FreeCommandLine();
+  DefineOffsets();
+  InstallPatches();
+  InstallConditional();
 
   Vars.bShutdownFromDllMain = FALSE;
+
+  return TRUE;
+}
+
+BOOL uninstall()
+{
+  RemoveConditional();
+  RemovePatches();
+
+#ifdef DEBUG
+  // system("pause");
+  fclose(stderr);
+  fclose(stdout);
+  fclose(stdin);
+  // FreeConsole();
+#endif
 
   return TRUE;
 }
@@ -91,43 +76,21 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD dwReason, LPVOID lpReserved)
   switch (dwReason)
   {
   case DLL_PROCESS_ATTACH:
-  {
     DisableThreadLibraryCalls((HMODULE)hModule);
 
-#ifdef DEBUG
-    wchar_t szProcess[20] = L"";
-    GetEnvironmentVariable(L"ATTACH_CONSOLE_PROCESS", szProcess, 20);
-    DWORD dwProcess = _wtoi(szProcess);
-    AttachConsole(dwProcess);
-    freopen("conout$", "w", stdout);
-    freopen("conin$", "r", stdin);
-    freopen("conout$", "w", stdout);
-    freopen("conout$", "w", stderr);
-#endif
     if (!initialize(hModule, lpReserved))
       return FALSE;
 
     SetUnhandledExceptionFilter(ExceptionHandler);
 
-    // if (!Startup())
-    //   return FALSE;
-  }
-  break;
+    break;
 
   case DLL_PROCESS_DETACH:
-    // {
-    //   Vars.bShutdownFromDllMain = TRUE;
-    //   Shutdown();
-    // }
-#ifdef DEBUG
-    // system("pause");
-    fclose(stderr);
-    fclose(stdout);
-    fclose(stdin);
-    // FreeConsole();
-#endif
+    uninstall();
+
     break;
   }
+
   return TRUE;
 }
 
@@ -156,9 +119,6 @@ BOOL Startup(void)
   Vars.SectionCount = 0;
 
   Genhook::Initialize();
-  DefineOffsets();
-  InstallPatches();
-  InstallConditional();
 
   DWORD lpThreadId;
   if ((hD2Thread = CreateThread(NULL, 0, D2Thread, NULL, 0, &lpThreadId)) == NULL)
@@ -203,11 +163,6 @@ void Shutdown(void)
   }
 
   SetWindowLong(D2GFX_GetHwnd(), GWL_WNDPROC, (LONG)Vars.oldWNDPROC);
-
-  RemoveConditional();
-  RemovePatches();
-  // waitting draw over, others should be crashed when printing screeen console!
-  // Sleep(50);
 
   // destory Genhook
   Genhook::Destroy();
