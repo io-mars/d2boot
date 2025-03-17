@@ -81,8 +81,6 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD dwReason, LPVOID lpReserved)
     if (!initialize(hModule, lpReserved))
       return FALSE;
 
-    SetUnhandledExceptionFilter(ExceptionHandler);
-
     break;
 
   case DLL_PROCESS_DETACH:
@@ -96,6 +94,8 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD dwReason, LPVOID lpReserved)
 
 BOOL Startup(void)
 {
+  SetUnhandledExceptionFilter(ExceptionHandler);
+
   InitializeCriticalSection(&Vars.cEventSection);
   // InitializeCriticalSection(&Vars.cRoomSection);
   // InitializeCriticalSection(&Vars.cMiscSection);

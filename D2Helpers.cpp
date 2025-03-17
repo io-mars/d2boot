@@ -127,7 +127,7 @@ void LogNoFormat(const wchar_t *szString)
 #endif
   static DWORD id = GetProcessId(GetCurrentProcess());
   sprintf(szTime, "%02d:%02d:%02d.%03d", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
-  fprintf(log, "[%s] D2Boot %ld: %ls\n", szTime, id, szString);
+  fwprintf(log, L"[%s] D2Boot %ld: %ls\n", szTime, id, szString);
 #ifndef DEBUG
   fflush(log);
   fclose(log);

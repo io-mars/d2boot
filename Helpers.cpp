@@ -451,12 +451,15 @@ bool ProcessCommand(const wchar_t *command, bool unprocessedIsCommand)
   // }
   else if (_wcsicmp(argv, L"load") == 0)
   {
-    const wchar_t *script = command + 5;
-    if (StartScript(script, GetStarterScriptState()))
-      Print(L"\u00FFc2D2Boot\u00FFc0 :: Started %ls", script);
-    else
-      Print(L"\u00FFc2D2Boot\u00FFc0 :: Failed to start %ls", script);
-    result = true;
+    if (wcslen(command) > 5)
+    {
+      const wchar_t *script = command + 5;
+      if (StartScript(script, GetStarterScriptState()))
+        Print(L"\u00FFc2D2Boot\u00FFc0 :: Started %ls", script);
+      else
+        Print(L"\u00FFc2D2Boot\u00FFc0 :: Failed to start %ls", script);
+      result = true;
+    }
   }
   else if (_wcsicmp(argv, L"reload") == 0)
   {
@@ -653,21 +656,23 @@ bool PrintStack(CONTEXT *context, HANDLE hProcess, HANDLE hThread)
   SymInitializeW(hProcess, Vars.szPath, TRUE);
 
   Log(L"-----------------------------");
-  char buffer[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(WCHAR)];
-  PSYMBOL_INFO pSymbol = (PSYMBOL_INFO)buffer;
-  ZeroMemory(pSymbol, sizeof(SYMBOL_INFO));
-  pSymbol->SizeOfStruct = sizeof(SYMBOL_INFO);
+  CHAR buffer[sizeof(SYMBOL_INFOW) + MAX_SYM_NAME * sizeof(WCHAR)];
+  PSYMBOL_INFOW pSymbol = (PSYMBOL_INFOW)buffer;
+  ZeroMemory(pSymbol, sizeof(SYMBOL_INFOW));
+  pSymbol->SizeOfStruct = sizeof(SYMBOL_INFOW);
   pSymbol->MaxNameLen = MAX_SYM_NAME;
   DWORD64 dwDisplacement = 0;
 
-  IMAGEHLP_LINE64 line;
-  ZeroMemory(&line, sizeof(IMAGEHLP_LINE64));
-  line.SizeOfStruct = sizeof(IMAGEHLP_LINE64);
+  // WCHAR szSymbolName[MAX_SYM_NAME];
+
+  IMAGEHLP_LINEW64 line;
+  ZeroMemory(&line, sizeof(IMAGEHLP_LINEW64));
+  line.SizeOfStruct = sizeof(IMAGEHLP_LINEW64);
   DWORD dwDisp = 0;
 
-  IMAGEHLP_MODULE64 moduleInfo;
-  ZeroMemory(&moduleInfo, sizeof(IMAGEHLP_MODULE64));
-  moduleInfo.SizeOfStruct = sizeof(IMAGEHLP_MODULE64);
+  IMAGEHLP_MODULEW64 moduleInfo;
+  ZeroMemory(&moduleInfo, sizeof(IMAGEHLP_MODULEW64));
+  moduleInfo.SizeOfStruct = sizeof(IMAGEHLP_MODULEW64);
   DWORD limited = 0;
 
   while (StackWalk64(image, hProcess, hThread, &frame, &ctx, NULL, SymFunctionTableAccess64, SymGetModuleBase64, NULL))
@@ -675,16 +680,19 @@ bool PrintStack(CONTEXT *context, HANDLE hProcess, HANDLE hThread)
     if (frame.AddrPC.Offset == 0 || limited > MAX_STACK_FRAMES)
       break;
 
-    SymFromAddr(hProcess, (DWORD64)frame.AddrPC.Offset, &dwDisplacement, pSymbol);
+    SymFromAddrW(hProcess, (DWORD64)frame.AddrPC.Offset, &dwDisplacement, pSymbol);
 
-    if (SymGetLineFromAddr64(hProcess, frame.AddrPC.Offset, &dwDisp, &line))
-      Log(L"\tat %s in \"%s\", line: %lu, address: 0x%0llX", pSymbol->Name, line.FileName, line.LineNumber, pSymbol->Address);
+    // if (!SymFromNameW(hProcess, szSymbolName, pSymbol))
+    //   wcscpy(szSymbolName, L"??");
+
+    if (SymGetLineFromAddrW64(hProcess, frame.AddrPC.Offset, &dwDisp, &line))
+      Log(L"\tat %ls in \"%ls\", line: %lu, address: 0x%0llX", pSymbol->Name, line.FileName, line.LineNumber, pSymbol->Address);
     else
       // failed to get line
-      Log(L"\tat %s, address 0x%0llX; more info: offset[0x%llX] error[%ld].", pSymbol->Name, pSymbol->Address, frame.AddrPC.Offset, GetLastError());
+      Log(L"\tat %ls, address 0x%0llX; more info: offset[0x%llX] error[%ld].", pSymbol->Name, pSymbol->Address, frame.AddrPC.Offset, GetLastError());
 
-    SymGetModuleInfo64(hProcess, frame.AddrPC.Offset, &moduleInfo);
-    Log(L"in \"%s\", loaded symbols from \"%s\".", moduleInfo.LoadedImageName, moduleInfo.LoadedPdbName);
+    SymGetModuleInfoW64(hProcess, frame.AddrPC.Offset, &moduleInfo);
+    Log(L"in \"%ls\", loaded symbols from \"%ls\".", moduleInfo.LoadedImageName, moduleInfo.LoadedPdbName);
 
     limited++;
     // more info:
