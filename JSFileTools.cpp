@@ -77,8 +77,13 @@ static FILE *fileOpenRelScript(const wchar_t *filename, const wchar_t *mode, JSC
   if (_wfopen_s(&f, fullPath, mode) != 0 || f == NULL)
   {
     char message[128];
+    char *szFile = UnicodeToAnsi(filename);
+
     _strerror_s(message, 128, NULL);
-    JS_ReportError(ctx, "Couldn't open file %ls: %s", filename, message);
+
+    JS_ReportError(ctx, "Couldn't open file %s: %s", szFile, message);
+    free(szFile);
+
     return nullptr;
   }
 

@@ -8,7 +8,7 @@ ECHO_GREEN_YELLOW:= $(ECHO) "\e[42;30m
 
 TARGET 		:= D2Boot.dll
 CC     		:= gcc
-LIBS   		:= -L./lib
+LIBS   		:= -L./lib -L./lib/quickjs
 # LDFLAGS		:= -m32 -pthread -fPIC -shared 
 LDFLAGS		:= -m32 -static-libstdc++ -static-libgcc -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive,--kill-at,--enable-stdcall-fixup -pthread -lShlwapi -ldbghelp -fPIC -shared
 # LDFLAGS		:= -m32 -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -pthread -fPIC -shared -Wl,--enable-stdcall-fixup
@@ -34,8 +34,8 @@ else
 CFLAGS				+= -g -O3 -DNDEBUG
 LIBS					+= -lquickjs.lto
 TARGET_FINAL	:= $(TARGET)
-TARGET 				:= $(subst .dll,.$(PREFIX).dll,$(TARGET))
 endif
+TARGET 				:= $(subst .dll,.$(PREFIX).dll,$(TARGET))
 CXX				:= g++
 # CXXFLAGS	:= $(CFLAGS) -DHAVE_CONFIG_H -D_MSC_VER=1700
 CXXFLAGS	:= $(CFLAGS) -DHAVE_CONFIG_H
@@ -69,10 +69,12 @@ $(BUILD_DIR)/%.res : %.rc
 	@windres --input-format=rc -O coff -F pe-i386 -i $(BUILD_DIR)/$< -o $@
 
 mkdir:
-	@$(ECHO_YELLOW)make build dir...$(ECHO_END)
+	@$(ECHO_YELLOW)make dir and libwinpthread.a file for build...$(ECHO_END)
 	@if [ ! -e "$(BUILD_DIR)/$(RESOURCE_DIR)" ]; then mkdir -p $(BUILD_DIR)/$(RESOURCE_DIR); fi
 	@if [ ! -e "$(BUILD_DIR)/Map/Diablo_II" ]; then mkdir -p $(BUILD_DIR)/Map/Diablo_II; fi
 #	@if [ ! -e "$(BUILD_DIR)/Scripts" ]; then cd $(BUILD_DIR);ln -s ../Scripts Scripts; fi
+	@cp /mingw32/lib/libwinpthread.a ./lib
+	@ar -d ./lib/libwinpthread.a version.o
 
 package: all
 	@$(ECHO_GREEN)packaging $(TARGET_FINAL)$(ECHO_END)
@@ -88,8 +90,8 @@ clean:
 	-rm -rf $(OBJS) $(TARGET) ${TARGET_FINAL}
 
 publish:
-	cd publish && cmd //C mklink D2Boot.ini D:\D2Boot\D2Boot.ini
+	cd publish && cmd //C mklink D2Boot.ini D:\hackSpace\D2Boot\D2Boot.ini
 	# cd publish && cmd //C dir
-	# cd publish && cmd //C "mklink /D Scripts D:\D2Boot\Scripts"
-	# cd publish && cmd //C mklink D2Boot.ini D:\D2Boot\D2Boot.ini
-	# cd publish && cmd //C mklink D2Boot.dll D:\D2Boot\release\D2Boot.dll
+	# cd publish && cmd //C "mklink /D Scripts D:\hackSpace\D2Boot\Scripts"
+	# cd publish && cmd //C mklink D2Boot.ini D:\hackSpace\D2Boot\D2Boot.ini
+	# cd publish && cmd //C mklink D2Boot.dll D:\hackSpace\D2Boot\release\D2Boot.dll

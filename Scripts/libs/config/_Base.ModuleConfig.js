@@ -1057,6 +1057,8 @@ export const Follower = function () {
   Config.Follower.Picker = false;
   Config.Follower.PickGold = true;
   Config.Follower.SwitchAct = true;
+  Config.AllowSay = false;
+
   Config.PublicMode = 2; // 1 = invite and accept, 2 = accept only, 3 = invite only, 0 = disable.
 
   Config.Cubing = true; // Set to true to enable cubing.

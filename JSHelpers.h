@@ -32,9 +32,14 @@
 
 JSValue BuildObject(JSContext *ctx, JSClassID classId, void *data = NULL);
 
+void JS_BootLoop(JSContext *ctx);
+
 void JS_ReportError(JSContext *ctx);
+void JS_ReportError(JSContext *ctx, JSValue exception_val);
 void JS_ReportError(JSContext *ctx, const char *szFormat, ...);
+
 void JS_PromiseTracker(JSContext *ctx, JSValueConst promise, JSValueConst reason, BOOL is_handled, void *opaque);
+
 JSModuleDef *JS_ModuleLoader(JSContext *ctx, const char *module_name, void *opaque);
 char *JS_ModuleNormalizeName(JSContext *ctx, const char *base_name, const char *name, void *opaque);
 

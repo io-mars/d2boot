@@ -58,9 +58,7 @@ private:
   char *szFileName;
   int execCount;
   ScriptState scriptState;
-  JSValue globalObject;
-  bool isLocked, isPaused, isReallyPaused, isAborted;
-
+  bool isLocked, isPausable, isPaused, isAborted;
   HANDLE threadHandle;
   CRITICAL_SECTION lock;
   ExecuteState execState;
@@ -94,16 +92,6 @@ public:
     return runtime;
   }
 
-  inline void SetPauseState(bool reallyPaused)
-  {
-    isReallyPaused = reallyPaused;
-  }
-
-  inline bool IsReallyPaused(void)
-  {
-    return isReallyPaused;
-  }
-
   inline const wchar_t *GetFilename(void)
   {
     return fileName;
@@ -114,15 +102,31 @@ public:
     return scriptState;
   }
 
-  inline void TriggerInterruptHandler(void)
+  inline void TriggerInterruptHandler(const bool evented = true)
   {
     if (hasActiveCX)
+    {
       JS_TriggerInterruptHandler(context);
+
+      // InterruptHandler will call ExecEvent
+      if (evented)
+        SetEvent(eventSignal);
+    }
   }
 
   inline int GetExecutionCount(void)
   {
     return execCount;
+  }
+
+  inline bool IsPausable(void)
+  {
+    return isPausable;
+  }
+
+  inline void SetPausable(bool bPausable)
+  {
+    isPausable = bPausable;
   }
 
   DWORD GetThreadId(void);
@@ -143,7 +147,7 @@ public:
   void ClearEvent(const char *evtName);
   void ClearAllEvents(void);
   void FireEvent(Event *);
-  std::list<Event *> EventList;
+  std::list<Event *> eventList;
 };
 
 DWORD WINAPI ScriptThread(void *data);

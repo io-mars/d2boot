@@ -58,7 +58,9 @@ Script *ScriptEngine::CompileFile(const wchar_t *file, ScriptState state, unsign
   }
   catch (std::exception &ex)
   {
-    Print(L"[\u00FFc1D2Boot :: exception\u00FFc0] compile file error: %s", ex.what());
+    wchar_t *wzWhat = AnsiToUnicode(ex.what());
+    Print(L"[\u00FFc1D2Boot :: exception\u00FFc0] compile file error: %ls", wzWhat);
+    free(wzWhat);
     free(fileName);
     return nullptr;
   }
@@ -167,7 +169,7 @@ bool ScriptEngine::Startup(void)
     if (wcslen(Vars.szConsole) > 0)
     {
       wchar_t file[_MAX_FNAME + _MAX_PATH];
-      swprintf_s(file, _countof(file), L"%s/%s", Vars.szScriptPath, Vars.szConsole);
+      swprintf_s(file, _countof(file), L"%ls/%ls", Vars.szScriptPath, Vars.szConsole);
       console = new Script(file, Command);
     }
     else
@@ -278,24 +280,25 @@ void ScriptEngine::StopAll(const bool forceStop)
   ForEachScript(StopScript, &helper, 1);
 }
 
-bool ScriptEngine::ToggleScript(const bool isPause)
+bool ScriptEngine::ToggleScript()
 {
   bool resumed = false;
   LockScriptList("ResumeScript");
 
   for (const auto &[name, script] : scripts)
   {
+    if (!script->isPausable)
+      continue;
+
     if (script->IsPaused())
     {
       script->Resume();
       resumed = true;
     }
-
-    if (isPause && script->IsRunning())
-    {
+    else
       script->Pause();
-    }
   }
+
   UnLockScriptList("ResumeScript");
   return resumed;
 }
@@ -329,11 +332,11 @@ bool ScriptEngine::DisposeScript(Script *script, bool erased)
 
   // clean all event
   script->hasActiveCX = false;
-  while (script->EventList.size() > 0)
+  while (script->eventList.size() > 0)
   {
     EnterCriticalSection(&Vars.cEventSection);
-    Event *evt = script->EventList.back();
-    script->EventList.pop_back();
+    Event *evt = script->eventList.back();
+    script->eventList.pop_back();
     LeaveCriticalSection(&Vars.cEventSection);
     ExecScriptEvent(evt, true); // clean list and pop events
   }
@@ -382,27 +385,23 @@ int InterruptHandler(JSRuntime *rt, void *opaque)
 {
   Script *script = (Script *)opaque;
 
-  bool pause = script->IsPaused();
-
-  if (pause)
-    script->SetPauseState(true);
-
   while (script->IsPaused())
   {
-    Sleep(50);
+    Sleep(200);
     JS_RunGC(rt);
   }
 
-  if (pause)
-    script->SetPauseState(false);
-
-  if (!(script->IsAborted() || ((script->GetState() == InGame) && ClientState() == ClientStateMenu)))
+  // InterruptHandler will be called by TriggerInterruptHandler, or by QuickJS itself
+  if (!!!(script->IsAborted() || (script->GetState() == InGame && ClientState() == ClientStateMenu)))
   {
     script->ExecEvent();
+
+    // safe return, should be FALSE, continue execution function in Quickjs
     return (script->IsAborted() || ((script->GetState() == InGame) && ClientState() == ClientStateMenu));
   }
   else
   {
+    // if aborted or exiting the game status,  it must return TRUE!, QuickJS exception and interrupted the script.
     return true;
   }
 }
@@ -545,6 +544,9 @@ bool ExecScriptEvent(Event *evt, bool clearList)
 
     return true;
   }
+
+  // safe free
+  JS_FreeValue(ctx, jsArgv);
 
   return false;
 }

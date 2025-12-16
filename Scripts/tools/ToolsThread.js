@@ -93,9 +93,9 @@ function ToolsThread() {
 
   this.keyEvent = function (key) {
     switch (key) {
-      case sdk.keys.PauseBreak: // pause default.js
-        Common.Toolsthread.togglePause();
-        break;
+      // case sdk.keys.PauseBreak: // pause default.js
+      //   Common.Toolsthread.togglePause();
+      //   break;
       case 74: //J for look
         let msg,
           unit = Game.getSelectedUnit();
@@ -254,7 +254,7 @@ function ToolsThread() {
           );
           Common.Toolsthread.cloneWalked = true;
 
-          Common.Toolsthread.togglePause();
+          // Common.Toolsthread.togglePause();
           Town.goToTown();
           showConsole();
           print("\xFFc4Diablo Walks the Earth");
@@ -309,6 +309,10 @@ function ToolsThread() {
   ];
 
   while (true) {
+    while (!me.gameReady) {
+      delay(100);
+    }
+
     try {
       if (me.gameReady && !me.inTown) {
         Config.UseHP > 0 &&

@@ -84,7 +84,9 @@ export const Loader = {
             );
           }
         } catch (error) {
-          console.error(error);
+          print(
+            `\xFFc1Load script \xFFc9${script} \xFFc1error:\xFFc0 ${error}`
+          );
         } finally {
           // // Dont run for last script as that will clear everything anyway
           // if (this.scriptIndex < this.scriptList.length) {

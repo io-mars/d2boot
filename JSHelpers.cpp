@@ -17,62 +17,81 @@ JSValue BuildObject(JSContext *ctx, JSClassID classId, void *data)
   return object;
 }
 
-static void ConsolePrintError(const char *error, const char *stack)
+static void ConsolePrintError(const wchar_t *error, const wchar_t *stack)
 {
   //!!NOTE!! must check first
   if (!error)
   {
-    Log(L"[D2Boot :: exception] !!warning!! get error NULL here, error: %s stack:%s", error, stack);
+    Log(L"[D2Boot :: exception] !!warning!! get error NULL here, error: %ls stack: %ls", error, stack);
     return;
   }
 
-  if (strcmp("InternalError: interrupted", error) == 0)
+  if (wcscmp(L"InternalError: interrupted", error) == 0)
   {
-    // Log(L"[D2Boot :: exception] dump error: %s stack:%s", error, stack);
+    // Log(L"[D2Boot :: exception] dump error: %ls stack:%ls", error, stack);
     return;
   }
 
-  Print(L"[\u00FFc1D2Boot :: exception\u00FFc0] dump error: %s, stack:%s", error, stack);
+  Print(L"[\u00FFc1D2Boot :: exception\u00FFc0] dump error: %ls, stack: %ls", error, stack);
 #ifndef DEBUG
-  Log(L"[D2Boot :: exception] dump error: %s, stack:%s", error, stack);
+  Log(L"[D2Boot :: exception] dump error: %ls, stack: %ls", error, stack);
 #endif
 }
 
+// void JSPrintValueWriteFile(void *opaque, const char *buf, size_t len)
+// {
+//   FILE *fo = (FILE *)opaque;
+//   fwrite(buf, 1, len, fo);
+// }
+
 static void DumpError(JSContext *ctx, JSValueConst exception_val)
 {
-  const char *szVal = JS_ToCString(ctx, exception_val);
+  // FILE *fo = fopen("error.txt", "w");
+  // JS_PrintValue(ctx, JSPrintValueWriteFile, fo, exception_val, nullptr);
+  // fclose(fo);
+
+  wchar_t *wzVal = nullptr;
+  JS_ToUnicodeString(ctx, &wzVal, exception_val);
 
   if (JS_IsError(ctx, exception_val))
   {
     JSValue stack = JS_GetPropertyStr(ctx, exception_val, "stack");
     if (JS_IsUndefined(stack) || JS_IsException(stack))
     {
-      ConsolePrintError(szVal, "get stack error!");
+      ConsolePrintError(wzVal, L"get stack error!");
 
+      free(wzVal);
       JS_FreeValue(ctx, stack);
-      JS_FreeCString(ctx, szVal);
       return;
     }
 
-    const char *szStack = JS_ToCString(ctx, stack);
-    char *stackString = strdup(szStack ? szStack : "nothing");
-    StringReplaceChar(stackString, '\n', ' ', strlen(stackString));
-    ConsolePrintError(szVal, stackString);
+    wchar_t *wzStackString = nullptr;
+    JS_ToUnicodeString(ctx, &wzStackString, stack);
 
-    JS_FreeCString(ctx, szStack);
-    free(stackString);
+    // wchar_t *wzStackString = strdup(szStack ? szStack : "nothing");
+    // StringReplaceChar(stackString, '\n', ' ', strlen(stackString));
+
+    ConsolePrintError(wzVal, wzStackString);
+
+    JS_FreeValue(ctx, stack);
+    free(wzStackString);
   }
   else
   {
-    ConsolePrintError(szVal, nullptr);
+    ConsolePrintError(wzVal, L"nothing");
   }
 
-  JS_FreeCString(ctx, szVal);
+  free(wzVal);
 }
 
 void JS_ReportError(JSContext *ctx)
 {
   JSValue exception_val = JS_GetException(ctx);
+  JS_ReportError(ctx, exception_val);
+}
+
+void JS_ReportError(JSContext *ctx, JSValue exception_val)
+{
   DumpError(ctx, exception_val);
   JS_FreeValue(ctx, exception_val);
 }
@@ -96,9 +115,44 @@ void JS_ReportError(JSContext *ctx, const char *szFormat, ...)
 
 void JS_PromiseTracker(JSContext *ctx, JSValueConst promise, JSValueConst reason, BOOL is_handled, void *opaque)
 {
-  if (!is_handled)
-  {
+  if (is_handled)
     DumpError(ctx, reason);
+}
+
+// static void JS_promise_rejection_check(JSContext *ctx)
+// {
+//   JSRuntime *rt = JS_GetRuntime(ctx);
+//   JSThreadState *ts = JS_GetRuntimeOpaque(rt);
+
+//   struct list_head *el;
+
+//   if (unlikely(!list_empty(&ts->rejected_promise_list)))
+//   {
+//     list_for_each(el, &ts->rejected_promise_list)
+//     {
+//       JSRejectedPromiseEntry *rp = list_entry(el, JSRejectedPromiseEntry, link);
+//       fprintf(stderr, "Possibly unhandled promise rejection: ");
+//       js_std_dump_error1(ctx, rp->reason);
+//     }
+//     exit(1);
+//   }
+// }
+
+void JS_BootLoop(JSContext *ctx)
+{
+  int err;
+  JSContext *ctx1;
+
+  for (;;)
+  {
+    err = JS_ExecutePendingJob(JS_GetRuntime(ctx), &ctx1);
+    if (err <= 0)
+    {
+      if (err < 0)
+        JS_ReportError(ctx1);
+
+      break;
+    }
   }
 }
 
@@ -109,9 +163,11 @@ static char *JS_ModuleNameAlias(JSContext *ctx, const char *base_name, const cha
 
   if (name[1] == '/')
   {
-    // !!should freed by quickjs!!
+    // !!free by quickjs!!
     filename = (char *)js_malloc(ctx, strlen(name) - 1 + wcslen(Vars.szScriptAtAlias));
-    sprintf(filename, "%ls%s", Vars.szScriptAtAlias, name + 1);
+    char *szAtAlias = UnicodeToAnsi(Vars.szScriptAtAlias);
+    sprintf(filename, "%s%s", szAtAlias, name + 1);
+    free(szAtAlias);
   }
   // else if (name[2] == '/')
   // {
@@ -221,9 +277,11 @@ JSModuleDef *JS_ModuleLoader(JSContext *ctx, const char *module_name, void *opaq
   uint8_t *buf;
   JSValue func_val;
   char szModuleFile[_MAX_FNAME + _MAX_PATH] = "";
+  char *szScriptPath = UnicodeToAnsi(Vars.szScriptPath);
 
   // set module's windows filename, only for open file.
-  sprintf_s(szModuleFile, _countof(szModuleFile), "%ls/%s", Vars.szScriptPath, module_name);
+  sprintf_s(szModuleFile, _countof(szModuleFile), "%s/%s", szScriptPath, module_name);
+  free(szScriptPath);
   // StringReplaceChar(szModuleFile, '/', '\\', strlen(szModuleFile));
 
   buf = js_load_file(ctx, &buf_len, szModuleFile);
@@ -377,6 +435,8 @@ DWORD JS_FillBaseStat(JSContext *ctx, JSValue *argv, int table, int row, int col
 int JS_ToUnicodeString(JSContext *ctx, wchar_t **target, JSValueConst val)
 {
   const char *szVal = JS_ToCString(ctx, val);
+
+  // default use UTF-8
   *target = AnsiToUnicode(szVal);
   JS_FreeCString(ctx, szVal);
   return 0;
@@ -384,6 +444,7 @@ int JS_ToUnicodeString(JSContext *ctx, wchar_t **target, JSValueConst val)
 
 JSValue JS_NewUTF8String(JSContext *ctx, const wchar_t *wsVal)
 {
+  // default use UTF-8
   char *szVal = UnicodeToAnsi(wsVal);
   JSValue val = JS_NewString(ctx, szVal);
   free(szVal);

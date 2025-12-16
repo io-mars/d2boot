@@ -37,12 +37,12 @@ char *UnicodeToAnsi(const wchar_t *str, UINT codepage)
   return buf;
 }
 
-void HexDump(const unsigned char *pData, const unsigned long dwSize)
+void HexDump(const unsigned char *pData, const unsigned long dwSize, const int nFlag)
 {
   const unsigned char *c = pData;
   unsigned long dws = dwSize;
 
-  printf("\nDumping %lu bytes from [%p]:\n", dwSize, pData);
+  printf("\nDumping %lu bytes from [%p] flag [%d]:\n", dwSize, pData, nFlag);
 
   while (dws > 0)
   {
@@ -108,17 +108,47 @@ void StringToLower(wchar_t *p)
     *p = towlower(*p);
 }
 
+// void ToColorString(const wchar_t *s, char *p)
 void ToColorString(char *p)
 {
-  for (; *p; ++p)
+  size_t len = strlen(p);
+  if (len < 3)
+    return;
+
+  for (size_t i = 0; i < len - 2; ++i)
   {
-    // ?c->ÿc
-    if (*p == 0x3F && *(p + 1) == 0x63)
+    // ?c->ÿc  color:0-?
+    if (p[i] == 0x3F && p[i + 1] == 0x63 && p[i + 2] & 0x30)
     {
-      *p = 0xFF;
-      ++p;
+      p[i] = 0xFF;
+      i += 2;
     }
   }
+
+  //  p+n OOB error!
+  // for (; *p; ++p)
+  // {
+  //   // ?c->ÿc  color:0-?
+  //   if (*p == 0x3F && *(p + 1) == 0x63 && *(p + 2) & 0x30)
+  //   {
+  //     *p = 0xFF;
+  //     p += 2;
+  //   }
+  // }
+
+  // size_t len = wcslen(s);
+  // if (len == 0 || len != strlen(p))
+  //   return;
+
+  // for (size_t i = 0; i < len; ++i)
+  // {
+  //   // ?c->ÿc
+  //   if (s[i] == 0xFF && s[i + 1] == 0x63)
+  //   {
+  //     p[i] = 0xFF;
+  //     ++i;
+  //   }
+  // }
 }
 
 bool StringToBool(const char *str)
@@ -245,7 +275,7 @@ bool SwitchToProfile(const wchar_t *profile)
 
   wchar_t file[_MAX_FNAME + _MAX_PATH] = L"", defaultStarter[_MAX_FNAME] = L"", defaultConsole[_MAX_FNAME] = L"", defaultGame[_MAX_FNAME] = L"",
                             scriptPath[_MAX_PATH] = L"", scriptAtAlias[_MAX_PATH] = L"", testScript[_MAX_PATH] = L"";
-  swprintf_s(file, _countof(file), L"%sD2Boot.ini", Vars.szPath);
+  swprintf_s(file, _countof(file), L"%lsD2Boot.ini", Vars.szPath);
 
   GetPrivateProfileString(profile, L"ScriptPath", L"scripts", scriptPath, _MAX_PATH, file);
   GetPrivateProfileString(profile, L"DefaultConsoleScript", L"", defaultConsole, _MAX_FNAME, file);
@@ -255,7 +285,7 @@ bool SwitchToProfile(const wchar_t *profile)
   GetPrivateProfileString(profile, L"DefaultTestScript", L"", testScript, _MAX_FNAME, file);
 
   wcscpy_s(Vars.szProfile, 256, profile);
-  swprintf_s(Vars.szScriptPath, _MAX_PATH, L"%s%s", Vars.szPath, scriptPath);
+  swprintf_s(Vars.szScriptPath, _MAX_PATH, L"%ls%ls", Vars.szPath, scriptPath);
   if (wcslen(defaultConsole) > 0)
     wcscpy_s(Vars.szConsole, _MAX_FNAME, defaultConsole);
   if (wcslen(defaultGame) > 0)
@@ -283,7 +313,7 @@ void InitSettings(void)
       logConsole[6], enableUnsupported[6], consoleFont[6],
       defaultTestScript[_MAX_FNAME], defaultScriptAtAlias[_MAX_FNAME];
 
-  swprintf_s(fname, _countof(fname), L"%sD2Boot.ini", Vars.szPath);
+  swprintf_s(fname, _countof(fname), L"%lsD2Boot.ini", Vars.szPath);
 
   GetPrivateProfileString(L"settings", L"ScriptPath", L"Scripts", scriptPath, _MAX_PATH, fname);
   GetPrivateProfileString(L"settings", L"DefaultConsoleScript", L"", defaultConsole, _MAX_FNAME, fname);
@@ -308,7 +338,7 @@ void InitSettings(void)
   // GetPrivateProfileString(L"settings", L"ForwardMessageBox", L"false", forwardMessageBox, 6, fname);
   GetPrivateProfileString(L"settings", L"ConsoleFont", L"0", consoleFont, 6, fname);
 
-  swprintf_s(Vars.szScriptPath, _MAX_PATH, L"%s%s", Vars.szPath, scriptPath);
+  swprintf_s(Vars.szScriptPath, _MAX_PATH, L"%ls%ls", Vars.szPath, scriptPath);
   wcscpy_s(Vars.szStarter, _MAX_FNAME, defaultStarter);
   wcscpy_s(Vars.szConsole, _MAX_FNAME, defaultConsole);
   wcscpy_s(Vars.szDefault, _MAX_FNAME, defaultGame);
@@ -407,7 +437,7 @@ ScriptState GetStarterScriptState(void)
 bool StartScript(const wchar_t *scriptname, const ScriptState state)
 {
   wchar_t file[_MAX_FNAME + _MAX_PATH];
-  swprintf_s(file, _countof(file), L"%s/%s", Vars.szScriptPath, scriptname);
+  swprintf_s(file, _countof(file), L"%ls/%ls", Vars.szScriptPath, scriptname);
   Script *script = ScriptEngine::CompileFile(file, state);
   if (script)
     return ScriptEngine::EvalScript(script);
@@ -568,37 +598,38 @@ void GameTools(void)
   }
 }
 
-bool ToggleScript(const bool isPause)
+bool ToggleScript()
 {
-  if (ScriptEngine::ToggleScript(isPause))
+  if (ScriptEngine::ToggleScript())
   {
     Print(L"\u00FFc2Resuming.");
     return true;
   }
+  Print(L"\u00FFc1Paused.");
   return false;
 }
 
-char *DllLoadAddrStrs()
+wchar_t *DllLoadAddrStrs()
 {
   const wchar_t *dlls[] = {L"D2Client.DLL", L"D2Common.DLL", L"D2Gfx.DLL", L"D2Lang.DLL", L"D2Win.DLL", L"D2Net.DLL", L"D2Game.DLL",
                            L"D2Launch.DLL", L"Fog.DLL", L"BNClient.DLL", L"Storm.DLL", L"D2Cmp.DLL", L"D2Multi.DLL"};
   size_t strMaxLen;
-  char *result;
-  char lineBuf[80];
+  wchar_t *result;
+  wchar_t lineBuf[80];
   unsigned int i;
 
   strMaxLen = sizeof(lineBuf) * sizeof(dlls) / sizeof(dlls[0]);
-  result = (char *)malloc(strMaxLen);
+  result = (wchar_t *)malloc(strMaxLen);
 
-  result[0] = '\0';
+  result[0] = L'\0';
 
   for (i = 0; i < sizeof(dlls) / sizeof(dlls[0]); ++i)
   {
-    sprintf_s(lineBuf, sizeof(lineBuf), "%ls loaded at: 0x%08X.", dlls[i], GetModuleHandle(dlls[i]));
-    strcat_s(result, strMaxLen, lineBuf);
+    swprintf(lineBuf, sizeof(lineBuf), L"%ls loaded at: 0x%08X.", dlls[i], GetModuleHandle(dlls[i]));
+    wcscat_s(result, strMaxLen, lineBuf);
     if (i != (sizeof(dlls) / sizeof(dlls[0]) - 1))
     {
-      strcat_s(result, strMaxLen, "\n");
+      wcscat_s(result, strMaxLen, L"\n");
     }
   }
 
@@ -713,27 +744,27 @@ LONG WINAPI ExceptionHandler(EXCEPTION_POINTERS *ptrs)
   DWORD base = Vars.pModule ? Vars.pModule->dwBaseAddress : (DWORD)Vars.hModule;
 
   int len;
-  char *szString;
-  char *dllAddrs;
-  char format[] = "EXCEPTION!\n*** 0x%08lX at 0x%p\n"
-                  "D2Boot loaded at: 0x%08lX\n"
-                  "Registers:\n"
-                  "\tEIP: 0x%08lX, ESP: 0x%08lX\n"
-                  "\tCS: 0x%04lX, DS: 0x%04lX, ES: 0x%04lX, SS: 0x%04lX, FS: 0x%04lX, GS: 0x%04lX\n"
-                  "\tEAX: 0x%08lX, EBX: 0x%08lX, ECX: 0x%08lX, EDX: 0x%08lX, ESI: 0x%08lX, EDI: 0x%08lX, EBP: 0x%08lX, FLG: 0x%08lX\n";
+  wchar_t *szString;
+  wchar_t *dllAddrs;
+  wchar_t format[] = L"EXCEPTION!\n*** 0x%08lX at 0x%p\n"
+                     "D2Boot loaded at: 0x%08lX\n"
+                     "Registers:\n"
+                     "\tEIP: 0x%08lX, ESP: 0x%08lX\n"
+                     "\tCS: 0x%04lX, DS: 0x%04lX, ES: 0x%04lX, SS: 0x%04lX, FS: 0x%04lX, GS: 0x%04lX\n"
+                     "\tEAX: 0x%08lX, EBX: 0x%08lX, ECX: 0x%08lX, EDX: 0x%08lX, ESI: 0x%08lX, EDI: 0x%08lX, EBP: 0x%08lX, FLG: 0x%08lX\n";
 
-  len = _scprintf(format,
-                  rec->ExceptionCode, rec->ExceptionAddress, base, ctx->Eip, ctx->Esp, ctx->SegCs, ctx->SegDs, ctx->SegEs, ctx->SegSs, ctx->SegFs, ctx->SegGs, ctx->Eax,
-                  ctx->Ebx, ctx->Ecx, ctx->Edx, ctx->Esi, ctx->Edi, ctx->Ebp, ctx->EFlags);
+  len = _scwprintf(format,
+                   rec->ExceptionCode, rec->ExceptionAddress, base, ctx->Eip, ctx->Esp, ctx->SegCs, ctx->SegDs, ctx->SegEs, ctx->SegSs, ctx->SegFs, ctx->SegGs, ctx->Eax,
+                   ctx->Ebx, ctx->Ecx, ctx->Edx, ctx->Esi, ctx->Edi, ctx->Ebp, ctx->EFlags);
 
-  szString = (char *)malloc((len + 1) * sizeof(char));
-  sprintf_s(szString, len + 1,
-            format,
-            rec->ExceptionCode, rec->ExceptionAddress, base, ctx->Eip, ctx->Esp, ctx->SegCs, ctx->SegDs, ctx->SegEs, ctx->SegSs, ctx->SegFs, ctx->SegGs, ctx->Eax,
-            ctx->Ebx, ctx->Ecx, ctx->Edx, ctx->Esi, ctx->Edi, ctx->Ebp, ctx->EFlags);
+  szString = (wchar_t *)malloc((len + 1) * sizeof(wchar_t));
+  swprintf_s(szString, len + 1,
+             format,
+             rec->ExceptionCode, rec->ExceptionAddress, base, ctx->Eip, ctx->Esp, ctx->SegCs, ctx->SegDs, ctx->SegEs, ctx->SegSs, ctx->SegFs, ctx->SegGs, ctx->Eax,
+             ctx->Ebx, ctx->Ecx, ctx->Edx, ctx->Esi, ctx->Edi, ctx->Ebp, ctx->EFlags);
 
   dllAddrs = DllLoadAddrStrs();
-  Log(L"%s\n%s", szString, dllAddrs);
+  Log(L"%ls\n%ls", szString, dllAddrs);
 
   free(dllAddrs);
   free(szString);

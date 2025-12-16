@@ -22,37 +22,40 @@ import { Cubing } from "@/common/Cubing.js";
 function TownChicken() {
   let townCheck = false;
 
-  this.togglePause = function () {
-    let scripts = [
-      "default.js",
-      "tools/antihostile.js",
-      "tools/rushthread.js",
-      "tools/CloneKilla.js",
-    ];
+  //set the TownChicken is unpausable
+  getScript(true).pausable = false;
 
-    for (let i = 0; i < scripts.length; i += 1) {
-      let script = getScript(scripts[i]);
+  // this.togglePause = function () {
+  //   let scripts = [
+  //     "default.js",
+  //     "tools/antihostile.js",
+  //     "tools/rushthread.js",
+  //     "tools/CloneKilla.js",
+  //   ];
 
-      if (script) {
-        if (script.running) {
-          scripts[i] === "default.js" && print("\xFFc1Pausing.");
-          script.pause();
-        } else {
-          if (scripts[i] === "default.js") {
-            // resume only if clonekilla isn't running
-            if (!getScript("tools/clonekilla.js")) {
-              console.log("\xFFc2Resuming.");
-              script.resume();
-            }
-          } else {
-            script.resume();
-          }
-        }
-      }
-    }
+  //   for (let i = 0; i < scripts.length; i += 1) {
+  //     let script = getScript(scripts[i]);
 
-    return true;
-  };
+  //     if (script) {
+  //       if (script.running) {
+  //         scripts[i] === "default.js" && print("\xFFc1Pausing.");
+  //         script.pause();
+  //       } else {
+  //         if (scripts[i] === "default.js") {
+  //           // resume only if clonekilla isn't running
+  //           if (!getScript("tools/clonekilla.js")) {
+  //             console.log("\xFFc2Resuming.");
+  //             script.resume();
+  //           }
+  //         } else {
+  //           script.resume();
+  //         }
+  //       }
+  //     }
+  //   }
+
+  //   return true;
+  // };
 
   addEventListener("scriptmsg", (msg) => {
     if (typeof msg === "string" && msg === "townCheck") {
@@ -93,7 +96,7 @@ function TownChicken() {
 
         continue;
       }
-      this.togglePause();
+      // this.togglePause();
 
       while (!me.gameReady) {
         if (me.dead) return;
@@ -111,7 +114,7 @@ function TownChicken() {
 
         return;
       } finally {
-        this.togglePause();
+        // this.togglePause();
 
         townCheck = false;
       }

@@ -251,9 +251,15 @@ int WINAPI LogMessageBoxA_Intercept(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, 
 {
   GetStackWalk();
 
-  char *dllAddrs;
-  Log(L"Error message box, caption: \"%s\", message:\n%s\n%s", lpCaption, lpText, dllAddrs = DllLoadAddrStrs());
+  wchar_t *dllAddrs, *wzText, *wzCaption;
+  wzText = AnsiToUnicode(lpText);
+  wzCaption = AnsiToUnicode(lpCaption);
+
+  Log(L"Error message box, caption: \"%ls\", message:\n%ls\n%ls", wzCaption, wzText, dllAddrs = DllLoadAddrStrs());
   free(dllAddrs);
+  free(wzText);
+  free(wzCaption);
+
   return MessageBoxA(hWnd, lpText, lpCaption, uType);
 }
 

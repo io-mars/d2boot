@@ -1,9 +1,12 @@
 import * as boot from "boot";
 import { D2Bot, DataFile } from "@/OOG.js";
 
-function HeardBeat() {
+function HeartBeat() {
   D2Bot.init();
   boot.print("\xFFc9Heartbeat\xFFc0 \xFFc2loaded\xFFc0");
+
+  //set the HeartBeat script is unpausable
+  boot.getScript(true).pausable = false;
 
   // function togglePause() {
   //   let script = getScript();
@@ -47,4 +50,4 @@ function HeardBeat() {
   }
 }
 
-HeardBeat();
+HeartBeat();

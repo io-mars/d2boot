@@ -830,6 +830,7 @@ static void InsertStatsNow(Stat *pStat, int nStat, JSContext *ctx, JSValue *pArr
 
     if (JS_IsUndefined(index))
     {
+      // a object!! not a array!
       JS_SetPropertyUint32(ctx, *pArray, pStat[nStat].wStatIndex, val);
       return;
     }
@@ -850,10 +851,13 @@ static void InsertStatsNow(Stat *pStat, int nStat, JSContext *ctx, JSValue *pArr
       // len++;
       // don't needed set pArray again
       JS_DefinePropertyValueUint32(ctx, index, len, val, JS_PROP_C_W_E);
+
+      // free now, avoid object leaks!
+      JS_FreeValue(ctx, index);
     }
     else
     {
-      // it's not an array, build one
+      // build an array at first time
       JSValue arr = JS_NewArray(ctx);
       JS_DefinePropertyValueUint32(ctx, arr, 0, index, JS_PROP_C_W_E);
       JS_DefinePropertyValueUint32(ctx, arr, 1, val, JS_PROP_C_W_E);
@@ -896,11 +900,14 @@ static void InsertStatsToGenericObject(UnitAny *pUnit, StatList *pStatList, JSCo
   if ((pStatList->dwUnitId == pUnit->dwUnitId && pStatList->dwUnitType == pUnit->dwType) || pStatList->pUnit == pUnit)
   {
     pStat = pStatList->StatVec.pStats;
+
     for (int nStat = 0; nStat < pStatList->StatVec.wCount; nStat++)
     {
       InsertStatsNow(pStat, nStat, ctx, pArray);
     }
   }
+
+  // STATLIST_OVERLAY?
   if (pStatList->dwFlags >> 24 & 0x80)
   {
     pStat = pStatList->SetStatVec.pStats;
@@ -1302,18 +1309,18 @@ JSAPI_FUNC(my_overhead)
   if (!JS_IsNull(argv[0]) && JS_IsString(argv[0]))
   {
     wchar_t *lpszText = nullptr;
+    // utf-8 to unicode
     JS_ToUnicodeString(ctx, &lpszText, argv[0]);
 
-    // utf-8
-    // char *lpszText = (char *)JS_ToCString(ctx, argv[0]);
     if (lpszText && lpszText[0])
     {
       // Convert back to multibyte in locale code page
-      char *szText = UnicodeToAnsi(lpszText, CP_ACP);
+      char *szText = UnicodeToAnsi(lpszText, CP_LATIN1);
 
       // Unicode 0xFF 0x63 -- > CP_ACP-- > ascii 0x3F 0x63
       // the msg have 3*2(ÿc{x}) color byte length
-      ToColorString(szText);
+      // ToColorString(lpszText, szText);
+
       OverheadMsg *pMsg = D2COMMON_GenerateOverheadMsg(0, szText, *p_D2CLIENT_OverheadTrigger);
 
       if (pMsg)

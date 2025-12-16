@@ -103,7 +103,7 @@ JSAPI_FUNC(my_selectChar)
   }
 
   wchar_t charname[24], file[_MAX_FNAME + MAX_PATH];
-  swprintf_s(file, _countof(file), L"%sD2Boot.ini", Vars.szPath);
+  swprintf_s(file, _countof(file), L"%lsD2Boot.ini", Vars.szPath);
   GetPrivateProfileString(profile, L"character", L"ERROR", charname, _countof(file), file);
 
   free(profile);
@@ -226,12 +226,12 @@ JSAPI_FUNC(my_addProfile)
   }
 
   wchar_t file[_MAX_FNAME + _MAX_PATH];
-  swprintf_s(file, _countof(file), L"%sD2Boot.ini", Vars.szPath);
+  swprintf_s(file, _countof(file), L"%lsD2Boot.ini", Vars.szPath);
 
   if (!Profile::ProfileExists(args[0]))
   {
     wchar_t settings[600] = L"";
-    swprintf_s(settings, _countof(settings), L"mode=%s\tgateway=%s\tusername=%s\tpassword=%s\tcharacter=%s\tspdifficulty=%d\t", args[1], args[2], args[3], args[4],
+    swprintf_s(settings, _countof(settings), L"mode=%ls\tgateway=%ls\tusername=%ls\tpassword=%ls\tcharacter=%ls\tspdifficulty=%d\t", args[1], args[2], args[3], args[4],
                args[5], spdifficulty);
 
     StringReplaceChar(settings, '\t', '\0', 600);

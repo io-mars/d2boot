@@ -11,7 +11,7 @@
 // using namespace std;
 
 Script::Script(const wchar_t *file, ScriptState state, unsigned int argc, void **argv)
-    : script(JS_NULL), argc(argc), argv(argv), execCount(0), scriptState(state), globalObject(JS_NULL), isPaused(false), isReallyPaused(false), isAborted(false), threadHandle(INVALID_HANDLE_VALUE), threadId(0)
+    : script(JS_NULL), argc(argc), argv(argv), execCount(0), scriptState(state), isPausable(true), isPaused(false), isAborted(false), threadHandle(INVALID_HANDLE_VALUE), threadId(0)
 {
   InitializeCriticalSection(&lock);
   hasActiveCX = false;
@@ -48,18 +48,16 @@ Script::~Script()
   // the dup callback func freeValue, DisposeScript have called ClearAllEvents
   ClearAllEvents();
 
-  // crashed when free script!
-  //  if (script)
-  //  {
-  //    JS_FreeValue(context, script);
-  //  }
+  JS_FreeValue(context, script);
 
-  // JS_FreeValue(context, script);
+  // js_std_free_handlers(runtime);
+
   if (context)
   {
     JS_FreeContext(context);
     context = nullptr;
   }
+
   if (runtime)
   {
     JS_FreeRuntime(runtime);
@@ -111,10 +109,9 @@ void Script::RunCommand(const wchar_t *command)
   // evt->meta = command;
 
   EnterCriticalSection(&Vars.cEventSection);
-  evt->owner->EventList.push_front(evt);
+  evt->owner->eventList.push_front(evt);
   LeaveCriticalSection(&Vars.cEventSection);
   evt->owner->TriggerInterruptHandler();
-  SetEvent(evt->owner->eventSignal);
 }
 
 bool Script::BeginThread(LPTHREAD_START_ROUTINE ThreadFunc)
@@ -161,10 +158,11 @@ void Script::Run(void)
   // set promise rejection tracker
   JS_SetHostPromiseRejectionTracker(runtime, JS_PromiseTracker, nullptr);
   // add console and print support
-  js_std_add_helpers(context, argc, (char **)argv);
+  // js_std_add_helpers(context, argc, (char **)argv);
 
-  js_init_module_std(context, "std");
-  js_init_module_os(context, "os");
+  // js_std_init_handlers(runtime);
+  // js_init_module_std(context, "std");
+  // js_init_module_os(context, "os");
   js_init_module_boot(context, "boot");
 
   JS_SetInterruptHandler(runtime, InterruptHandler, this);
@@ -232,24 +230,13 @@ void Script::Run(void)
   if (JS_IsException(val))
   {
     execState = ExecuteState::Stopped;
-    JS_ReportError(context);
+    // free val inside JS_ReportError
+    JS_ReportError(context, val);
     return;
   }
 
   // js_std_loop(context);
-  int err;
-  JSContext *ctx1;
-  for (;;)
-  {
-    err = JS_ExecutePendingJob(JS_GetRuntime(context), &ctx1);
-    if (err <= 0)
-    {
-      if (err < 0)
-        JS_ReportError(ctx1);
-
-      break;
-    }
-  }
+  JS_BootLoop(context);
 
   JS_FreeValue(context, val);
 
@@ -263,7 +250,6 @@ void Script::Pause(void)
     isPaused = true;
 
   TriggerInterruptHandler();
-  SetEvent(eventSignal);
 }
 
 void Script::Join(void)
@@ -282,7 +268,6 @@ void Script::Resume(void)
     isPaused = false;
 
   TriggerInterruptHandler();
-  SetEvent(eventSignal);
 }
 
 bool Script::IsPaused(void)
@@ -297,10 +282,10 @@ void Script::Stop(bool force, bool reallyForce)
     return;
 
   EnterCriticalSection(&lock);
+
   // tell everyone else that the script is aborted FIRST
   isAborted = true;
   isPaused = false;
-  isReallyPaused = false;
   if (GetState() != Command)
   {
     const wchar_t *displayName = fileName + wcslen(Vars.szScriptPath) + 1;
@@ -309,7 +294,6 @@ void Script::Stop(bool force, bool reallyForce)
 
   // trigger call back so script ends
   TriggerInterruptHandler();
-  SetEvent(eventSignal);
 
   // normal wait: 500ms, forced wait: 300ms, really forced wait: 100ms
   int maxCount = (force ? (reallyForce ? 10 : 30) : 50);
@@ -427,24 +411,23 @@ void Script::ClearAllEvents(void)
 void Script::FireEvent(Event *evt)
 {
   EnterCriticalSection(&Vars.cEventSection);
-  evt->owner->EventList.push_front(evt);
+  evt->owner->eventList.push_front(evt);
   LeaveCriticalSection(&Vars.cEventSection);
 
   if (evt->owner && evt->owner->IsRunning())
   {
     evt->owner->TriggerInterruptHandler();
   }
-
-  SetEvent(eventSignal);
 }
 
 void Script::ExecEvent(void)
 {
-  while (EventList.size() > 0 && !!!(IsAborted() || ((GetState() == InGame) && ClientState() == ClientStateMenu)))
+  // not InGame and ClientStateMenu status, == has a higher priority than &&
+  while (eventList.size() > 0 && !!!(IsAborted() || (GetState() == InGame && ClientState() == ClientStateMenu)))
   {
     EnterCriticalSection(&Vars.cEventSection);
-    Event *evt = EventList.back();
-    EventList.pop_back();
+    Event *evt = eventList.back();
+    eventList.pop_back();
     LeaveCriticalSection(&Vars.cEventSection);
     // DEBUG_LOG("--ExecEvent--event name:%s--GetShortFilename:%ls", evt->meta->name, evt->owner->GetShortFilename());
 

@@ -5,10 +5,12 @@
 
 #include <windows.h>
 
+#define CP_LATIN1 1252
+
 wchar_t *AnsiToUnicode(const char *str, UINT codepage = CP_UTF8);
 char *UnicodeToAnsi(const wchar_t *str, UINT codepage = CP_UTF8);
 
-void HexDump(const unsigned char *pData, const unsigned long dwSize);
+void HexDump(const unsigned char *pData, const unsigned long dwSize, const int nFlag = 0);
 char *ByteToArray(const unsigned char *pData, const unsigned long dwSize);
 
 void StringToLower(char *p);
@@ -36,13 +38,13 @@ void GameJoined(void);
 void MenuEntered(bool beginStarter);
 
 void GameTools(void);
-bool ToggleScript(const bool isPause = false);
+bool ToggleScript();
 
 // unsigned __int32 __fastcall sfh(const char *data, int len);
 
 bool GetStackWalk();
 bool PrintStack(CONTEXT *context, HANDLE hProcess, HANDLE hThread);
-char *DllLoadAddrStrs();
+wchar_t *DllLoadAddrStrs();
 LONG WINAPI ExceptionHandler(EXCEPTION_POINTERS *ptrs);
 
 #endif

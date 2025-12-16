@@ -19,7 +19,7 @@ BEGIN
     BLOCK "080904b0"
     BEGIN
       VALUE "CompanyName", "iomars.net"
-      VALUE "FileDescription", "A boot for diablo II."
+      VALUE "FileDescription", "A bot for Diablo II 1.13d."
       VALUE "FileVersion", "#VERSION"
       VALUE "InternalName", "D2Boot"
       VALUE "LegalCopyright", "Copyright (c) 2022 iomars.net"

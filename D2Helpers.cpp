@@ -116,18 +116,18 @@ void LogNoFormat(const wchar_t *szString)
 {
   SYSTEMTIME time;
   GetLocalTime(&time);
-  char szTime[13] = "";
-  sprintf(szTime, "%d%02d%02d", time.wYear, time.wMonth, time.wDay);
+  wchar_t szTime[13] = L"";
+  wsprintf(szTime, L"%d%02d%02d", time.wYear, time.wMonth, time.wDay);
 #ifdef DEBUG
   FILE *log = stderr;
 #else
   wchar_t path[_MAX_PATH + _MAX_FNAME] = L"";
-  swprintf(path, _countof(path), L"%lsd2boot-%ls-%s.log", Vars.szPath, Vars.szProfile, szTime);
+  swprintf(path, _countof(path), L"%lsd2boot-%ls-%ls.log", Vars.szPath, Vars.szProfile, szTime);
   FILE *log = _wfsopen(path, L"a+", _SH_DENYNO);
 #endif
   static DWORD id = GetProcessId(GetCurrentProcess());
-  sprintf(szTime, "%02d:%02d:%02d.%03d", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
-  fwprintf(log, L"[%s] D2Boot %ld: %ls\n", szTime, id, szString);
+  wsprintf(szTime, L"%02d:%02d:%02d.%03d", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+  fwprintf(log, L"[%ls] D2Boot %ld: %ls\n", szTime, id, szString);
 #ifndef DEBUG
   fflush(log);
   fclose(log);
@@ -297,7 +297,7 @@ CellFile *LoadCellFile(const wchar_t *lpszPath, DWORD bMPQ)
   {
     // Check in our directory first
     wchar_t path[_MAX_FNAME + _MAX_PATH];
-    swprintf_s(path, _countof(path), L"%s\\%s", Vars.szScriptPath, lpszPath);
+    swprintf_s(path, _countof(path), L"%ls\\%ls", Vars.szScriptPath, lpszPath);
 
     HANDLE hFile = OpenFileRead(path);
 
@@ -574,7 +574,8 @@ void Say(const wchar_t *szFormat, ...)
   // help button and ! ok msg for disconnected
   else if (findControl(CONTROL_BUTTON, 5308, -1, 187, 470, 80, 20) && (!findControl(CONTROL_BUTTON, 5102, -1, 351, 337, 96, 32)))
   {
-    char *lBuffer = UnicodeToAnsi(wsString, CP_ACP);
+    char *lBuffer = UnicodeToAnsi(wsString, CP_LATIN1);
+
     memcpy((char *)p_D2MULTI_ChatBoxMsg, lBuffer, strlen(lBuffer) + 1);
     D2MULTI_DoChat();
     free(lBuffer);

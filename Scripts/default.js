@@ -225,6 +225,9 @@ async function main() {
   // Go;
   await Loader.init();
 
+  // safe check, after Loader,maybe NOT in game!!
+  if (!me.gameReady) return false;
+
   if (
     Config.MinGameTime &&
     getTickCount() - startTime < Config.MinGameTime * 1000
@@ -243,7 +246,7 @@ async function main() {
         delay(1000);
       }
     } catch (e1) {
-      print(e1);
+      console.error(e1);
     }
   }
 
@@ -265,7 +268,7 @@ async function main() {
         sojCounter += 1;
       }
     } catch (e2) {
-      print(e2);
+      console.error(e2);
     }
   }
 

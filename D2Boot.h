@@ -3,7 +3,7 @@
 #ifndef __D2BOOT_H__
 #define __D2BOOT_H__
 
-#define D2BOOT_MAJOR L"1.1.3"
+#define D2BOOT_MAJOR L"1.1.5"
 #ifdef DEBUG
 #define D2BOOT_VERSION D2BOOT_MAJOR L"d"
 #else
@@ -102,7 +102,7 @@ struct Variables
   // std::queue<std::wstring> qPrintBuffer;
   // std::map<const wchar_t *, CellFile *> mCachedCellFiles;
   // std::vector<std::pair<DWORD, DWORD>> vUnitList;
-  // std::list<Event*> EventList;
+  // std::list<Event*> lEventList;
   CRITICAL_SECTION cEventSection;
   // CRITICAL_SECTION cRoomSection;
   // CRITICAL_SECTION cMiscSection;

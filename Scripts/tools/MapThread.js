@@ -7,12 +7,15 @@ import {
   delay,
   hideConsole,
   addEventListener,
-  load,
+  say,
+  getDistance,
 } from "boot";
 
 import "@/common/Prototypes.js";
 import { sdk } from "@/modules/sdk.js";
 import { Config } from "@/common/Config.js";
+import { Pather } from "@/common/Pather.js";
+import { Game } from "@/common/Misc.js";
 
 import {
   ActionHooks,
@@ -158,11 +161,85 @@ const MapThread = {
     }
   },
 
+  announce(msg = "") {
+    say(msg);
+  },
+
+  keyEvent(key) {
+    switch (key) {
+      case sdk.keys.F1:
+        if (me.inTown) break;
+
+        if (me.area === sdk.areas.DuranceofHateLvl3) {
+          let mephisto = Game.getMonster(sdk.monsters.Mephisto);
+          //death or corpse disappear
+          if (
+            (mephisto &&
+              (mephisto.mode === sdk.monsters.mode.Death ||
+                mephisto.mode === sdk.monsters.mode.Dead)) ||
+            (!mephisto && me.x <= 17590)
+          ) {
+            this.announce("a4");
+            break;
+          }
+        }
+
+        if (me.area === sdk.areas.UberTristram) {
+          this.announce("3b");
+          break;
+        }
+
+        if (me.area === sdk.areas.MooMooFarm) {
+          this.announce("cow");
+          break;
+        }
+
+        Pather.makePortal();
+        this.announce("1");
+        break;
+      case sdk.keys.F2: // F2
+        this.announce("bo");
+
+        break;
+      case sdk.keys.F3: // F3
+        if (me.inTown) {
+          this.announce("th");
+        } else {
+          this.announce(
+            "/m " +
+              Config.Follower.AuraHelper +
+              " " +
+              Config.Follower.AuraHelper +
+              " aura 109"
+          );
+        }
+
+        break;
+      case sdk.keys.F4: // F4
+        this.announce("/m " + Config.Follower.AuraHelper + " ah");
+
+        break;
+      case sdk.keys.Backspace: // BackSpace
+        if (me.area === sdk.areas.UberTristram) {
+          this.announce("3bt");
+          break;
+        }
+
+        let portal = Pather.getPortal(null, me.name);
+        if (!portal || (portal && getDistance(me, portal) > 20)) {
+          Pather.makePortal();
+        }
+        this.announce("2");
+
+        break;
+    }
+  },
+
   init() {
     // Storage.Init();
     // Pickit.init(true);
     Hooks.init();
-    load("tools/maphelper.js");
+    // load("tools/maphelper.js");
     print("\xFFc9MapThread\xFFc0 \xFFc2Loaded\xFFc0");
 
     if (Config.MapMode.UseOwnItemFilter) {
@@ -184,8 +261,9 @@ const MapThread = {
     // };
 
     // addEventListener("chatinputblocker", this.onChatInput);
-    addEventListener("chatinput", this.onChatInput, this);
+    // addEventListener("chatinput", this.onChatInput, this);
     // addEventListener("keyup", ActionHooks.event);
+    addEventListener("keyup", this.keyEvent, this);
 
     while (true) {
       while (!me.area || !me.gameReady) {

@@ -30,7 +30,7 @@ git clone https://github.com/io-mars/quickjs.git
 
 after builded, copy requirement files from the zip file:
 
-1. `liblibquickjs.a`/`libquickjs.d.a`/`libquickjs.lto.a` to `lib` directory;
+1. `liblibquickjs.a`/`libquickjs.d.a`/`libquickjs.lto.a` to `lib/quickjs` directory;
 2. `quickjs.h`/`quickjs-libc.h` to `include/quickjs/` directory;
 
 ### Step 2 - build `d2boot` and config
@@ -43,14 +43,6 @@ make PREFIX=release pdb
 
 1. put the `D2Boot.dll` and `D2Boot.pdb` files at `publish/D2Boot/` directory;
 2. put the `Scripts` directory at `publish/D2Boot/` directory;
-
-> cancel version warning when building:
->
-> ```sh
-> # /d/msys64/mingw32/lib
-> cp libwinpthread.a libwinpthread.a.org
-> ar -d libwinpthread.a version.o
-> ```
 
 ### Step 3 - run `d2bot#`
 

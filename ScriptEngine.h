@@ -24,7 +24,7 @@ enum EngineState
 class ScriptEngine
 {
 private:
-  ScriptEngine(void){};
+  ScriptEngine(void) {};
   ~ScriptEngine();
   static Script *console;
   static EngineState state;
@@ -63,7 +63,7 @@ public:
   static unsigned int GetCount(bool active = true, bool unexecuted = false);
 
   static void StopAll(const bool forceStop = false);
-  static bool ToggleScript(const bool isPause = false);
+  static bool ToggleScript();
 
   static void UpdateConsole();
 };

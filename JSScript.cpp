@@ -10,6 +10,7 @@ enum script_id
   SCRIPT_FILENAME,
   SCRIPT_GAMETYPE,
   SCRIPT_RUNNING,
+  SCRIPT_PAUSABLE,
   SCRIPT_THREADID,
   SCRIPT_MEMORY,
 };
@@ -172,6 +173,8 @@ JSAPI_PGM(get_script_property)
     return JS_NewBool(ctx, pScript->GetState() == InGame ? false : true);
   case SCRIPT_RUNNING:
     return JS_NewBool(ctx, pScript->IsRunning());
+  case SCRIPT_PAUSABLE:
+    return JS_NewBool(ctx, pScript->IsPausable());
   case SCRIPT_THREADID:
     return JS_NewUint32(ctx, pScript->GetThreadId());
   case SCRIPT_MEMORY:
@@ -186,6 +189,23 @@ JSAPI_PGM(get_script_property)
   }
 
   return JS_FALSE;
+}
+
+JSAPI_PSM(set_script_property)
+{
+  Script *pScript = (Script *)JS_GetOpaque(this_val, script_class_id);
+  if (!pScript)
+    return JS_FALSE;
+
+  switch (magic)
+  {
+  case SCRIPT_PAUSABLE:
+    pScript->SetPausable(!!JS_ToBool(ctx, val));
+    break;
+  default:
+    break;
+  }
+  return JS_TRUE;
 }
 
 JSAPI_FUNC(script_getNext)
@@ -302,6 +322,7 @@ static const JSCFunctionListEntry js_script_proto_funcs[] = {
     JS_CGETSET_MAGIC_DEF("running", get_script_property, NULL, SCRIPT_RUNNING),
     JS_CGETSET_MAGIC_DEF("threadid", get_script_property, NULL, SCRIPT_THREADID),
     JS_CGETSET_MAGIC_DEF("memory", get_script_property, NULL, SCRIPT_MEMORY),
+    JS_CGETSET_MAGIC_DEF("pausable", get_script_property, set_script_property, SCRIPT_PAUSABLE),
 
     JS_CFUNC_DEF("getNext", 0, script_getNext),
     JS_CFUNC_DEF("pause", 0, script_pause),

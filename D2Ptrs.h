@@ -282,8 +282,9 @@ FUNCPTR(D2COMMON, GetItemText, ItemTxt *__stdcall, (DWORD dwItemNo), 0x62C70)
 FUNCPTR(D2COMMON, GetLayer, AutomapLayer2 *__fastcall, (DWORD dwLevelNo), 0x30B00)
 FUNCPTR(D2COMMON, GetLevel, Level *__fastcall, (ActMisc * pMisc, DWORD dwLevelNo), 0x6D440)
 
-FUNCPTR(D2COMMON, GetStatList, StatList *__stdcall, (UnitAny * pUnit, DWORD dwUnk, DWORD dwMaxEntries), 0x57830)
-FUNCPTR(D2COMMON, CopyStatList, DWORD __stdcall, (StatList * pStatList, Stat *pStatArray, DWORD dwMaxEntries), 0x57D30)
+// STATLIST_GetStatListFromUnitStateAndFlag
+FUNCPTR(D2COMMON, GetStatList, StatList *__stdcall, (UnitAny * pUnit, DWORD nState, DWORD nFlag), 0x57830)
+FUNCPTR(D2COMMON, CopyStatList, DWORD __stdcall, (StatList * pStatList, Stat *pStatArray, DWORD nFlag), 0x57D30)
 FUNCPTR(D2COMMON, GetUnitStat, long __stdcall, (UnitAny * pUnit, DWORD dwStat, DWORD dwStat2), 0x584E0)
 FUNCPTR(D2COMMON, GetUnitState, int __stdcall, (UnitAny * pUnit, DWORD dwStateNo), 0x2F310)
 

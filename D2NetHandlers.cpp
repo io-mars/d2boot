@@ -55,9 +55,10 @@ DWORD ChatEventHandler(BYTE *pPacket, DWORD dwSize)
   char *pName = (char *)pPacket + 10;
   char *pMessage = (char *)pPacket + strlen(pName) + 11;
 
+  // the say message need fixed the color prefix!
   ToColorString(pMessage);
 
-  wchar_t *uc = AnsiToUnicode(pMessage, CP_ACP);
+  wchar_t *uc = AnsiToUnicode(pMessage, CP_LATIN1);
 
   if (Vars.bDontCatchNextMsg)
     Vars.bDontCatchNextMsg = FALSE;

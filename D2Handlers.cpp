@@ -466,7 +466,8 @@ BOOL __fastcall ChatPacketRecv(BYTE *pPacket, int len)
     // DWORD mode = pPacket[4];
     char *who = (char *)pPacket + 28;
     char *said = (char *)pPacket + 29 + strlen(who);
-    wchar_t *wsaid = AnsiToUnicode(said, CP_ACP);
+
+    wchar_t *wsaid = AnsiToUnicode(said, CP_LATIN1);
 
     switch (pPacket[4])
     {

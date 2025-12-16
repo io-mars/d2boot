@@ -216,7 +216,7 @@ export const ItemHooks = {
   itemCodeByClassId: [],
   itemCodeByClassIdAndQuality: [],
   itemColorCode: [],
-  itemskillAlias: {
+  itemSkillAlias: {
     [sdk.skills.LowerResist]: "Lo",
     [sdk.skills.Revive]: "Re",
     [sdk.skills.PoisonNova]: "PN",
@@ -334,9 +334,9 @@ export const ItemHooks = {
   getSkillInfo(item, single = true) {
     let info = [];
     item.getItemSkills(single).forEach((skill) => {
-      if (this.itemskillAlias.hasOwnProperty(skill[1])) {
+      if (this.itemSkillAlias.hasOwnProperty(skill[1])) {
         info.push(
-          `\xFFc9${this.itemskillAlias[skill[1]]}\xFFc0:\xFFc2${skill[2]}\xFFc0`
+          `\xFFc9${this.itemSkillAlias[skill[1]]}\xFFc0:\xFFc2${skill[2]}\xFFc0`
         );
       }
     });
@@ -387,6 +387,43 @@ export const ItemHooks = {
     return "";
   },
 
+  getItemSocks(item) {
+    if (item.sockets) return "[\xFFc9s:" + item.sockets + "\xFFc0]";
+
+    if (
+      item.ilvl >= 25 &&
+      item.ilvl <= 39 &&
+      [
+        sdk.items.CrystalSword,
+        sdk.items.Flail,
+        sdk.items.Scythe,
+        sdk.items.Poleaxe,
+        sdk.items.Halberd,
+        sdk.items.WarScythe,
+        sdk.items.BattleScythe,
+        sdk.items.Partizan,
+        sdk.items.Bec_de_Corbin,
+        sdk.items.GrimScythe,
+        sdk.items.Thresher,
+        sdk.items.CrypticAxe,
+        sdk.items.GreatPoleaxe,
+        sdk.items.GiantThresher,
+      ].includes(item.classid)
+      // [sdk.items.type.Sword, sdk.items.type.Polearm].includes(item.itemType)
+    ) {
+      // switch (true) {
+      // case item.ilvl <= 24: // 1-24
+      //   return "[\xFFc8ms:3\xFFc0]";
+      // case item.ilvl <= 39: // 25-39
+      return "[\xFFc8as:4\xFFc0]";
+      // default: // 40-99
+      //   return "[\xFFc8ms:6\xFFc0]";
+      // }
+    }
+
+    return "";
+  },
+
   newHook(item) {
     let color = 0,
       code = "",
@@ -426,11 +463,7 @@ export const ItemHooks = {
               if (item.runeword) {
                 code = item.fname.split("\n").reverse().join(" ");
               } else {
-                code =
-                  "\xFFc0" +
-                  (item.sockets > 0
-                    ? "[\xFFc9" + item.sockets + "\xFFc0]"
-                    : "");
+                code = "\xFFc0" + this.getItemSocks(item);
                 code += `${this.getItemName(item)}${this.getExtInfo(item)}`;
                 code += "(" + item.ilvl + ")";
               }

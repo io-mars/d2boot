@@ -406,7 +406,7 @@ JSAPI_FUNC(my_load)
     scriptState = (ClientState() == ClientStateInGame ? InGame : OutOfGame);
 
   wchar_t buf[_MAX_PATH + _MAX_FNAME];
-  swprintf_s(buf, _countof(buf), L"%s/%s", Vars.szScriptPath, file);
+  swprintf_s(buf, _countof(buf), L"%ls/%ls", Vars.szScriptPath, file);
   // StringReplaceChar(buf, L'/', L'\\', _countof(buf));
 
   // MTODO support args?

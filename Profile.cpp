@@ -14,7 +14,7 @@ void Profile::init(const wchar_t *profileName)
   if (profileName[0] == L'\0')
     throw "Can't open empty profile name.";
 
-  swprintf_s(file, _countof(file), L"%sD2Boot.ini", Vars.szPath);
+  swprintf_s(file, _countof(file), L"%lsD2Boot.ini", Vars.szPath);
 
   GetPrivateProfileString(profileName, L"mode", L"single", mode, _countof(mode), file);
   GetPrivateProfileString(profileName, L"character", L"ERROR", charname, _countof(charname), file);
@@ -61,7 +61,7 @@ void Profile::init(const wchar_t *profileName)
 bool Profile::ProfileExists(const wchar_t *profile)
 {
   wchar_t file[_MAX_FNAME + _MAX_PATH], profiles[65535] = L"";
-  swprintf_s(file, _countof(file), L"%sD2Boot.ini", Vars.szPath);
+  swprintf_s(file, _countof(file), L"%lsD2Boot.ini", Vars.szPath);
 
   int count = GetPrivateProfileString(NULL, NULL, NULL, profiles, 65535, file);
   if (count > 0)
